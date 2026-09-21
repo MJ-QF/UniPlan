@@ -4,7 +4,7 @@ namespace Core.Interfaces.Repositories
 {
     public interface IAccountRepository
     {
-        public Task<bool> UpdatePasswordAsync(Account account);
+        Task<bool> UpdatePasswordAsync(Account account);
 
         Task<Account?> GetAccountByIDAsync(int accountID);
 

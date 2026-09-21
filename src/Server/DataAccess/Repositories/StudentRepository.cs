@@ -28,6 +28,11 @@ namespace DataAccess.Repositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
+                    var studentID = new SqlParameter("@StudentID", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+
                     var accountID = new SqlParameter("@AccountID", SqlDbType.Int)
                     {
                         Direction = ParameterDirection.Output
@@ -50,7 +55,6 @@ namespace DataAccess.Repositories
                     command.Parameters.AddWithValue("@AccountName", student.Account?.AccountName);
                     command.Parameters.AddWithValue("@Password", student.Account?.Password);
                     command.Parameters.AddWithValue("@Email", student.Account?.Email);
-                    command.Parameters.AddWithValue("@StudentID", student.StudentID);
                     command.Parameters.AddWithValue("@MajorID", student.Major?.MajorID);
                     command.Parameters.AddWithValue("@FirstName", student.Person?.FirstName);
                     command.Parameters.AddWithValue("@MiddleName", student.Person?.MiddleName != null ? student.Person?.MiddleName : DBNull.Value);
@@ -58,6 +62,11 @@ namespace DataAccess.Repositories
 
                     await connection.OpenAsync();
                     await command.ExecuteNonQueryAsync();
+
+                    if (studentID.Value != DBNull.Value && int.TryParse(studentID.Value.ToString(), out int sID))
+                    {
+                        student.StudentID = sID;
+                    }
 
                     if (personID.Value != DBNull.Value && int.TryParse(personID.Value.ToString(), out int pID) && student.Person != null)
                     {

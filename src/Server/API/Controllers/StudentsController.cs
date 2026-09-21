@@ -282,12 +282,12 @@ namespace API.Controllers
         }
 
 
-        [ProducesResponseType(StatusCodes.Status200OK , Type = typeof(IEnumerable<Course>))]
+        [ProducesResponseType(StatusCodes.Status200OK , Type = typeof(IEnumerable<CourseResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         [HttpGet("{studentID}/open-courses", Name = "GetStudentOpenCourses")]
-        public async Task<ActionResult<IEnumerable<Course>>> GetStudentOpenCourses(int studentID)
+        public async Task<ActionResult<IEnumerable<CourseResponse>>> GetStudentOpenCourses(int studentID)
         {
             if (studentID <= 0)
             {

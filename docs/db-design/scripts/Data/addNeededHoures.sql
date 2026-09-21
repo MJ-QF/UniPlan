@@ -1,12 +1,5 @@
-﻿
-
-
-Alter Table Students
-Add [CompletedHours] int not null default 0;
-
-
-Alter Table Courses
-Add	[NeededHours] int not null default 0;
+﻿USE [UniPlan]
+GO
 
 update Courses
 set NeededHours = 100

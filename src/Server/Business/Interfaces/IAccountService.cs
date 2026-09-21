@@ -6,9 +6,9 @@ namespace Business.Interfaces
 {
     public interface IAccountService
     {
-        public Task<AccountResponse?> LoginAsync(LoginRequest request);
+        Task<AccountResponse?> LoginAsync(LoginRequest request);
 
-        public Task<bool> UpdatePasswordAsync(ChangePasswordRequest request, int accountID);
+        Task<bool> UpdatePasswordAsync(ChangePasswordRequest request, int accountID);
 
         Task<AccountResponse?> GetAccountByIDAsync(int accountID);
     }

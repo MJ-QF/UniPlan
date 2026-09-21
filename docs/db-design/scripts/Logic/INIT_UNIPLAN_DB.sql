@@ -154,11 +154,12 @@ CREATE TABLE [dbo].[Students]
        Keep this as NOT IDENTITY if StudentID is a real university number.
        If SQL Server should generate it, change to: int IDENTITY(1,1) NOT NULL.
     */
-    [StudentID] int NOT NULL,
+    [StudentID] int IDENTITY(1,1) NOT NULL,
     [PersonID] int NOT NULL,
     [AccountID] int NOT NULL,
     [MajorID] int NOT NULL,
 	[CompletedHours] int default 0,
+    [NeededHours] int not null default 0,
 
 
 

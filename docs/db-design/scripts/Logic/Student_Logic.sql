@@ -8,7 +8,7 @@ CREATE OR ALTER PROCEDURE SP_StudentProfile_Insert
     @AccountName NVARCHAR(50),
     @Password NVARCHAR(255),
     @Email NVARCHAR(255),
-    @StudentID INT,
+    @StudentID INT OUTPUT,
     @MajorID INT,
     @PersonID INT OUTPUT,
     @AccountID INT OUTPUT,
@@ -30,8 +30,10 @@ BEGIN
         EXEC SP_People_Insert @FirstName, @MiddleName, @LastName, @PersonID OUTPUT;
         EXEC SP_Accounts_Insert @AccountName, @Password, @Email, @AccountID OUTPUT;
 
-        INSERT INTO [dbo].[Students] ([StudentID], [PersonID], [AccountID], [MajorID])
-        VALUES (@StudentID, @PersonID, @AccountID, @MajorID);
+        INSERT INTO [dbo].[Students] ([PersonID], [AccountID], [MajorID])
+        VALUES (@PersonID, @AccountID, @MajorID);
+
+        SET @StudentID = SCOPE_IDENTITY();
 
         COMMIT;
         SET @Result = 1;
