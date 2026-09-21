@@ -8,6 +8,8 @@
 
         public string Email { get; set; } = string.Empty;
 
+        public string Role { get; set; } = string.Empty;
+
         public AccountResponse()
         {
             AccountID = -1;
@@ -15,11 +17,12 @@
             Email = string.Empty;
         }
 
-        public AccountResponse(int accountID, string accountName, string email)
+        public AccountResponse(int accountID, string accountName, string email, string role)
         {
             AccountID = accountID;
             AccountName = accountName;
             Email = email;
+            Role = role;
         }
     }
 }

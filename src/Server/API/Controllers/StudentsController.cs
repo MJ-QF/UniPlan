@@ -158,6 +158,31 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("by-account/{accountID}", Name = "GetStudentByAccountIDAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<ActionResult<StudentResponse>> GetStudentByAccountIDAsync(int accountID)
+        {
+            try
+            {
+                StudentResponse? response = await _studentService.GetStudentByAccountIDAsync(accountID);
+
+                if (response != null)
+                {
+                    await _logService.LogAsync($"تم جلب الطالب بالمعرف {accountID} بنجاح", ExternalServicesEnums.LogType.Info);
+                    return Ok(response);
+                }
+
+                await _logService.LogAsync($"لم يتم العثور على الطالب بالمعرف {accountID}", ExternalServicesEnums.LogType.Warning);
+                return NotFound($"لم يتم العثور على الطالب بالمعرف {accountID}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
+
         [HttpGet(Name = "GetPagedStudentsAsync")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<StudentResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]

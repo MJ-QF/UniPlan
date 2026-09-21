@@ -32,7 +32,7 @@ namespace Business.Mapper
         public static AdministratorResponse ToResponse(this Administrator admin)
         {
             PersonResponse person = new PersonResponse(admin.Person!.PersonID, admin.Person!.FirstName, admin.Person.MiddleName, admin.Person.LastName);
-            AccountResponse account = new AccountResponse(admin.Account!.AccountID, admin.Account.AccountName, admin.Account.Email);
+            AccountResponse account = new AccountResponse(admin.Account!.AccountID, admin.Account.AccountName, admin.Account.Email, "Admin");
             return new AdministratorResponse(admin.AdminID, person, account, admin.IsActive);
         }
 

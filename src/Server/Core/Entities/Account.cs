@@ -11,6 +11,8 @@ namespace Core.Entities
 
         public string Email { get; set; } = string.Empty;
 
+        public string Role { get; set; } = string.Empty;
+
 
         public Account(string accountName, string password)
         {
@@ -25,12 +27,13 @@ namespace Core.Entities
             Email = email;
         }
 
-        public Account(int accountID, string accountName, string email, string password)
+        public Account(int accountID, string accountName, string email, string password, string role)
         {
             AccountID = accountID;
             AccountName = accountName;
             Email = email;
             Password = password;
+            Role = role;
         }
     }
 }

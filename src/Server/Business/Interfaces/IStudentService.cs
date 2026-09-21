@@ -15,5 +15,7 @@ namespace Business.Interfaces
         Task<IEnumerable<StudentResponse>?> GetPagedStudentsAsync(int pageNumber = 1, int pageSize = 10);
 
         Task<StudentResponse?> GetStudentByIDAsync(int studentID);
+
+        Task<StudentResponse?> GetStudentByAccountIDAsync(int accountID);
     }
 }

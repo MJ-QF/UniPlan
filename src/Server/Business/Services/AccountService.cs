@@ -49,7 +49,7 @@ namespace Business.Services
 
             if (account != null)
             {
-                if(_passwordHasher.VerifyPassword(request.OLdPassword ?? string.Empty, account.Password))
+                if(_passwordHasher.VerifyPassword(request.OldPassword ?? string.Empty, account.Password))
                 {
                     account.UpdateAccount(request);
                     account.Password = _passwordHasher.HashPassword(account.Password);

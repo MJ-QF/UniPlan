@@ -42,7 +42,7 @@ namespace Business.Mapper
 
         public static AccountResponse ToResponse(this Account account)
         {
-            return new AccountResponse(account.AccountID, account.AccountName, account.Email);
+            return new AccountResponse(account.AccountID, account.AccountName, account.Email, account.Role);
         }
     }
 }

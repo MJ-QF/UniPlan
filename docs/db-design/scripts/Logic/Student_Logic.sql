@@ -188,6 +188,17 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE SP_StudentProfile_GetByAccountId
+    @AccountID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT * FROM StudentProfiles_view
+    WHERE AccountID = @AccountID;
+END;
+GO
+
 CREATE OR ALTER PROCEDURE SP_StudentProfile_GetById
     @StudentID INT
 AS

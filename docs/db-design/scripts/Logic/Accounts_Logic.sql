@@ -170,8 +170,15 @@ BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        SELECT * FROM Accounts
-        WHERE AccountID = @AccountID;
+
+        SELECT A.* ,   
+        CASE 
+            WHEN EXISTS(SELECT 1 FROM Students S WHERE S.AccountID = A.AccountID) THEN 'Student'
+            ELSE 'Admin'
+        END AS Role
+        FROM Accounts A
+        WHERE A.AccountID = @AccountID;
+
     END TRY
     BEGIN CATCH
         THROW;
@@ -186,8 +193,15 @@ BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        SELECT * FROM Accounts
-        WHERE AccountName = @AccountName;
+
+        SELECT A.* , 
+        CASE 
+            WHEN EXISTS(SELECT 1 FROM Students S WHERE S.AccountID = A.AccountID) THEN 'Student'
+            ELSE 'Admin'
+        END AS Role
+        FROM Accounts A
+        WHERE A.AccountName = @AccountName;
+
     END TRY
     BEGIN CATCH
         THROW;

@@ -12,8 +12,9 @@ namespace DataAccess.Mapping
             reader.ReadString("AccountName", out string accountName, string.Empty);
             reader.ReadString("Email", out string email, string.Empty);
             reader.ReadString("Password", out string password, string.Empty);
+            reader.ReadString("Role", out string role, string.Empty);
 
-            return new Account(accountID, accountName, email, password);
+            return new Account(accountID, accountName, email, password, role);
         }
     }
 }

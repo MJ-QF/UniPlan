@@ -14,7 +14,7 @@ namespace Business.DTOs.Requests.Update
         [Required<string>("كلمة المرور القديمة مطلوبة")]
         [Length("يجب أن تكون كلمة المرور بين 8 و 50 حرفًا", 50, 8)]
         [Compare(nameof(NewPassword), ComparisonType.NotEqual, "يجب أن تكون كلمة المرور الجديدة مختلفة عن القديمة")]
-        public string? OLdPassword { get; set; }
+        public string? OldPassword { get; set; }
 
     }
 }

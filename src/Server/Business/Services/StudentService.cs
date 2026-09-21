@@ -70,5 +70,14 @@ namespace Business.Services
             Student? student = await _studentRepository.GetStudentByIDAsync(studentID);
             return student != null ? student.ToResponse() : null;
         }
+
+        public async Task<StudentResponse?> GetStudentByAccountIDAsync(int accountID)
+        {
+            if (accountID <= 0)
+                return null;
+
+            Student? student = await _studentRepository.GetStudentByAccountIDAsync(accountID);
+            return student != null ? student.ToResponse() : null;
+        }
     }
 }

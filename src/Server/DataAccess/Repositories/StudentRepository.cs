@@ -49,6 +49,7 @@ namespace DataAccess.Repositories
                     };
 
                     command.Parameters.Add(personID);
+                    command.Parameters.Add(studentID);
                     command.Parameters.Add(accountID);
                     command.Parameters.Add(result);
 
@@ -181,6 +182,39 @@ namespace DataAccess.Repositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@StudentID", studentID);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader != null && await reader.ReadAsync())
+                        {
+                            student = reader.ToStudent();
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logService.LogAsync(ex);
+                throw;
+            }
+
+            return student;
+        }
+
+        public async Task<Student?> GetStudentByAccountIDAsync(int accountID)
+        {
+            Student? student = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
+                using (SqlCommand command = new SqlCommand("SP_StudentProfile_GetByAccountId", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@AccountID", accountID);
 
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())

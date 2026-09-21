@@ -13,5 +13,7 @@ namespace Core.Interfaces.Repositories
         Task<IEnumerable<Student>?> GetPagedStudentsAsync(int pageNumber = 1, int pageSize = 10);
 
         Task<Student?> GetStudentByIDAsync(int studentID);
+
+        Task<Student?> GetStudentByAccountIDAsync(int accountID);
     }
 }
