@@ -275,6 +275,39 @@ namespace DataAccess.Repositories
             return openCourses;
         }
 
+        public async Task<IEnumerable<StudentCoursePlanStatus>?> GetStudentPlanStatusAsync(int studentID)
+        {
+            List<StudentCoursePlanStatus> planStatusList = new List<StudentCoursePlanStatus>();
 
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
+                using (SqlCommand command = new SqlCommand("SP_StudentCourses_GetPlanStatus", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@StudentID", studentID);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader != null)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                planStatusList.Add(reader.ToStudentCoursePlanStatus());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logService.LogAsync(ex);
+                throw;
+            }
+
+            return planStatusList;
+        }
     }
 }

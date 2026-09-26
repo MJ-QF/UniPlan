@@ -19,5 +19,7 @@ namespace Business.Interfaces
         Task<bool> SyncStudentCoursesAsync(int studentID, List<int> coursesIDs);
 
         Task<IEnumerable<CourseResponse>?> GetOpenCoursesByStudentIDAsync(int studentID);
+
+        Task<IEnumerable<StudentCoursePlanStatusResponse>?> GetStudentPlanStatusAsync(int studentID);
     }
 }
