@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "http://localhost:5173") // روابط الفرونت (مثل React أو Vue)
+            policy.WithOrigins("http://localhost:5173") // روابط الفرونت (مثل React أو Vue)
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -87,7 +87,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // تفعيل سياسة الـ CORS هنا قبل الـ Authorization
 app.UseCors("AllowFrontend");

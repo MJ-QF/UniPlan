@@ -1,4 +1,5 @@
 ﻿using Business.DTOs.Requests;
+using Business.DTOs.Requests.Update;
 using Business.DTOs.Responses;
 using Business.Interfaces;
 using Business.Mapper;
@@ -37,9 +38,9 @@ namespace Business.Services
             return null;
         }
 
-        public async Task<IEnumerable<WishListResponse>?> GetWishListsByRegistrationIDAsync(int registrationID)
+        public async Task<IEnumerable<WishListResponse>?> GetWishListsByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10)
         {
-            IEnumerable<WishList>? lists = await _listRepository.GetWishListsByRegistrationIDAsync(registrationID);
+            IEnumerable<WishList>? lists = await _listRepository.GetWishListsByStudentIDAsync(studentID, pageNumber, pageSize);
             return lists?.Select(m => m.ToResponse()).OfType<WishListResponse>();
         }
 
@@ -50,6 +51,12 @@ namespace Business.Services
 
             WishList? list = await _listRepository.GetWishListByIDAsync(listID);
             return list != null ? list.ToResponse() : null;
+        }
+
+        public async Task<bool> SyncCoursesAsync(int listID , SyncCoursesRequest coursesRequest)
+        {
+            WishList list = coursesRequest.ToWishList(listID);
+            return await _listRepository.SyncCoursesAsync(list);
         }
     }
 }

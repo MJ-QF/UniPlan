@@ -11,45 +11,64 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM [dbo].[StudentTerms] WHERE RegistrationID = @RegistrationID)
         RETURN 51603;
 
-    IF @WishListID IS NULL
-    BEGIN
-        IF EXISTS (SELECT 1 FROM [dbo].[WishLists] WHERE RegistrationID = @RegistrationID)
-            RETURN 51702;
-    END
-    ELSE
-    BEGIN
+    IF @WishListID IS NOT NULL
         IF NOT EXISTS (SELECT 1 FROM [dbo].[WishLists] WHERE WishListID = @WishListID)
             RETURN 51703;
-    END
-
     RETURN 0;
-END;
+END
 GO
 
-CREATE OR ALTER PROCEDURE SP_WishLists_Insert
-    @RegistrationID int,
-    @WishListID int OUTPUT
-AS
-BEGIN
-    SET NOCOUNT ON;
+CREATE OR ALTER PROCEDURE SP_WishLists_Insert 
+    @TermID int, 
+    @StudentID int, 
+    @CoursesIDs CourseIdListType READONLY, 
+    @WishListID int OUTPUT 
+AS 
+BEGIN 
+    SET NOCOUNT ON; 
+    
+    BEGIN TRANSACTION;
 
-    DECLARE @ErrCode int;
+    BEGIN TRY 
+        DECLARE @RegistrationID INT = ( 
+            SELECT RegistrationID 
+            FROM [dbo].[StudentTerms] 
+            WHERE TermID = @TermID AND StudentID = @StudentID
+        ); 
+        
+        IF @RegistrationID IS NULL 
+        BEGIN 
+            EXECUTE [dbo].[SP_StudentTerms_Insert] 
+                @StudentID,
+                @TermID,
+                @RegistrationID OUTPUT;
+        END; 
+        
+        DECLARE @ErrCode int; 
+        EXEC @ErrCode = SP_WishLists_Validate @RegistrationID, NULL; 
+        
+        IF @ErrCode != 0 
+            THROW @ErrCode, '', 1; 
+            
+        INSERT INTO [dbo].[WishLists] ([RegistrationID]) 
+        VALUES (@RegistrationID); 
+        
+        SET @WishListID = SCOPE_IDENTITY(); 
+        
+        INSERT INTO [dbo].WishListItems ([CourseID], [WishListID]) 
+        SELECT CourseID, @WishListID 
+        FROM @CoursesIDs; 
 
-    EXEC @ErrCode = SP_WishLists_Validate @RegistrationID, NULL;
+        COMMIT TRANSACTION;
 
-    IF @ErrCode != 0
-        THROW @ErrCode, '', 1;
-
-    BEGIN TRY
-        INSERT INTO [dbo].[WishLists] ([RegistrationID])
-        VALUES (@RegistrationID);
-
-        SET @WishListID = SCOPE_IDENTITY();
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
+    END TRY 
+    BEGIN CATCH 
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+            
+        THROW; 
+    END CATCH 
+END; 
 GO
 
 CREATE OR ALTER PROCEDURE SP_WishLists_Delete
@@ -95,21 +114,42 @@ GO
 CREATE OR ALTER VIEW WishLists_view
 AS
 SELECT W.WishListID, ST.RegistrationID, ST.StudentID,
-       A.*
+       A.* , 
+       CASE
+            WHEN 
+            EXISTS (
+                SELECT 1 FROM GeneratedSchedules 
+                WHERE WishListID = W.WishListID
+            ) THEN 0
+            ELSE 1
+       END AS AllowUpdate
 FROM WishLists W
 JOIN StudentTerms ST ON ST.RegistrationID = W.RegistrationID
 JOIN AcademicTerms A ON A.TermID = ST.TermID;
 GO
 
-CREATE OR ALTER PROCEDURE SP_WishLists_GetByRegistrationID
-    @RegistrationID int
+CREATE OR ALTER PROCEDURE SP_WishLists_GetByStudentID
+    @StudentID int,
+    @PageNumber int = 1,
+    @PageSize int = 10
 AS
 BEGIN
     SET NOCOUNT ON;
 
     BEGIN TRY
-        SELECT * FROM WishLists_view
-        WHERE RegistrationID = @RegistrationID;
+        IF @PageNumber IS NULL OR @PageNumber < 1
+            SET @PageNumber = 1;
+
+        IF @PageSize IS NULL OR @PageSize < 1
+            SET @PageSize = 10;
+
+        SELECT * FROM WishLists_view W
+        INNER JOIN StudentTerms ST ON W.RegistrationID = ST.RegistrationID
+        WHERE ST.StudentID = @StudentID
+        ORDER BY W.WishListID
+        OFFSET (@PageNumber - 1) * @PageSize ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
+
     END TRY
     BEGIN CATCH
         THROW;
@@ -126,31 +166,6 @@ BEGIN
     BEGIN TRY
         SELECT * FROM WishLists_view
         WHERE WishListID = @WishListID;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END;
-GO
-
-CREATE OR ALTER PROCEDURE SP_WishLists_GetAll
-    @PageNumber int = 1,
-    @PageSize int = 10
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    BEGIN TRY
-        IF @PageNumber IS NULL OR @PageNumber < 1
-            SET @PageNumber = 1;
-
-        IF @PageSize IS NULL OR @PageSize < 1
-            SET @PageSize = 10;
-
-        SELECT * FROM WishLists_view
-        ORDER BY [WishListID]
-        OFFSET (@PageNumber - 1) * @PageSize ROWS
-        FETCH NEXT @PageSize ROWS ONLY;
     END TRY
     BEGIN CATCH
         THROW;

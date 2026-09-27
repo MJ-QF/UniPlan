@@ -114,3 +114,32 @@ BEGIN
     END CATCH
 END;
 GO
+
+
+CREATE OR ALTER PROCEDURE SP_WishListItems_SyncCourses
+    @CoursesIDs CourseIdListType READONLY,
+    @ListId INT,
+    @Result BIT OUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+            DELETE FROM WishListItems 
+            WHERE WishListID = @ListId;
+
+            INSERT INTO WishListItems ([CourseID], [WishListID])
+            SELECT CourseID , @ListId FROM @CoursesIDs;
+        SET @Result = 1;
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        SET @Result = 0;
+
+        THROW;
+    END CATCH
+END
+GO

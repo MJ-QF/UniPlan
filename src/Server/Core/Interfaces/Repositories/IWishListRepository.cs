@@ -8,8 +8,10 @@ namespace Business.Interfaces
 
         Task<int> AddWishListAsync(WishList list);
 
-        Task<IEnumerable<WishList>?> GetWishListsByRegistrationIDAsync(int registrationID);
+        Task<IEnumerable<WishList>?> GetWishListsByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10);
 
         Task<WishList?> GetWishListByIDAsync(int listID);
+
+        Task<bool> SyncCoursesAsync(WishList list);
     }
 }

@@ -6,10 +6,16 @@
 
         public StudentTerm StudentTerm { get; set; }
 
-        public WishList(int wishListID, StudentTerm studentTerm)
+        public List<int>? CourseIDs { get; set; }
+
+        public bool AllowUpdate { get; set; }
+
+
+        public WishList(int wishListID, StudentTerm studentTerm, List<int>? coursesIDs)
         {
             WishListID = wishListID;
             StudentTerm = studentTerm;
+            CourseIDs = coursesIDs;
         }
 
         public WishList(int wishListID)

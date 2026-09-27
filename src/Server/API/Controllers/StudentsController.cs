@@ -21,14 +21,16 @@ namespace API.Controllers
         private readonly IExceptionService _exceptionService;
         private readonly IStudentTermService _studentTermService;
         private readonly IStudentCourseService _studentCourseService;
+        private readonly IWishListService _listService;
 
-        public StudentsController(IStudentService studentService, ILogService logService, IExceptionService exceptionService, IStudentTermService studentTermService, IStudentCourseService studentCourseService)
+        public StudentsController(IStudentService studentService, ILogService logService, IExceptionService exceptionService, IStudentTermService studentTermService, IStudentCourseService studentCourseService, IWishListService listService)
         {
             _studentService = studentService;
             _logService = logService;
             _exceptionService = exceptionService;
             _studentTermService = studentTermService;
             _studentCourseService = studentCourseService;
+            _listService = listService;
         }
 
         [HttpPost(Name = "AddStudentAsync")]
@@ -276,16 +278,16 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         [HttpPost("{studentID}/passed-courses", Name = "SyncStudentPassedCourses")]
-        public async Task<ActionResult> SyncStudentPassedCourses(int studentID, SyncStudentPassedCoursesRequest request)
+        public async Task<ActionResult> SyncStudentPassedCourses(int studentID, SyncCoursesRequest request)
         {
-            if (studentID <= 0 || request.PassedCourseIds.Count(cID => cID <= 0) > 0)
+            if (studentID <= 0 || request.CourseIds.Count(cID => cID <= 0) > 0)
             {
                 return BadRequest("يجب أن يكون معرف الطالب و معرفات الكورسات أكبر من 0");
             }
 
             try
             {
-                bool res = await _studentCourseService.SyncStudentCoursesAsync(studentID , request.PassedCourseIds);
+                bool res = await _studentCourseService.SyncStudentCoursesAsync(studentID , request.CourseIds);
 
                 if (res)
                 {
@@ -377,5 +379,33 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("{studentID}/wishLists", Name = "GetWishListsByStudentIDAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WishListResponse>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<ActionResult<IEnumerable<WishListResponse>>> GetWishListsByStudentIDAsync(int studentID, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            if (studentID <= 0)
+            {
+                return BadRequest("يجب أن يكون معرف الطالب أكبر من 0");
+            }
+
+            try
+            {
+                IEnumerable<WishListResponse>? responses = await _listService.GetWishListsByStudentIDAsync(studentID);
+
+                if (responses == null)
+                {
+                    responses = Enumerable.Empty<WishListResponse>();
+                }
+
+                await _logService.LogAsync($"تم جلب قوائم الرغبات لمعرف الطالب {studentID} بنجاح", ExternalServicesEnums.LogType.Info);
+                return Ok(responses);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
     }
 }

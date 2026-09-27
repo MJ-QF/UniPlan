@@ -1,4 +1,5 @@
 ﻿using Business.DTOs.Requests;
+using Business.DTOs.Requests.Update;
 using Business.DTOs.Responses;
 
 namespace Business.Interfaces
@@ -9,8 +10,10 @@ namespace Business.Interfaces
 
         Task<WishListResponse?> AddWishListAsync(WishListRequest list);
 
-        Task<IEnumerable<WishListResponse>?> GetWishListsByRegistrationIDAsync(int registrationID);
+        Task<IEnumerable<WishListResponse>?> GetWishListsByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10);
 
         Task<WishListResponse?> GetWishListByIDAsync(int listID);
+
+        Task<bool> SyncCoursesAsync(int listID, SyncCoursesRequest coursesRequest);
     }
 }

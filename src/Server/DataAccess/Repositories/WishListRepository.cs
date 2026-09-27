@@ -36,7 +36,9 @@ namespace DataAccess.Repositories
 
                     command.Parameters.Add(listID);
 
-                    command.Parameters.AddWithValue("@RegistrationID", (int)list.StudentTerm.RegistrationID);
+                    command.Parameters.AddWithValue("@StudentID", list.StudentTerm.StudentID);
+                    command.Parameters.AddWithValue("@TermID", list.StudentTerm.AcademicTerm?.TermID);
+                    command.Parameters.AddWithValue("@CoursesIDs", list.CourseIDs?.ToDataTable());
 
 
                     await connection.OpenAsync();
@@ -127,18 +129,20 @@ namespace DataAccess.Repositories
             return list;
         }
 
-        public async Task<IEnumerable<WishList>?> GetWishListsByRegistrationIDAsync(int registrationID)
+        public async Task<IEnumerable<WishList>?> GetWishListsByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10)
         {
             List<WishList>? lists = new List<WishList>();
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
-                using (SqlCommand command = new SqlCommand("SP_WishLists_GetByRegistrationID", connection))
+                using (SqlCommand command = new SqlCommand("SP_WishLists_GetByStudentID", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@RegistrationID", registrationID);
+                    command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("@PageSize", pageSize);
+                    command.Parameters.AddWithValue("@StudentID", studentID);
 
                     await connection.OpenAsync();
                     using (SqlDataReader reader = await command.ExecuteReaderAsync())
@@ -163,6 +167,45 @@ namespace DataAccess.Repositories
             }
 
             return lists;
+        }
+
+        public async Task<bool> SyncCoursesAsync(WishList list)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
+                using (SqlCommand command = new SqlCommand("SP_WishListItems_SyncCourses", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@ListId", list.WishListID);
+
+                    var coursesParam = command.Parameters.AddWithValue("@CoursesIDs", list.CourseIDs?.ToDataTable());
+                    coursesParam.SqlDbType = SqlDbType.Structured;
+                    coursesParam.TypeName = "CourseIdListType";
+
+                    var resultParam = new SqlParameter("@Result", SqlDbType.Bit)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    command.Parameters.Add(resultParam);
+
+                    await connection.OpenAsync();
+                    await command.ExecuteNonQueryAsync();
+
+                    if (resultParam.Value != DBNull.Value && bool.TryParse(resultParam.Value.ToString(), out bool res))
+                    {
+                        return res;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logService.LogAsync(ex);
+                throw;
+            }
+
+            return false;
         }
     }
 }

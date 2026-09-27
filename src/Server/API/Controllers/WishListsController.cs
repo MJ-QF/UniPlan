@@ -1,4 +1,5 @@
 ﻿using Business.DTOs.Requests;
+using Business.DTOs.Requests.Update;
 using Business.DTOs.Responses;
 using Business.Interfaces;
 using Core.Enums;
@@ -203,6 +204,41 @@ namespace API.Controllers
 
                 await _logService.LogAsync($"لم يتم العثور على جدول مُولّد لقائمة الرغبات بالمعرف {listID} و رقم الجدول {scheduleNum}", ExternalServicesEnums.LogType.Warning);
                 return NotFound($"لم يتم العثور على جدول مُولّد لقائمة الرغبات بالمعرف {listID} و رقم الجدول {scheduleNum}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
+
+        [HttpPut("{listID}/syncCourses", Name = "SyncCoursesAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<ActionResult<bool>> SyncCoursesAsync(int listID, [FromBody] SyncCoursesRequest request)
+        {
+            if (listID <= 0)
+            {
+                return BadRequest("يجب أن يكون معرف قائمة الرغبات أكبر من 0");
+            }
+
+            try
+            {
+                bool result = await _listService.SyncCoursesAsync(listID, request);
+
+                if (result)
+                {
+                    await _logService.LogAsync($"تم مزامنة كورسات قائمة الرغبات بالمعرف {listID} بنجاح", ExternalServicesEnums.LogType.Info);
+                    return Ok(true);
+                }
+
+                await _logService.LogAsync($"فشلت مزامنة الكورسات لقائمة الرغبات بالمعرف {listID}", ExternalServicesEnums.LogType.Warning);
+                return StatusCode(StatusCodes.Status500InternalServerError, "فشلت عملية المزامنة");
+            }
+            catch (SqlException sqlException) when (sqlException.Number > 50000)
+            {
+                return Conflict(_exceptionService.GetExceptionMessage(sqlException));
             }
             catch (Exception ex)
             {
