@@ -89,6 +89,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// تفعيل سياسة الـ CORS هنا قبل الـ Authorization
+app.UseCors("AllowFrontend");
+
 app.UseAuthorization();
 
 app.MapControllers();
