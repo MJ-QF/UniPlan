@@ -150,9 +150,6 @@ END;
 GO
 
 
-USE [UniPlan];
-GO
-
 CREATE OR ALTER VIEW VW_StudentCourses
 AS
 SELECT
@@ -196,7 +193,6 @@ END;
 GO
 
 
-
 CREATE OR ALTER PROCEDURE SP_SyncPassedCourses
     @PassedCoursesIDs CourseIdListType READONLY,
     @StudentId INT,
@@ -205,13 +201,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- التحقق من وجود الطالب
+
     IF NOT EXISTS (SELECT 1 FROM Students WHERE StudentID = @StudentId)
     BEGIN
         ;THROW 50303, 'Student Does Not Exist', 1;
     END
 
-    -- التحقق من صحة المقررات المُمررة
+
     IF EXISTS (
         SELECT 1
         FROM @PassedCoursesIDs p
@@ -225,7 +221,7 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- حذف جميع مقررات الطالب السابقة (تمهيداً لإعادة تعيين الناجح منها)
+
         DELETE FROM StudentCourses
         WHERE StudentID = @StudentId;
 
@@ -233,9 +229,9 @@ BEGIN
 		set CompletedHours = 0
 		where StudentID = @StudentId;
 
-        -- تعريف متغيرات الحلقة
+
         DECLARE @CurrentCourseID INT;
-        DECLARE @EnrollmentID INT; -- متغير خرج (لن نستخدمه)
+        DECLARE @EnrollmentID INT; 
 
         DECLARE course_cursor CURSOR LOCAL FAST_FORWARD FOR
             SELECT DISTINCT CourseID FROM @PassedCoursesIDs;
@@ -245,12 +241,12 @@ BEGIN
 
         WHILE @@FETCH_STATUS = 0
         BEGIN
-            -- استدعاء إجراء الإدراج لكل مقرر مع IsPassed = 1
+
             EXEC SP_StudentCourses_Insert
                 @StudentID = @StudentId,
                 @CourseID = @CurrentCourseID,
                 @IsPassed = 1,
-                @EnrollmentID = @EnrollmentID OUTPUT;  -- يمكن تجاهل القيمة المُرجعة
+                @EnrollmentID = @EnrollmentID OUTPUT;  
 
             FETCH NEXT FROM course_cursor INTO @CurrentCourseID;
         END
@@ -258,18 +254,16 @@ BEGIN
         CLOSE course_cursor;
         DEALLOCATE course_cursor;
 
-        -- نجاح العملية بالكامل
+
         SET @Result = 1;
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
-        -- فشل في إدراج أحد المقررات
         IF @@TRANCOUNT > 0
             ROLLBACK TRANSACTION;
 
         SET @Result = 0;
 
-        -- إعادة رمي الخطأ ليظهر للمُستدعي
         THROW;
     END CATCH
 END
@@ -290,24 +284,24 @@ Begin
 
 	select @StudentMajorID = s.MajorID from Students s where StudentID = @StudentID;
 
-     Declare @CompletedHours int;
+    Declare @CompletedHours int;
 
-	 select @CompletedHours = CompletedHours from Students where StudentID = @StudentID;
+	select @CompletedHours = CompletedHours from Students where StudentID = @StudentID;
 
-	   -- CTE للحصول على جميع التخصصات الأم بالإضافة إلى تخصص الطالب
-        WITH MajorHierarchy AS (
-            -- نقطة البداية: تخصص الطالب نفسه
-            SELECT MajorID, ParentMajorID
-            FROM Majors
-            WHERE MajorID = @StudentMajorID
 
-            UNION ALL
+    WITH MajorHierarchy AS (
+          
+        SELECT MajorID, ParentMajorID
+        FROM Majors
+        WHERE MajorID = @StudentMajorID
 
-            -- الصعود إلى الأب
-            SELECT m.MajorID, m.ParentMajorID
-            FROM Majors m
-            INNER JOIN MajorHierarchy mh ON m.MajorID = mh.ParentMajorID
-        )
+        UNION ALL
+
+
+        SELECT m.MajorID, m.ParentMajorID
+        FROM Majors m
+        INNER JOIN MajorHierarchy mh ON m.MajorID = mh.ParentMajorID
+    )
 
 
 	-- ***** Make sure if he ended 4 subjects of متطلبات الكلية then don't return the others and 2 subjects of متطلبات الجامعة too (Fares)
@@ -329,10 +323,67 @@ Begin
 	   where PrerequisiteCourseID not in(select CourseID from StudentCourses where StudentID = @StudentID)
 	)
 
-	End TRy
+	End TRY
 	Begin Catch
 	  throw;
 	End Catch
 End
 go
 
+
+CREATE OR ALTER PROCEDURE SP_StudentCourses_GetPlanStatus
+    @StudentID INT
+AS
+BEGIN
+    DECLARE @StudentMajorID INT = (SELECT s.MajorID FROM Students s WHERE StudentID = @StudentID);
+    DECLARE @CompletedHours INT = (SELECT CompletedHours from Students where StudentID = @StudentID);
+
+    WITH MajorHierarchy AS (
+         
+        SELECT MajorID, ParentMajorID
+        FROM Majors
+        WHERE MajorID = @StudentMajorID
+
+        UNION ALL
+
+        SELECT m.MajorID, m.ParentMajorID
+        FROM Majors m
+        INNER JOIN MajorHierarchy mh ON m.MajorID = mh.ParentMajorID
+    ),
+    CorsesStatus AS (
+        SELECT *,
+        CASE
+            WHEN C.CourseID IN 
+            (
+                SELECT CourseID FROM StudentCourses 
+                WHERE StudentID = @StudentID
+                AND IsPassed = 1
+            ) THEN N'تم اجتيازها'
+            WHEN C.NeededHours > @CompletedHours 
+                OR 
+                EXISTS (
+                    SELECT 1 FROM CoursePrerequisites CP 
+                    WHERE CP.CourseID = C.CourseID
+                    AND NOT EXISTS (
+                        SELECT 1 FROM StudentCourses SC
+                        WHERE SC.CourseID = CP.PrerequisiteCourseID 
+                        AND SC.StudentID = @StudentID 
+                        AND SC.IsPassed = 1
+                    )
+                ) 
+            THEN N'غير متاحة'
+            ELSE N'متاحة'
+        END AS Status
+        FROM Courses C
+        WHERE c.CourseID IN (
+                       SELECT mc.CourseID
+                       FROM MajorCourses mc
+                       WHERE mc.MajorID IN (SELECT MajorID FROM MajorHierarchy)
+               )
+    )
+
+    SELECT CS.* , CP.PrerequisiteCourseID FROM CorsesStatus CS
+    LEFT JOIN CoursePrerequisites CP ON CS.CourseID = CP.CourseID
+    ORDER BY CS.Status DESC, CS.CourseID;
+END
+GO

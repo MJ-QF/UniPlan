@@ -78,5 +78,11 @@ namespace Business.Services
             return courses?.Select(c => c.ToResponse()).OfType<CourseResponse>();
         }
 
+        public async Task<IEnumerable<StudentCoursePlanStatusResponse>?> GetStudentPlanStatusAsync(int studentID)
+        {
+            IEnumerable<StudentCoursePlanStatus>? rawData = await _studentCourseRepository.GetStudentPlanStatusAsync(studentID);
+
+            return rawData?.ToResponseList();
+        }
     }
 }

@@ -342,5 +342,40 @@ namespace API.Controllers
             }
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<StudentCoursePlanStatusResponse>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        [HttpGet("{studentID}/plan-status", Name = "GetStudentPlanStatusAsync")]
+        public async Task<ActionResult<IEnumerable<StudentCoursePlanStatusResponse>>> GetStudentPlanStatusAsync(int studentID)
+        {
+            if (studentID <= 0)
+            {
+                return BadRequest("معرف الطالب غير صالح.");
+            }
+
+            try
+            {
+                var res = await _studentCourseService.GetStudentPlanStatusAsync(studentID);
+
+                if (res != null)
+                {
+                    await _logService.LogAsync($"Plan status for student {studentID} was fetched successfully.", ExternalServicesEnums.LogType.Info);
+                    return Ok(res);
+                }
+
+                await _logService.LogAsync($"Failed to fetch plan status for student: {studentID}.", ExternalServicesEnums.LogType.Warning);
+                return BadRequest("فشلت عملية جلب حالة الخطة الدراسية للطالب.");
+            }
+            catch (SqlException sqlException) when (sqlException.Number > 50000)
+            {
+                return Conflict(_exceptionService.GetExceptionMessage(sqlException));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
+
     }
 }
