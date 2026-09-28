@@ -6,6 +6,6 @@
 
         public string? Status { get; set; }
 
-        public List<int> CoursePrerequisitesIDs { get; set; }
+        public List<string?>? CoursePrerequisitesCodes { get; set; }
     }
 }

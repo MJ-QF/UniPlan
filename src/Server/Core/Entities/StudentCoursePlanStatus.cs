@@ -6,6 +6,6 @@
 
         public string? Status { get; set; }
 
-        public int PrerequisiteCourseID { get; set; }
+        public string? PrerequisiteCourseCode { get; set; }
     }
 }

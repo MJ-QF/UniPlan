@@ -19,9 +19,9 @@ namespace Business.Mapper
                     {
                         Course = firstItem.Course.ToResponse(),
                         Status = firstItem.Status,
-                        CoursePrerequisitesIDs = group
-                            .Where( x => x.Course.CourseID == firstItem.Course.CourseID && x.PrerequisiteCourseID != -1)
-                            .Select(x => x.PrerequisiteCourseID)
+                        CoursePrerequisitesCodes = group
+                            .Where( x => x.Course.CourseID == firstItem.Course.CourseID && !string.IsNullOrWhiteSpace(x.PrerequisiteCourseCode) )
+                            .Select(x => x.PrerequisiteCourseCode)
                             .ToList()
                     };
                 });

@@ -10,9 +10,9 @@ namespace DataAccess.Mapping
         {
             Course course = reader.ToCourse();
             reader.ReadString("Status", out string status, string.Empty);
-            reader.ReadInt("PrerequisiteCourseID", out int coursePrerequisiteId, -1);
+            reader.ReadString("PrerequisiteCourseCode", out string prerequisiteCourseCode, string.Empty);
 
-            return new StudentCoursePlanStatus { Course = course, Status = status , PrerequisiteCourseID = coursePrerequisiteId };
+            return new StudentCoursePlanStatus { Course = course, Status = status , PrerequisiteCourseCode = prerequisiteCourseCode };
         }
     }
 }

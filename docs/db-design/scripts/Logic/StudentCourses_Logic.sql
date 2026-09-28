@@ -382,8 +382,9 @@ BEGIN
                )
     )
 
-    SELECT CS.* , CP.PrerequisiteCourseID FROM CorsesStatus CS
+    SELECT CS.* , PrerequisiteCourseCode = C.CourseCode FROM CorsesStatus CS
     LEFT JOIN CoursePrerequisites CP ON CS.CourseID = CP.CourseID
+    LEFT JOIN Courses C ON C.CourseID = CP.PrerequisiteCourseID 
     ORDER BY CS.Status DESC, CS.CourseID;
 END
 GO
