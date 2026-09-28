@@ -1,246 +1,580 @@
+/* ================================
+   Global
+================================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: "Tajawal", sans-serif;
 }
 
 .login-page-wrapper {
-  display: flex;
   min-height: 100vh;
   width: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  display: flex;
   direction: rtl;
-  background-color: #ffffff;
+  background: #ffffff; /* تم توحيد الخلفية ليختفي أي فراغ غريب */
 }
 
-/* القسم الأيمن - الكحلي */
+
+/* ================================
+   Brand Section
+================================ */
+
 .login-brand-section {
   flex: 1;
-  background-color: #124263;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(21, 145, 163, 0.16),
+      transparent 30%
+    ),
+    linear-gradient(
+      145deg,
+      #1a2b32 0%,
+      #253846 55%,
+      #1a2b32 100%
+    );
+
   color: #ffffff;
+
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 60px 40px;
+
+  padding: 60px 50px;
+
+  position: relative;
+  overflow: hidden;
+
+  /* تدوير الطرف اليساري فقط (من الأعلى والأسفل جهة اليسار) واليمين يبقى ملاصقاً للحائط */
+  border-top-left-radius: 24px;
+  border-bottom-left-radius: 24px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-.brand-content {
-  max-width: 480px;
-  margin: 0 auto;
+
+/* Decorative circles */
+
+.login-brand-section::before {
+  content: "";
+  position: absolute;
+
+  width: 320px;
+  height: 320px;
+
+  border: 1px solid rgba(21, 145, 163, 0.2);
+  border-radius: 50%;
+
+  top: -120px;
+  right: -100px;
 }
+
+.login-brand-section::after {
+  content: "";
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+
+  bottom: -220px;
+  left: -160px;
+}
+
+
+/* Content */
+
+.brand-content {
+  width: 100%;
+  max-width: 500px;
+
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ================================
+   Logo
+================================ */
 
 .brand-logo-container {
   display: flex;
   align-items: center;
+
   gap: 10px;
-  margin-bottom: 40px;
+
+  margin-bottom: 55px;
 }
 
 .brand-logo-text {
   font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-weight: 800;
+
+  letter-spacing: 0.5px;
 }
+
+.brand-logo-container svg {
+  color: #1591a3;
+}
+
+
+/* ================================
+   Brand Title
+================================ */
 
 .brand-title {
-  font-size: 42px;
+  font-size: clamp(38px, 4vw, 54px);
+
   font-weight: 800;
+
   line-height: 1.25;
-  margin-bottom: 24px;
+
+  margin-bottom: 25px;
+
+  letter-spacing: -1px;
 }
 
-.brand-description {
-  font-size: 18px;
-  line-height: 1.6;
-  color: #d0e1ed;
-  margin-bottom: 40px;
+.brand-title::first-line {
+  color: #ffffff;
 }
+
+
+/* ================================
+   Description
+================================ */
+
+.brand-description {
+  max-width: 450px;
+
+  font-size: 17px;
+
+  line-height: 1.9;
+
+  color: #cbd9de;
+
+  margin-bottom: 42px;
+}
+
+
+/* ================================
+   Features
+================================ */
 
 .brand-features-list {
   list-style: none;
+
   display: flex;
   flex-direction: column;
-  gap: 20px;
+
+  gap: 18px;
 }
 
 .brand-feature-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 17px;
-  font-weight: 500;
+
+  gap: 13px;
+
+  font-size: 16px;
+
+  color: #e5eef1;
 }
 
+
+/* Feature icon */
+
 .feature-icon-circle {
-  width: 26px;
-  height: 26px;
-  background-color: #f5a623;
-  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+
+  flex-shrink: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+
+  background: rgba(21, 145, 163, 0.15);
+
+  border: 1px solid rgba(21, 145, 163, 0.35);
+
+  border-radius: 50%;
 }
 
 .feature-icon-circle svg {
   width: 14px;
   height: 14px;
+
   fill: none;
-  stroke: #ffffff;
+
+  stroke: #1591a3;
+
   stroke-width: 3;
 }
 
-/* القسم الأيسر - الأبيض / الفورم */
+
+/* ================================
+   Login Section
+================================ */
+
 .login-form-section {
   flex: 1;
-  background-color: #ffffff;
+
+  min-height: 100vh;
+
+  background: #ffffff;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
+
+  padding: 50px 35px;
 }
+
+
+/* ================================
+   Form Card
+================================ */
 
 .form-card {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
 }
+
+
+/* ================================
+   Header
+================================ */
 
 .form-header {
   text-align: center;
-  margin-bottom: 32px;
+
+  margin-bottom: 35px;
 }
 
 .form-title {
-  font-size: 28px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 8px;
+  font-size: 30px;
+
+  font-weight: 800;
+
+  color: #1a2b32;
+
+  margin-bottom: 10px;
+
+  letter-spacing: -0.5px;
 }
 
 .form-subtitle {
   font-size: 15px;
-  color: #6b7280;
+
+  color: #7a8990;
 }
 
+
+/* ================================
+   Error
+================================ */
+
 .login-alert-error {
-  background-color: #fef2f2;
-  border-right: 4px solid #ef4444;
-  color: #b91c1c;
-  padding: 12px 16px;
-  border-radius: 6px;
+  background: #fff5f5;
+
+  border: 1px solid #ffd7d7;
+
+  border-right: 4px solid #dc4c4c;
+
+  color: #b42323;
+
+  padding: 13px 15px;
+
+  border-radius: 10px;
+
   font-size: 14px;
-  margin-bottom: 20px;
-  font-weight: 500;
+
+  margin-bottom: 22px;
+
+  line-height: 1.6;
 }
+
+
+/* ================================
+   Form
+================================ */
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+
+  gap: 22px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+
+  gap: 9px;
 }
 
 .form-label {
   font-size: 14px;
-  font-weight: 600;
-  color: #374151;
+
+  font-weight: 700;
+
+  color: #1a2b32;
 }
+
+
+/* ================================
+   Inputs
+================================ */
 
 .input-relative-wrapper {
   position: relative;
+
   display: flex;
   align-items: center;
 }
 
 .form-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 15px;
+
+  min-height: 50px;
+
+  padding: 13px 16px;
+
+  border: 1px solid #dce5e8;
+
+  border-radius: 10px;
+
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: #ffffff;
-  color: #111827;
+
+  background: #fbfcfd;
+
+  color: #1a2b32;
+
+  font-size: 15px;
+
   direction: rtl;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: #a5b0b5;
+}
+
+.form-input:hover {
+  border-color: #b9c9ce;
 }
 
 .form-input:focus {
-  border-color: #124263;
-  box-shadow: 0 0 0 3px rgba(18, 66, 99, 0.15);
+  background: #ffffff;
+
+  border-color: #1591a3;
+
+  box-shadow:
+    0 0 0 3px rgba(21, 145, 163, 0.12);
 }
+
+
+/* ================================
+   Password Toggle
+================================ */
 
 .toggle-password-btn {
   position: absolute;
+
   left: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #9ca3af;
+
+  width: 34px;
+  height: 34px;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+
+  background: transparent;
+
+  border: none;
+
+  border-radius: 7px;
+
+  cursor: pointer;
+
+  color: #94a2a8;
+
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .toggle-password-btn:hover {
-  color: #4b5563;
+  color: #1591a3;
+
+  background: rgba(21, 145, 163, 0.08);
 }
 
+
+/* ================================
+   Submit Button
+================================ */
+
 .submit-btn {
-  background-color: #124263;
-  color: #ffffff;
+  width: 100%;
+
+  min-height: 51px;
+
+  margin-top: 7px;
+
   border: none;
-  border-radius: 8px;
-  padding: 14px;
+
+  border-radius: 10px;
+
+  background: #1591a3;
+
+  color: #ffffff;
+
   font-size: 16px;
-  font-weight: 600;
+
+  font-weight: 700;
+
   cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
-  margin-top: 10px;
+
+  box-shadow:
+    0 5px 14px rgba(21, 145, 163, 0.18);
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .submit-btn:hover {
-  background-color: #0d2f47;
+  background: #117f90;
+
+  box-shadow:
+    0 7px 18px rgba(21, 145, 163, 0.24);
+
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
 }
 
 .submit-btn:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
+
   cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
 }
+
+
+/* ================================
+   Register Link
+================================ */
 
 .form-footer-link {
   text-align: center;
-  margin-top: 28px;
+
+  margin-top: 30px;
+
   font-size: 14px;
-  color: #4b5563;
+
+  color: #718087;
 }
 
 .register-link {
-  color: #124263;
-  font-weight: 700;
+  color: #1591a3;
+
+  font-weight: 800;
+
   text-decoration: none;
-  margin-right: 4px;
+
+  margin-right: 5px;
+
+  transition: color 0.2s ease;
 }
 
 .register-link:hover {
+  color: #1a2b32;
+
   text-decoration: underline;
 }
 
-/* شاشات الموبايل */
-@media (max-width: 768px) {
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 900px) {
   .login-page-wrapper {
     flex-direction: column;
   }
+
   .login-brand-section {
+    min-height: auto;
+    padding: 45px 30px;
+    border-radius: 0; /* إزالة التدوير في الشاشات الصغيرة لتغطية العرض بالكامل */
+  }
+
+  .brand-content {
+    max-width: 600px;
+  }
+
+  .brand-logo-container {
+    margin-bottom: 35px;
+  }
+
+  .brand-title {
+    font-size: 40px;
+  }
+
+  .brand-description {
+    margin-bottom: 30px;
+  }
+
+  .login-form-section {
+    min-height: auto;
+    padding: 50px 25px;
+  }
+}
+
+
+@media (max-width: 600px) {
+  .login-brand-section {
+    padding: 35px 22px;
+  }
+
+  .brand-title {
+    font-size: 34px;
+  }
+
+  .brand-description {
+    font-size: 15px;
+  }
+
+  .brand-feature-item {
+    font-size: 14px;
+  }
+
+  .login-form-section {
     padding: 40px 20px;
   }
-  .brand-title {
-    font-size: 32px;
+
+  .form-title {
+    font-size: 26px;
   }
 }
