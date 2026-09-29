@@ -8,6 +8,8 @@ import { createStudent } from "../api/studentApi";
 import type { MajorResponse } from "../types/student";
 import { saveStudentId } from "../utils/session";
 
+import logo from "../assets/UniPlan.png";
+
 export default function SignUp() {
   const navigate = useNavigate();
 
@@ -135,7 +137,21 @@ export default function SignUp() {
     <div className="signup-page">
       <div className="signup-container">
 
-        <h1>إنشاء حساب</h1>
+        {/* =========================
+            Header — Logo + Title
+        ========================= */}
+
+        <div className="signup-header">
+
+          <img
+            src={logo}
+            alt="UniPlan"
+            className="signup-logo"
+          />
+
+          <h1>إنشاء حساب</h1>
+
+        </div>
 
         <form onSubmit={handleRegister}>
 

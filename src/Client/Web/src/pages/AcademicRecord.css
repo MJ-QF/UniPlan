@@ -1,299 +1,335 @@
-* {
-  box-sizing: border-box;
-}
+/* =========================
+   Academic Record — Modern
+========================= */
 
 .academic-page {
   min-height: 100vh;
+  padding: 48px 20px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 40px 20px;
-
   direction: rtl;
 
   background:
-    radial-gradient(
-      circle at 15% 20%,
-      rgba(21, 145, 163, 0.12),
-      transparent 30%
-    ),
-    linear-gradient(
-      145deg,
-      #1a2b32,
-      #253846
-    );
+    radial-gradient(900px 500px at 15% -5%,
+      rgba(21, 145, 163, 0.14), transparent 55%),
+    radial-gradient(700px 500px at 105% 105%,
+      rgba(21, 145, 163, 0.10), transparent 55%),
+    linear-gradient(180deg, #0e2027 0%, #14262d 100%);
 }
 
 .academic-card {
   width: 100%;
-  max-width: 750px;
+  max-width: 780px;
+  padding: 44px;
 
-  padding: 40px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
-  background: #ffffff;
-
-  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl);
 
   box-shadow:
-    0 25px 60px rgba(0, 0, 0, 0.18);
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 32px 80px rgba(0, 0, 0, 0.35);
 }
 
-
-/* Header */
+/* =========================
+   Header
+========================= */
 
 .academic-header {
   text-align: center;
-
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .academic-logo {
-  color: #1591a3;
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 6px 16px;
 
-  font-size: 22px;
+  border-radius: var(--radius-full);
+  background: var(--brand-50);
+  color: var(--brand-600);
 
+  font-size: 13px;
   font-weight: 800;
-
-  margin-bottom: 15px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 
 .academic-header h1 {
-  color: #1a2b32;
+  margin: 0 0 12px;
 
+  color: var(--ink-800);
   font-size: 30px;
-
-  margin-bottom: 10px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .academic-header p {
-  color: #718087;
+  margin: 0 auto;
+  max-width: 540px;
 
+  color: var(--ink-400);
   font-size: 15px;
-
   line-height: 1.7;
 }
 
-
-/* Alerts */
+/* =========================
+   Alerts
+========================= */
 
 .academic-alert-error,
 .academic-alert-success {
-  padding: 13px 16px;
-
-  border-radius: 10px;
-
+  padding: 14px 18px;
   margin-bottom: 20px;
 
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  line-height: 1.55;
+
+  border: 1px solid transparent;
 }
 
 .academic-alert-error {
-  background: #fff5f5;
-
-  color: #b42323;
-
-  border-right: 4px solid #dc4c4c;
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+  border-color: #fecdd3;
+  border-inline-start: 4px solid var(--danger-500);
 }
 
 .academic-alert-success {
-  background: #f2fbf7;
-
-  color: #16705e;
-
-  border-right: 4px solid #1591a3;
+  background: var(--success-bg);
+  color: var(--success-fg);
+  border-color: #a7f3d0;
+  border-inline-start: 4px solid var(--success-500);
 }
 
-
-/* Loading */
+/* =========================
+   Loading / Empty
+========================= */
 
 .academic-loading,
 .academic-empty {
+  padding: 60px 20px;
   text-align: center;
-
-  padding: 40px 20px;
-
-  color: #718087;
+  color: var(--ink-400);
+  font-size: 14.5px;
 }
 
-
-/* Courses */
+/* =========================
+   Courses list
+========================= */
 
 .courses-list {
   display: flex;
-
   flex-direction: column;
+  gap: 10px;
 
-  gap: 12px;
-
-  max-height: 430px;
-
+  max-height: 440px;
   overflow-y: auto;
+  padding: 4px 6px 4px 4px;
 
-  padding: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-200) transparent;
 }
 
+.courses-list::-webkit-scrollbar {
+  width: 8px;
+}
+.courses-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.courses-list::-webkit-scrollbar-thumb {
+  background: var(--ink-200);
+  border-radius: var(--radius-full);
+}
+.courses-list::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-300);
+}
 
-/* Course */
+/* =========================
+   Course card
+========================= */
 
 .course-card {
+  position: relative;
   width: 100%;
+  padding: 18px 20px;
 
   display: flex;
-
   align-items: center;
+  gap: 16px;
 
-  gap: 15px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
 
-  padding: 17px;
-
-  border: 1px solid #dce5e8;
-
-  border-radius: 12px;
-
-  background: #fbfcfd;
-
+  background: var(--surface);
+  text-align: right;
   cursor: pointer;
 
-  text-align: right;
-
   transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.15s ease;
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .course-card:hover {
-  border-color: #1591a3;
-
-  background: #ffffff;
-
+  border-color: var(--brand-300);
+  background: var(--surface-muted);
   transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .course-card.selected {
-  border-color: #1591a3;
-
-  background: rgba(21, 145, 163, 0.07);
+  border-color: var(--brand-500);
+  background: linear-gradient(135deg,
+    rgba(21, 145, 163, 0.06),
+    rgba(21, 145, 163, 0.02));
+  box-shadow: 0 0 0 3px rgba(21, 145, 163, 0.10);
 }
 
-
-/* Check */
-
+/* Checkbox */
 .course-check {
-  width: 25px;
-  height: 25px;
-
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border: 2px solid #cbd6da;
+  border: 2px solid var(--ink-200);
+  border-radius: var(--radius-sm);
 
-  border-radius: 7px;
-
-  color: #ffffff;
-
+  background: var(--surface);
+  color: #fff;
+  font-size: 14px;
   font-weight: 800;
+
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .course-card.selected .course-check {
-  background: #1591a3;
-
-  border-color: #1591a3;
+  background: var(--brand-500);
+  border-color: var(--brand-500);
+  transform: scale(1.05);
 }
 
-
-/* Course Info */
-
+/* Course info */
 .course-info {
   flex: 1;
+  min-width: 0;
 }
 
 .course-info h3 {
-  color: #1a2b32;
+  margin: 0 0 6px;
 
-  font-size: 16px;
-
-  margin-bottom: 6px;
+  color: var(--ink-800);
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .course-details {
   display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
 
-  gap: 18px;
-
-  color: #7a8990;
-
-  font-size: 13px;
+  color: var(--ink-400);
+  font-size: 12.5px;
 }
 
+.course-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
 
-/* Continue */
+/* =========================
+   Continue
+========================= */
 
 .continue-btn {
   width: 100%;
-
-  min-height: 51px;
-
-  margin-top: 25px;
+  min-height: 52px;
+  margin-top: 26px;
 
   border: none;
+  border-radius: var(--radius-md);
 
-  border-radius: 10px;
+  background: linear-gradient(135deg,
+    var(--brand-500) 0%,
+    var(--brand-600) 100%);
 
-  background: #1591a3;
-
-  color: #ffffff;
-
-  font-size: 16px;
-
+  color: #fff;
+  font-family: inherit;
+  font-size: 15.5px;
   font-weight: 700;
-
+  letter-spacing: 0.2px;
   cursor: pointer;
 
+  box-shadow: var(--shadow-glow);
+
   transition:
-    background-color 0.2s ease,
-    transform 0.15s ease;
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    filter var(--duration-base) var(--ease-out);
 }
 
-.continue-btn:hover {
-  background: #117f90;
+.continue-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(21, 145, 163, 0.35);
+  filter: brightness(1.05);
+}
 
-  transform: translateY(-1px);
+.continue-btn:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.96);
 }
 
 .continue-btn:disabled {
-  opacity: 0.6;
-
+  opacity: 0.55;
   cursor: not-allowed;
-
+  box-shadow: none;
   transform: none;
 }
 
+/* =========================
+   Responsive
+========================= */
 
-/* Responsive */
-
-@media (max-width: 600px) {
-
+@media (max-width: 640px) {
   .academic-page {
     padding: 20px 12px;
   }
 
   .academic-card {
-    padding: 25px 18px;
-
-    border-radius: 14px;
+    padding: 26px 18px;
+    border-radius: var(--radius-lg);
   }
 
   .academic-header h1 {
-    font-size: 25px;
+    font-size: 24px;
+  }
+
+  .academic-header p {
+    font-size: 14px;
   }
 
   .course-card {
-    padding: 14px;
+    padding: 15px 16px;
+  }
+
+  .course-info h3 {
+    font-size: 14.5px;
   }
 }

@@ -1,167 +1,135 @@
 /* ================================
-   Global
+   Login Page — Modern
 ================================ */
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: "Tajawal", sans-serif;
-}
 
 .login-page-wrapper {
   min-height: 100vh;
-  width: 100%;
   display: flex;
   direction: rtl;
-  background: #ffffff; /* تم توحيد الخلفية ليختفي أي فراغ غريب */
+  background: var(--surface);
 }
 
-
 /* ================================
-   Brand Section
+   Brand panel
 ================================ */
 
 .login-brand-section {
-  flex: 1;
+  flex: 1.05;
   min-height: 100vh;
-
-  background:
-    radial-gradient(
-      circle at 15% 20%,
-      rgba(21, 145, 163, 0.16),
-      transparent 30%
-    ),
-    linear-gradient(
-      145deg,
-      #1a2b32 0%,
-      #253846 55%,
-      #1a2b32 100%
-    );
-
-  color: #ffffff;
+  padding: 64px 56px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 60px 50px;
-
   position: relative;
   overflow: hidden;
+  color: #fff;
 
-  /* تدوير الطرف اليساري فقط (من الأعلى والأسفل جهة اليسار) واليمين يبقى ملاصقاً للحائط */
-  border-top-left-radius: 24px;
-  border-bottom-left-radius: 24px;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  background:
+    radial-gradient(circle at 80% 10%,
+      rgba(21, 145, 163, 0.28), transparent 45%),
+    radial-gradient(circle at 15% 90%,
+      rgba(21, 145, 163, 0.16), transparent 40%),
+    linear-gradient(145deg, #0b1a20 0%, #14262d 55%, #0b1a20 100%);
+
+  border-top-left-radius: var(--radius-xl);
+  border-bottom-left-radius: var(--radius-xl);
 }
 
-
-/* Decorative circles */
-
+/* Grid overlay */
 .login-brand-section::before {
   content: "";
   position: absolute;
-
-  width: 320px;
-  height: 320px;
-
-  border: 1px solid rgba(21, 145, 163, 0.2);
-  border-radius: 50%;
-
-  top: -120px;
-  right: -100px;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(circle at 50% 50%,
+    black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%,
+    black 30%, transparent 75%);
+  pointer-events: none;
 }
 
+/* Decorative ring */
 .login-brand-section::after {
   content: "";
   position: absolute;
-
-  width: 420px;
-  height: 420px;
-
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 50%;
-
-  bottom: -220px;
+  width: 480px;
+  height: 480px;
+  bottom: -240px;
   left: -160px;
+  border-radius: 50%;
+  border: 1px solid rgba(21, 145, 163, 0.25);
+  pointer-events: none;
 }
-
-
-/* Content */
 
 .brand-content {
-  width: 100%;
-  max-width: 500px;
-
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 520px;
 }
-
 
 /* ================================
    Logo
 ================================ */
 
 .brand-logo-container {
-  display: flex;
+  display: inline-flex;
   align-items: center;
 
-  gap: 10px;
+  padding: 14px 22px;
+  margin-bottom: 44px;
 
-  margin-bottom: 55px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.10),
+    0 16px 40px rgba(0, 0, 0, 0.20);
 }
 
-.brand-logo-text {
-  font-size: 28px;
-  font-weight: 800;
-
-  letter-spacing: 0.5px;
+.brand-logo-img {
+  height: 72px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
-
-.brand-logo-container svg {
-  color: #1591a3;
-}
-
 
 /* ================================
-   Brand Title
+   Title
 ================================ */
 
 .brand-title {
-  font-size: clamp(38px, 4vw, 54px);
-
+  margin: 0 0 24px;
+  font-size: clamp(36px, 4vw, 54px);
   font-weight: 800;
+  line-height: 1.18;
+  letter-spacing: -1.2px;
 
-  line-height: 1.25;
-
-  margin-bottom: 25px;
-
-  letter-spacing: -1px;
+  background: linear-gradient(180deg, #ffffff 0%, #b8cdd4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
-
-.brand-title::first-line {
-  color: #ffffff;
-}
-
 
 /* ================================
    Description
 ================================ */
 
 .brand-description {
-  max-width: 450px;
+  max-width: 460px;
+  margin: 0 0 44px;
 
-  font-size: 17px;
-
-  line-height: 1.9;
-
-  color: #cbd9de;
-
-  margin-bottom: 42px;
+  font-size: 16.5px;
+  line-height: 1.85;
+  color: rgba(203, 217, 222, 0.85);
 }
-
 
 /* ================================
    Features
@@ -169,84 +137,72 @@
 
 .brand-features-list {
   list-style: none;
+  padding: 0;
+  margin: 0;
 
   display: flex;
   flex-direction: column;
-
-  gap: 18px;
+  gap: 14px;
 }
 
 .brand-feature-item {
   display: flex;
   align-items: center;
+  gap: 14px;
 
-  gap: 13px;
-
-  font-size: 16px;
-
-  color: #e5eef1;
+  font-size: 15.5px;
+  color: rgba(229, 238, 241, 0.92);
 }
 
-
-/* Feature icon */
-
 .feature-icon-circle {
-  width: 30px;
-  height: 30px;
-
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(21, 145, 163, 0.15);
-
+  border-radius: var(--radius-full);
+  background: rgba(21, 145, 163, 0.14);
   border: 1px solid rgba(21, 145, 163, 0.35);
 
-  border-radius: 50%;
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.brand-feature-item:hover .feature-icon-circle {
+  transform: scale(1.08);
+  background: rgba(21, 145, 163, 0.24);
 }
 
 .feature-icon-circle svg {
   width: 14px;
   height: 14px;
-
   fill: none;
-
-  stroke: #1591a3;
-
+  stroke: var(--brand-300);
   stroke-width: 3;
 }
 
-
 /* ================================
-   Login Section
+   Form panel
 ================================ */
 
 .login-form-section {
   flex: 1;
-
   min-height: 100vh;
-
-  background: #ffffff;
+  padding: 56px 40px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 50px 35px;
+  background: var(--surface);
 }
-
-
-/* ================================
-   Form Card
-================================ */
 
 .form-card {
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
 }
-
 
 /* ================================
    Header
@@ -254,53 +210,42 @@
 
 .form-header {
   text-align: center;
-
-  margin-bottom: 35px;
+  margin-bottom: 36px;
 }
 
 .form-title {
+  margin: 0 0 10px;
+
+  color: var(--ink-800);
   font-size: 30px;
-
   font-weight: 800;
-
-  color: #1a2b32;
-
-  margin-bottom: 10px;
-
   letter-spacing: -0.5px;
 }
 
 .form-subtitle {
-  font-size: 15px;
-
-  color: #7a8990;
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--ink-400);
 }
-
 
 /* ================================
    Error
 ================================ */
 
 .login-alert-error {
-  background: #fff5f5;
-
-  border: 1px solid #ffd7d7;
-
-  border-right: 4px solid #dc4c4c;
-
-  color: #b42323;
-
-  padding: 13px 15px;
-
-  border-radius: 10px;
-
-  font-size: 14px;
-
+  padding: 13px 16px;
   margin-bottom: 22px;
 
-  line-height: 1.6;
-}
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid var(--danger-500);
+  border-radius: var(--radius-md);
 
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+
+  font-size: 13.5px;
+  line-height: 1.55;
+}
 
 /* ================================
    Form
@@ -309,25 +254,20 @@
 .login-form {
   display: flex;
   flex-direction: column;
-
-  gap: 22px;
+  gap: 20px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-
   gap: 9px;
 }
 
 .form-label {
-  font-size: 14px;
-
+  font-size: 13.5px;
   font-weight: 700;
-
-  color: #1a2b32;
+  color: var(--ink-600);
 }
-
 
 /* ================================
    Inputs
@@ -335,231 +275,212 @@
 
 .input-relative-wrapper {
   position: relative;
-
   display: flex;
   align-items: center;
 }
 
 .form-input {
   width: 100%;
+  min-height: 52px;
 
-  min-height: 50px;
+  /* ✅ padding-left: 52px لمنع التداخل مع أيقونة العين */
+  padding: 14px 16px 14px 52px;
 
-  padding: 13px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
 
-  border: 1px solid #dce5e8;
-
-  border-radius: 10px;
-
-  outline: none;
-
-  background: #fbfcfd;
-
-  color: #1a2b32;
-
-  font-size: 15px;
-
+  background: var(--surface);
+  color: var(--ink-800);
+  font-size: 14.5px;
   direction: rtl;
 
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .form-input::placeholder {
-  color: #a5b0b5;
+  color: var(--ink-300);
 }
 
 .form-input:hover {
-  border-color: #b9c9ce;
+  border-color: var(--border-strong);
 }
 
 .form-input:focus {
-  background: #ffffff;
-
-  border-color: #1591a3;
-
-  box-shadow:
-    0 0 0 3px rgba(21, 145, 163, 0.12);
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: var(--ring);
 }
 
-
 /* ================================
-   Password Toggle
+   Password toggle
 ================================ */
 
 .toggle-password-btn {
   position: absolute;
 
+  /* ✅ العين على اليسار — لا تتداخل مع النص */
   left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: transparent;
-
   border: none;
-
-  border-radius: 7px;
-
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-300);
   cursor: pointer;
 
-  color: #94a2a8;
-
   transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 }
 
 .toggle-password-btn:hover {
-  color: #1591a3;
-
-  background: rgba(21, 145, 163, 0.08);
+  color: var(--brand-600);
+  background: var(--brand-50);
 }
 
-
 /* ================================
-   Submit Button
+   Submit
 ================================ */
 
 .submit-btn {
   width: 100%;
-
-  min-height: 51px;
-
-  margin-top: 7px;
+  min-height: 52px;
+  margin-top: 8px;
 
   border: none;
+  border-radius: var(--radius-md);
 
-  border-radius: 10px;
+  background: linear-gradient(135deg,
+    var(--brand-500) 0%,
+    var(--brand-600) 100%);
 
-  background: #1591a3;
-
-  color: #ffffff;
-
-  font-size: 16px;
-
+  color: #fff;
+  font-family: inherit;
+  font-size: 15.5px;
   font-weight: 700;
-
+  letter-spacing: 0.2px;
   cursor: pointer;
 
-  box-shadow:
-    0 5px 14px rgba(21, 145, 163, 0.18);
+  box-shadow: var(--shadow-glow);
 
   transition:
-    background-color 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease,
-    opacity 0.2s ease;
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    filter var(--duration-base) var(--ease-out);
 }
 
-.submit-btn:hover {
-  background: #117f90;
-
-  box-shadow:
-    0 7px 18px rgba(21, 145, 163, 0.24);
-
-  transform: translateY(-1px);
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(21, 145, 163, 0.35);
+  filter: brightness(1.05);
 }
 
-.submit-btn:active {
+.submit-btn:active:not(:disabled) {
   transform: translateY(0);
+  filter: brightness(0.96);
 }
 
 .submit-btn:disabled {
-  opacity: 0.6;
-
+  opacity: 0.55;
   cursor: not-allowed;
-
-  transform: none;
-
   box-shadow: none;
+  transform: none;
 }
 
-
 /* ================================
-   Register Link
+   Footer link
 ================================ */
 
 .form-footer-link {
+  margin-top: 28px;
   text-align: center;
-
-  margin-top: 30px;
-
   font-size: 14px;
-
-  color: #718087;
+  color: var(--ink-400);
 }
 
 .register-link {
-  color: #1591a3;
-
+  margin-inline-start: 6px;
+  color: var(--brand-600);
   font-weight: 800;
-
   text-decoration: none;
 
-  margin-right: 5px;
-
-  transition: color 0.2s ease;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .register-link:hover {
-  color: #1a2b32;
-
+  color: var(--ink-800);
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
-
 
 /* ================================
    Responsive
 ================================ */
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .login-page-wrapper {
     flex-direction: column;
   }
 
   .login-brand-section {
     min-height: auto;
-    padding: 45px 30px;
-    border-radius: 0; /* إزالة التدوير في الشاشات الصغيرة لتغطية العرض بالكامل */
+    padding: 48px 30px;
+    border-radius: 0;
   }
 
   .brand-content {
-    max-width: 600px;
+    max-width: 620px;
   }
 
   .brand-logo-container {
-    margin-bottom: 35px;
+    margin-bottom: 32px;
+    padding: 12px 18px;
+  }
+
+  .brand-logo-img {
+    height: 60px;
   }
 
   .brand-title {
-    font-size: 40px;
+    font-size: 38px;
   }
 
   .brand-description {
-    margin-bottom: 30px;
+    margin-bottom: 28px;
   }
 
   .login-form-section {
     min-height: auto;
-    padding: 50px 25px;
+    padding: 52px 24px;
   }
 }
 
-
 @media (max-width: 600px) {
   .login-brand-section {
-    padding: 35px 22px;
+    padding: 36px 22px;
+  }
+
+  .brand-logo-container {
+    padding: 10px 16px;
+    margin-bottom: 26px;
+  }
+
+  .brand-logo-img {
+    height: 52px;
   }
 
   .brand-title {
-    font-size: 34px;
+    font-size: 32px;
   }
 
   .brand-description {
@@ -571,10 +492,10 @@
   }
 
   .login-form-section {
-    padding: 40px 20px;
+    padding: 42px 20px;
   }
 
   .form-title {
-    font-size: 26px;
+    font-size: 25px;
   }
 }

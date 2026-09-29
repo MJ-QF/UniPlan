@@ -8,6 +8,8 @@ import type { LoginRequest } from "../types/auth";
 import { getStudentByAccountId } from "../api/studentApi";
 import { saveStudentId } from "../utils/session";
 
+import logo from "../assets/UniPlan.png";
+
 export default function LoginPage() {
   const navigate = useNavigate();
 
@@ -161,20 +163,11 @@ export default function LoginPage() {
         <div className="brand-content">
 
           <div className="brand-logo-container">
-
-            <span className="brand-logo-text">
-              UniPlan
-            </span>
-
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
-            </svg>
-
+            <img
+              src={logo}
+              alt="UniPlan"
+              className="brand-logo-img"
+            />
           </div>
 
           <h1 className="brand-title">

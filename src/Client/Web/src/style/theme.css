@@ -1,0 +1,87 @@
+/* ================================
+   Design Tokens
+================================ */
+
+:root {
+  /* ================================
+     Brand — مأخوذة من اللوغو الرسمي
+  ================================ */
+
+  /* Dark Teal (Uni) */
+  --brand-dark-50:  #eef2f4;
+  --brand-dark-100: #d4dde1;
+  --brand-dark-500: #1a3a47;
+  --brand-dark-700: #0e2833;
+  --brand-dark-900: #071a23;
+
+  /* Bright Teal (Plan) */
+  --brand-50:  #eef9fb;
+  --brand-100: #d3f0f5;
+  --brand-300: #7cc5d3;
+  --brand-500: #1591a3;   /* ← اللون الأساسي */
+  --brand-600: #117f90;
+  --brand-700: #0d6875;
+  --brand-900: #083d46;
+
+  /* ... باقي المتغيرات زي ما هي ... */
+}
+/* ================================
+   Global reset
+================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+  color: var(--ink-700);
+  background: var(--surface);
+}
+
+/* Focus visible — accessible ring */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-color: var(--brand-500);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Custom scrollbar */
+.scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-200) transparent;
+}
+.scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: var(--ink-200);
+  border-radius: var(--radius-full);
+}
+.scroll-area::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-300);
+}
