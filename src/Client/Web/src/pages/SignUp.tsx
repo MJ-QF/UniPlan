@@ -1,15 +1,18 @@
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
-interface Major {
-  majorID: number;
-  majorName: string;
-}
+import { getMajors } from "../api/majorsApi";
+import { createStudent } from "../api/studentApi";
+
+import type { MajorResponse } from "../types/student";
+import { saveStudentId } from "../utils/session";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+
   // =========================
-  // Form State
+  // Form Data
   // =========================
 
   const [firstName, setFirstName] = useState("");
@@ -20,382 +23,280 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [majorId, setMajorId] = useState("");
 
+  // =========================
+  // Majors
+  // =========================
+
+  const [majors, setMajors] = useState<MajorResponse[]>([]);
+  const [loadingMajors, setLoadingMajors] = useState(true);
+  const [majorsError, setMajorsError] = useState("");
 
   // =========================
-  // Page State
+  // Register State
   // =========================
 
   const [loading, setLoading] = useState(false);
-
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [successMessage, setSuccessMessage] = useState("");
-
-
   // =========================
-  // Temporary Majors
+  // Load Majors
   // =========================
 
-  /*
-    مؤقتًا نستخدم تخصصات تجريبية
-    بدل جلبها من Backend.
+  async function loadMajors() {
+    try {
+      setLoadingMajors(true);
+      setMajorsError("");
 
-    لاحقًا سنستبدلها باستدعاء API الحقيقي.
-  */
+      const data = await getMajors();
 
-  const majors: Major[] = [
-    {
-      majorID: 1,
-      majorName: "هندسة المعلوماتية",
-    },
-    {
-      majorID: 2,
-      majorName: "هندسة البرمجيات",
-    },
-    {
-      majorID: 3,
-      majorName: "علوم الحاسوب",
-    },
-  ];
+      setMajors(data);
+    } catch (error) {
+      console.error("Failed to load majors:", error);
 
+      setMajorsError("تعذر تحميل الاختصاصات حالياً.");
+    } finally {
+      setLoadingMajors(false);
+    }
+  }
+
+  useEffect(() => {
+    loadMajors();
+  }, []);
 
   // =========================
   // Register
   // =========================
 
   const handleRegister = async (
-    e: React.FormEvent<HTMLFormElement>
+    event: React.FormEvent<HTMLFormElement>
   ) => {
-    e.preventDefault();
+    event.preventDefault();
 
-    // تنظيف الرسائل القديمة
     setErrorMessage("");
-    setSuccessMessage("");
 
-
-    // =========================
-    // Validation
-    // =========================
-
-    if (
-      !firstName ||
-      !lastName ||
-      !username ||
-      !email ||
-      !password ||
-      !majorId
-    ) {
-      setErrorMessage(
-        "يرجى تعبئة جميع الحقول المطلوبة."
-      );
-
+    // Password confirmation
+    if (password !== confirmPassword) {
+      setErrorMessage("كلمتا المرور غير متطابقتين.");
       return;
     }
 
-
-    if (password.length < 8) {
-      setErrorMessage(
-        "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
-      );
-
+    // Major selection
+    if (!majorId) {
+      setErrorMessage("يرجى اختيار الاختصاص.");
       return;
     }
-
-
-    // =========================
-    // Loading
-    // =========================
-
-    setLoading(true);
-
-
-    // =========================
-    // Data sent to Backend
-    // =========================
-
-    const payload = {
-      accountData: {
-        accountName: username,
-        password: password,
-        email: email,
-      },
-
-      personData: {
-        firstName: firstName,
-        middleName: middleName,
-        lastName: lastName,
-      },
-
-      majorID: Number(majorId),
-    };
-
 
     try {
-      const response = await fetch(
-        "http://localhost:5260/api/students",
-        {
-          method: "POST",
+      setLoading(true);
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const payload = {
+        accountData: {
+          accountName: username,
+          password: password,
+          email: email,
+        },
 
-          body: JSON.stringify(payload),
-        }
-      );
+        personData: {
+          firstName: firstName,
+          middleName: middleName,
+          lastName: lastName,
+        },
 
+        majorID: Number(majorId),
+      };
 
-      // =========================
-      // Success
-      // =========================
+      const student = await createStudent(payload);
 
-      if (response.status === 201) {
-        setSuccessMessage(
-          "تم إنشاء الحساب بنجاح! يمكنك تسجيل الدخول الآن."
-        );
+      saveStudentId(student.studentID);
 
-        return;
-      }
-
-
-      // =========================
-      // Server Error
-      // =========================
-
-      const serverError = await response.text();
-
-      setErrorMessage(
-        serverError ||
-          "حدث خطأ أثناء إنشاء الحساب."
-      );
-
+      navigate("/academic-record", {
+        replace: true,
+      });
     } catch (error) {
+      console.error("Register failed:", error);
 
       setErrorMessage(
-        "تعذر الاتصال بالخادم. تأكد من تشغيل الباك إند."
+        "تعذر إنشاء الحساب حالياً. حاول مرة أخرى."
       );
-
     } finally {
-
       setLoading(false);
-
     }
   };
-
 
   // =========================
   // UI
   // =========================
 
   return (
-    <div className="register-page-wrapper">
+    <div className="signup-page">
+      <div className="signup-container">
 
-      <div className="register-card">
-
-        {/* Header */}
-
-        <div className="register-header">
-
-          <div className="register-logo-container">
-
-            <span className="register-logo-text">
-              UniPlan
-            </span>
-
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" />
-            </svg>
-
-          </div>
-
-
-          <h2 className="register-title">
-            إنشاء حساب جديد
-          </h2>
-
-
-          <p className="register-subtitle">
-            أدخل بياناتك لإنشاء حسابك الأكاديمي
-          </p>
-
-        </div>
-
-
-        {/* Error */}
-
-        {errorMessage && (
-          <div className="register-alert-error">
-            {errorMessage}
-          </div>
-        )}
-
-
-        {/* Success */}
-
-        {successMessage && (
-          <div className="register-alert-success">
-            {successMessage}
-          </div>
-        )}
-
-
-        {/* Form */}
+        <h1>إنشاء حساب</h1>
 
         <form onSubmit={handleRegister}>
 
-          {/* Names */}
+          {/* First Name */}
+          <div className="form-group">
+            <label htmlFor="firstName">
+              الاسم الأول
+            </label>
 
-          <div className="form-grid-3">
-
-            <div className="form-group">
-
-              <label className="form-label">
-                الاسم الأول
-              </label>
-
-              <input
-                type="text"
-                className="form-input"
-                placeholder="أحمد"
-                value={firstName}
-                onChange={(e) =>
-                  setFirstName(e.target.value)
-                }
-              />
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label className="form-label">
-                الاسم الأوسط
-              </label>
-
-              <input
-                type="text"
-                className="form-input"
-                placeholder="محمد"
-                value={middleName}
-                onChange={(e) =>
-                  setMiddleName(e.target.value)
-                }
-              />
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label className="form-label">
-                اسم العائلة
-              </label>
-
-              <input
-                type="text"
-                className="form-input"
-                placeholder="الزهراني"
-                value={lastName}
-                onChange={(e) =>
-                  setLastName(e.target.value)
-                }
-              />
-
-            </div>
-
+            <input
+              id="firstName"
+              type="text"
+              value={firstName}
+              onChange={(event) =>
+                setFirstName(event.target.value)
+              }
+              required
+            />
           </div>
 
+          {/* Middle Name */}
+          <div className="form-group">
+            <label htmlFor="middleName">
+              الاسم الأوسط
+            </label>
 
-          {/* Username + Email */}
-
-          <div className="form-grid-2">
-
-            <div className="form-group">
-
-              <label className="form-label">
-                اسم المستخدم
-              </label>
-
-              <input
-                type="text"
-                className="form-input"
-                placeholder="ahmed123"
-                value={username}
-                onChange={(e) =>
-                  setUsername(e.target.value)
-                }
-              />
-
-            </div>
-
-
-            <div className="form-group">
-
-              <label className="form-label">
-                البريد الإلكتروني
-              </label>
-
-              <input
-                type="email"
-                className="form-input"
-                placeholder="ahmed@uni.edu.sa"
-                value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
-              />
-
-            </div>
-
+            <input
+              id="middleName"
+              type="text"
+              value={middleName}
+              onChange={(event) =>
+                setMiddleName(event.target.value)
+              }
+              required
+            />
           </div>
 
+          {/* Last Name */}
+          <div className="form-group">
+            <label htmlFor="lastName">
+              الكنية
+            </label>
 
-          {/* Password + Major */}
+            <input
+              id="lastName"
+              type="text"
+              value={lastName}
+              onChange={(event) =>
+                setLastName(event.target.value)
+              }
+              required
+            />
+          </div>
 
-          <div className="form-grid-2">
+          {/* Username */}
+          <div className="form-group">
+            <label htmlFor="username">
+              اسم المستخدم
+            </label>
 
-            <div className="form-group">
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(event) =>
+                setUsername(event.target.value)
+              }
+              required
+            />
+          </div>
 
-              <label className="form-label">
-                كلمة المرور
-              </label>
+          {/* Email */}
+          <div className="form-group">
+            <label htmlFor="email">
+              البريد الإلكتروني
+            </label>
 
-              <input
-                type="password"
-                className="form-input"
-                placeholder="8 أحرف على الأقل"
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-              />
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(event) =>
+                setEmail(event.target.value)
+              }
+              required
+            />
+          </div>
 
-            </div>
+          {/* Password */}
+          <div className="form-group">
+            <label htmlFor="password">
+              كلمة المرور
+            </label>
 
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(event) =>
+                setPassword(event.target.value)
+              }
+              required
+            />
+          </div>
 
-            <div className="form-group">
+          {/* Confirm Password */}
+          <div className="form-group">
+            <label htmlFor="confirmPassword">
+              تأكيد كلمة المرور
+            </label>
 
-              <label className="form-label">
-                التخصص
-              </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(event) =>
+                setConfirmPassword(event.target.value)
+              }
+              required
+            />
+          </div>
 
+          {/* Major */}
+          <div className="form-group">
+
+            <label htmlFor="major">
+              الاختصاص
+            </label>
+
+            {majorsError ? (
+              <div className="major-error">
+
+                <span>
+                  {majorsError}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={loadMajors}
+                  disabled={loadingMajors}
+                >
+                  {loadingMajors
+                    ? "جاري المحاولة..."
+                    : "إعادة المحاولة"}
+                </button>
+
+              </div>
+            ) : (
               <select
-                className="form-select"
+                id="major"
                 value={majorId}
-                onChange={(e) =>
-                  setMajorId(e.target.value)
+                onChange={(event) =>
+                  setMajorId(event.target.value)
                 }
+                disabled={loadingMajors}
+                required
               >
-
-                <option value="" disabled>
-                  اختر التخصص
+                <option value="">
+                  {loadingMajors
+                    ? "جاري تحميل الاختصاصات..."
+                    : "اختر الاختصاص"}
                 </option>
 
                 {majors.map((major) => (
@@ -406,48 +307,34 @@ export default function SignUp() {
                     {major.majorName}
                   </option>
                 ))}
-
               </select>
-
-            </div>
+            )}
 
           </div>
 
+          {/* Register Error */}
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          )}
 
           {/* Submit */}
-
           <button
             type="submit"
-            className="submit-btn"
-            disabled={loading}
+            disabled={
+              loading ||
+              loadingMajors ||
+              !!majorsError
+            }
           >
-
             {loading
-              ? "جاري الإنشاء..."
+              ? "جاري إنشاء الحساب..."
               : "إنشاء الحساب"}
-
           </button>
 
         </form>
-
-
-        {/* Footer */}
-
-        <div className="form-footer-link">
-
-          لديك حساب بالفعل؟
-
-          <Link
-            to="/login"
-            className="login-link"
-          >
-            تسجيل الدخول
-          </Link>
-
-        </div>
-
       </div>
-
     </div>
   );
 }

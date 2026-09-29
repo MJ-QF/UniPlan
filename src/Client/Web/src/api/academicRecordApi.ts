@@ -1,57 +1,41 @@
-export interface Course {
-  courseId: number;
-  courseCode: string;
-  courseName: string;
-  creditHours: number;
+import client from "./client";
+import type { CourseResponse } from "../types/course";
+
+interface PlanStatusItem {
+  course: CourseResponse;
+  status: string | null;
+  coursePrerequisitesIDs: number[];
 }
 
 /*
-  جلب المواد المتاحة للطالب للاختيار.
-  
-  حاليًا الـURL تجريبي.
-  لاحقًا نستبدله بالـEndpoint الحقيقي الموجود في Backend.
+  جلب كل مواد تخصص الطالب (بما فيها متطلبات التخصص الأب)
+  من: GET /api/students/{studentId}/plan-status
+  نأخذ منه المواد فقط، ونتجاهل الـstatus لأن الطالب هلا بيحدد اللي درسه.
 */
-export async function getStudentCourses(): Promise<Course[]> {
-  const response = await fetch(
-    "http://localhost:5260/api/courses"
+export async function getMajorCourses(
+  studentId: number
+): Promise<CourseResponse[]> {
+  const { data } = await client.get<PlanStatusItem[]>(
+    `/students/${studentId}/plan-status`
   );
 
-  if (!response.ok) {
-    throw new Error("فشل في جلب المواد");
+  // حماية من التكرار (الـSP بيعمل LEFT JOIN مع المتطلبات)
+  const unique = new Map<number, CourseResponse>();
+  for (const item of data) {
+    unique.set(item.course.courseID, item.course);
   }
 
-  const data: Course[] = await response.json();
-
-  return data;
+  return [...unique.values()];
 }
 
-
 /*
-  حفظ المواد التي اختارها الطالب.
-  
-  studentId والـcourses سيتم تعديلهم لاحقًا
-  حسب شكل الـAPI الحقيقي.
+  حفظ المواد اللي درسها الطالب.
+  POST /api/students/{studentId}/passed-courses  { courseIds: [...] }
+  ملاحظة: الباك بيمسح كل مواد الطالب القديمة ويعيد إدخالها (Sync).
 */
 export async function saveStudentCourses(
   studentId: number,
   courseIds: number[]
 ): Promise<void> {
-  const response = await fetch(
-    `http://localhost:5260/api/students/${studentId}/courses`,
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        courseIds,
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("فشل في حفظ المواد");
-  }
+  await client.post(`/students/${studentId}/passed-courses`, { courseIds });
 }

@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 
 const client = axios.create({
-  baseURL: 'http://localhost:5260/api',
+  baseURL: "http://localhost:5260/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 

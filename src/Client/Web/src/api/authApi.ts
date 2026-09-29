@@ -1,27 +1,42 @@
-import type {
-  LoginRequest,
-  CreateAccountRequest,
-  UpdateAccountRequest,
-  ChangePasswordRequest,
-  AccountResponse,
-} from "../types/auth";
+import client from "./client";
+import type { LoginRequest } from "../types/auth";
 
-const API_BASE_URL = "http://localhost:5260/api";
+export interface AccountResponse {
+  accountID: number;
+  accountName: string;
+  email: string;
+  role: string;
+}
 
 export async function login(
   data: LoginRequest
 ): Promise<AccountResponse> {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  try {
+    const response = await client.post<AccountResponse>(
+      "/auth/login",
+      data
+    );
 
-  if (!response.ok) {
-    throw new Error(`LOGIN_ERROR_${response.status}`);
+    return response.data;
+  } catch (error: any) {
+    const status = error?.response?.status;
+
+    if (status === 401) {
+      throw new Error("LOGIN_ERROR_401");
+    }
+
+    if (status === 409) {
+      throw new Error("LOGIN_ERROR_409");
+    }
+
+    if (status === 422) {
+      throw new Error("LOGIN_ERROR_422");
+    }
+
+    if (status === 500) {
+      throw new Error("LOGIN_ERROR_500");
+    }
+
+    throw new Error("LOGIN_ERROR_NETWORK");
   }
-
-  return response.json();
 }

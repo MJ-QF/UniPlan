@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
-  getStudentCourses,
+  getMajorCourses,
   saveStudentCourses,
 } from "../api/academicRecordApi";
 
-import type { Course } from "../api/academicRecordApi";
+import type { CourseResponse } from "../types/course";
+import { getStudentId } from "../utils/session";
 
 import "./AcademicRecord.css";
 
 export default function AcademicRecord() {
-  const [courses, setCourses] = useState<Course[]>([]);
+  const navigate = useNavigate();
+  const studentId = getStudentId();
+
+  const [courses, setCourses] = useState<CourseResponse[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -26,11 +31,16 @@ export default function AcademicRecord() {
   */
   useEffect(() => {
     async function loadCourses() {
+      if (studentId === null) {
+        navigate("/login", { replace: true });
+        return;
+      }
+
       try {
         setLoading(true);
         setErrorMessage("");
 
-        const data = await getStudentCourses();
+        const data = await getMajorCourses(studentId);
 
         setCourses(data);
       } catch (error) {
@@ -41,7 +51,7 @@ export default function AcademicRecord() {
     }
 
     loadCourses();
-  }, []);
+  }, [studentId, navigate]);
 
   /*
     اختيار / إلغاء اختيار مادة
@@ -65,15 +75,15 @@ export default function AcademicRecord() {
       return;
     }
 
+    if (studentId === null) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
     try {
       setSaving(true);
       setErrorMessage("");
       setSuccessMessage("");
-
-      /*
-    
-      */
-      const studentId = 1;
 
       await saveStudentCourses(
         studentId,
@@ -82,10 +92,7 @@ export default function AcademicRecord() {
 
       setSuccessMessage("تم حفظ المواد بنجاح.");
 
-      /*
-        لاحقًا هنا ننتقل إلى Home
-        باستخدام React Router.
-      */
+      // لاحقًا: navigate("/home") لما نبني صفحة Home
 
     } catch (error) {
       setErrorMessage("تعذر حفظ المواد.");
@@ -155,17 +162,17 @@ export default function AcademicRecord() {
             {courses.map((course) => {
 
               const isSelected =
-                selectedCourses.includes(course.courseId);
+                selectedCourses.includes(course.courseID);
 
               return (
                 <button
-                  key={course.courseId}
+                  key={course.courseID}
                   type="button"
                   className={`course-card ${
                     isSelected ? "selected" : ""
                   }`}
                   onClick={() =>
-                    handleCourseSelection(course.courseId)
+                    handleCourseSelection(course.courseID)
                   }
                 >
 
