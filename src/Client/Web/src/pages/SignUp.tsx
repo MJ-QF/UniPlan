@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
 import { getMajors } from "../api/majorsApi";
@@ -54,11 +54,9 @@ export default function SignUp() {
       setMajorsError("");
 
       const data = await getMajors();
-
       setMajors(data);
     } catch (error) {
       console.error("Failed to load majors:", error);
-
       setMajorsError("تعذر تحميل الاختصاصات حالياً.");
     } finally {
       setLoadingMajors(false);
@@ -77,16 +75,13 @@ export default function SignUp() {
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-
     setErrorMessage("");
 
-    // Password confirmation
     if (password !== confirmPassword) {
       setErrorMessage("كلمتا المرور غير متطابقتين.");
       return;
     }
 
-    // Major selection
     if (!majorId) {
       setErrorMessage("يرجى اختيار الاختصاص.");
       return;
@@ -101,13 +96,11 @@ export default function SignUp() {
           password: password,
           email: email,
         },
-
         personData: {
           firstName: firstName,
           middleName: middleName,
           lastName: lastName,
         },
-
         majorID: Number(majorId),
       };
 
@@ -120,7 +113,6 @@ export default function SignUp() {
       });
     } catch (error) {
       console.error("Register failed:", error);
-
       setErrorMessage(
         "تعذر إنشاء الحساب حالياً. حاول مرة أخرى."
       );
@@ -142,179 +134,114 @@ export default function SignUp() {
         ========================= */}
 
         <div className="signup-header">
-
           <img
             src={logo}
             alt="UniPlan"
             className="signup-logo"
           />
-
           <h1>إنشاء حساب</h1>
-
         </div>
 
         <form onSubmit={handleRegister}>
 
           {/* First Name */}
           <div className="form-group">
-            <label htmlFor="firstName">
-              الاسم الأول
-            </label>
-
+            <label htmlFor="firstName">الاسم الأول</label>
             <input
               id="firstName"
               type="text"
               value={firstName}
-              onChange={(event) =>
-                setFirstName(event.target.value)
-              }
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="أدخل الاسم الأول"
               required
+              disabled={loading}
             />
           </div>
 
           {/* Middle Name */}
           <div className="form-group">
-            <label htmlFor="middleName">
-              الاسم الأوسط
-            </label>
-
+            <label htmlFor="middleName">الاسم الأوسط</label>
             <input
               id="middleName"
               type="text"
               value={middleName}
-              onChange={(event) =>
-                setMiddleName(event.target.value)
-              }
+              onChange={(e) => setMiddleName(e.target.value)}
+              placeholder="أدخل الاسم الأوسط"
               required
+              disabled={loading}
             />
           </div>
 
           {/* Last Name */}
           <div className="form-group">
-            <label htmlFor="lastName">
-              الكنية
-            </label>
-
+            <label htmlFor="lastName">الكنية</label>
             <input
               id="lastName"
               type="text"
               value={lastName}
-              onChange={(event) =>
-                setLastName(event.target.value)
-              }
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="أدخل الكنية"
               required
+              disabled={loading}
             />
           </div>
 
           {/* Username */}
           <div className="form-group">
-            <label htmlFor="username">
-              اسم المستخدم
-            </label>
-
+            <label htmlFor="username">اسم المستخدم</label>
             <input
               id="username"
               type="text"
               value={username}
-              onChange={(event) =>
-                setUsername(event.target.value)
-              }
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="أدخل اسم المستخدم"
               required
+              disabled={loading}
             />
           </div>
 
           {/* Email */}
           <div className="form-group">
-            <label htmlFor="email">
-              البريد الإلكتروني
-            </label>
-
+            <label htmlFor="email">البريد الإلكتروني</label>
             <input
               id="email"
               type="email"
               value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
               required
-            />
-          </div>
-
-          {/* Password */}
-          <div className="form-group">
-            <label htmlFor="password">
-              كلمة المرور
-            </label>
-
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
-              required
-            />
-          </div>
-
-          {/* Confirm Password */}
-          <div className="form-group">
-            <label htmlFor="confirmPassword">
-              تأكيد كلمة المرور
-            </label>
-
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) =>
-                setConfirmPassword(event.target.value)
-              }
-              required
+              disabled={loading}
             />
           </div>
 
           {/* Major */}
           <div className="form-group">
-
-            <label htmlFor="major">
-              الاختصاص
-            </label>
+            <label htmlFor="major">الاختصاص</label>
 
             {majorsError ? (
               <div className="major-error">
-
-                <span>
-                  {majorsError}
-                </span>
-
+                <span>{majorsError}</span>
                 <button
                   type="button"
                   onClick={loadMajors}
                   disabled={loadingMajors}
                 >
-                  {loadingMajors
-                    ? "جاري المحاولة..."
-                    : "إعادة المحاولة"}
+                  {loadingMajors ? "جاري..." : "إعادة المحاولة"}
                 </button>
-
               </div>
             ) : (
               <select
                 id="major"
                 value={majorId}
-                onChange={(event) =>
-                  setMajorId(event.target.value)
-                }
-                disabled={loadingMajors}
+                onChange={(e) => setMajorId(e.target.value)}
+                disabled={loadingMajors || loading}
                 required
               >
                 <option value="">
                   {loadingMajors
-                    ? "جاري تحميل الاختصاصات..."
+                    ? "جاري التحميل..."
                     : "اختر الاختصاص"}
                 </option>
-
                 {majors.map((major) => (
                   <option
                     key={major.majorID}
@@ -325,10 +252,41 @@ export default function SignUp() {
                 ))}
               </select>
             )}
-
           </div>
 
-          {/* Register Error */}
+          {/* Password */}
+          <div className="form-group">
+            <label htmlFor="password">كلمة المرور</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="أدخل كلمة المرور"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div className="form-group">
+            <label htmlFor="confirmPassword">
+              تأكيد كلمة المرور
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) =>
+                setConfirmPassword(e.target.value)
+              }
+              placeholder="أعد إدخال كلمة المرور"
+              required
+              disabled={loading}
+            />
+          </div>
+
+          {/* Error */}
           {errorMessage && (
             <div className="error-message">
               {errorMessage}
@@ -350,6 +308,15 @@ export default function SignUp() {
           </button>
 
         </form>
+
+        {/* Footer */}
+        <div className="form-footer-link">
+          لديك حساب بالفعل؟{" "}
+          <Link to="/login" className="login-link">
+            تسجيل الدخول
+          </Link>
+        </div>
+
       </div>
     </div>
   );

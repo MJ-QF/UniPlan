@@ -333,3 +333,11 @@
     font-size: 14.5px;
   }
 }
+
+.academic-logo-img {
+  height: 64px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 12px;  /* ✅ حواف ناعمة */
+}
