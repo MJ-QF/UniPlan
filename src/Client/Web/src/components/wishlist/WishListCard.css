@@ -1,0 +1,160 @@
+/* =========================
+   Wish List Card
+========================= */
+
+.wl-card {
+  display: flex;
+  flex-direction: column;
+
+  padding: 22px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 18px;
+
+  box-shadow:
+    0 1px 3px rgba(11, 26, 32, 0.04),
+    0 8px 24px rgba(11, 26, 32, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.wl-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(21, 145, 163, 0.35);
+  box-shadow:
+    0 4px 10px rgba(11, 26, 32, 0.06),
+    0 16px 36px rgba(11, 26, 32, 0.08);
+}
+
+/* Header */
+.wl-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin-bottom: 16px;
+}
+
+.wl-card-term {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #0b1a20;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.wl-card-term svg {
+  color: #1591a3;
+  flex-shrink: 0;
+}
+
+/* Badge */
+.wl-badge {
+  display: inline-block;
+
+  padding: 4px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  white-space: nowrap;
+}
+
+.wl-badge-editable {
+  background: rgba(21, 145, 163, 0.12);
+  color: #117f90;
+  border: 1px solid rgba(21, 145, 163, 0.30);
+}
+
+.wl-badge-locked {
+  background: rgba(113, 128, 135, 0.10);
+  color: #516770;
+  border: 1px solid rgba(113, 128, 135, 0.25);
+}
+
+/* Body */
+.wl-card-body {
+  flex: 1;
+  margin-bottom: 18px;
+}
+
+.wl-card-desc {
+  margin: 0;
+
+  color: #516770;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* Actions */
+.wl-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wl-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 16px;
+
+  border: none;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    filter 0.2s ease;
+}
+
+.wl-btn-primary {
+  flex: 1;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #fff;
+
+  box-shadow: 0 6px 16px rgba(21, 145, 163, 0.25);
+}
+
+.wl-btn-primary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.wl-btn-primary:active {
+  transform: translateY(0);
+}
+
+.wl-btn-danger {
+  padding: 10px 12px;
+
+  background: transparent;
+  color: #dc4c4c;
+
+  border: 1.5px solid rgba(220, 76, 76, 0.25);
+}
+
+.wl-btn-danger:hover {
+  background: rgba(220, 76, 76, 0.08);
+  border-color: rgba(220, 76, 76, 0.5);
+}

@@ -90,8 +90,12 @@ export default function AcademicRecord() {
         selectedCourses
       );
 
-      setSuccessMessage("تم حفظ المواد بنجاح.");
+setSuccessMessage("تم حفظ المواد بنجاح.");
 
+// ✅ انتقال تلقائي بعد الحفظ
+setTimeout(() => {
+  navigate("/wishlists", { replace: true });
+}, 800);
       // لاحقًا: navigate("/home") لما نبني صفحة Home
 
     } catch (error) {

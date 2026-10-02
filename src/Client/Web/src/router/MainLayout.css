@@ -1,0 +1,21 @@
+/* =========================
+   Main Layout
+========================= */
+
+.main-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  background:
+    radial-gradient(1200px 600px at 15% -10%,
+      rgba(21, 145, 163, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 110% 110%,
+      rgba(21, 145, 163, 0.04), transparent 55%),
+    linear-gradient(180deg, #f7fafb 0%, #eef3f5 100%);
+}
+
+.main-layout-content {
+  flex: 1;
+  width: 100%;
+}

@@ -4,12 +4,22 @@ import type {
   CreateStudentRequest,
   StudentResponse,
 } from "../types/student";
+import type { CourseResponse } from "../types/course";
 
-/*
-  إنشاء حساب طالب جديد.
-  POST /api/students  →  201 + StudentResponse
-  عند الخطأ axios بيرمي exception فيها error.response.data (نص الخطأ من الباك).
-*/
+/* =========================
+   Types خاصة بـ plan-status
+========================= */
+
+export interface PlanStatusItem {
+  course: CourseResponse;
+  status: string | null;
+  coursePrerequisitesIDs: number[];
+}
+
+/* =========================
+   إنشاء حساب طالب جديد
+   POST /api/students → 201 + StudentResponse
+========================= */
 export async function createStudent(
   data: CreateStudentRequest
 ): Promise<StudentResponse> {
@@ -20,11 +30,11 @@ export async function createStudent(
   return student;
 }
 
-/*
-  جلب الطالب المرتبط بحساب معين.
-  GET /api/students/by-account/{accountId}
-  بيرجع null إذا ما في طالب مرتبط بالحساب (404)، مثلاً حساب إداري.
-*/
+/* =========================
+   جلب الطالب المرتبط بحساب معين
+   GET /api/students/by-account/{accountId}
+   يرجع null إذا ما في طالب مرتبط بالحساب (404)
+========================= */
 export async function getStudentByAccountId(
   accountId: number
 ): Promise<StudentResponse | null> {
@@ -39,4 +49,17 @@ export async function getStudentByAccountId(
     }
     throw error;
   }
+}
+
+/* =========================
+   جلب حالة الخطة الدراسية للطالب
+   GET /api/students/{studentID}/plan-status
+========================= */
+export async function getPlanStatus(
+  studentId: number
+): Promise<PlanStatusItem[]> {
+  const { data } = await client.get<PlanStatusItem[]>(
+    `/students/${studentId}/plan-status`
+  );
+  return data;
 }

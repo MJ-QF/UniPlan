@@ -1,0 +1,248 @@
+/* =========================
+   Wish Lists — Main Page
+========================= */
+
+.wl-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+
+  direction: rtl;
+
+  animation: wlFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* =========================
+   Header
+========================= */
+
+.wl-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  margin-bottom: 32px;
+}
+
+.wl-title {
+  margin: 0 0 8px;
+
+  color: #0b1a20;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.wl-subtitle {
+  margin: 0;
+
+  color: #516770;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* =========================
+   Create Button
+========================= */
+
+.wl-create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg,
+    var(--brand-500, #1591a3) 0%,
+    var(--brand-600, #117f90) 100%);
+
+  color: #fff;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 24px rgba(21, 145, 163, 0.30);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  white-space: nowrap;
+}
+
+.wl-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(21, 145, 163, 0.42);
+  filter: brightness(1.05);
+}
+
+.wl-create-btn:active {
+  transform: translateY(0);
+}
+
+.wl-create-btn-lg {
+  padding: 14px 28px;
+  font-size: 15px;
+}
+
+/* =========================
+   Alerts
+========================= */
+
+.wl-alert-error,
+.wl-alert-success {
+  padding: 14px 18px;
+  margin-bottom: 20px;
+
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.wl-alert-error {
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+}
+
+.wl-alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-inline-start: 4px solid #10b981;
+}
+
+/* =========================
+   Loading
+========================= */
+
+.wl-loading {
+  padding: 80px 20px;
+  text-align: center;
+
+  color: #516770;
+}
+
+.wl-spinner {
+  width: 40px;
+  height: 40px;
+
+  margin: 0 auto 16px;
+
+  border: 3px solid rgba(21, 145, 163, 0.15);
+  border-top-color: #1591a3;
+  border-radius: 50%;
+
+  animation: wlSpin 0.7s linear infinite;
+}
+
+/* =========================
+   Empty State
+========================= */
+
+.wl-empty {
+  padding: 80px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  background: #ffffff;
+  border: 1.5px dashed #d5dde2;
+  border-radius: 20px;
+}
+
+.wl-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 96px;
+  height: 96px;
+  margin-bottom: 20px;
+
+  border-radius: 50%;
+
+  background: rgba(21, 145, 163, 0.08);
+  color: #1591a3;
+}
+
+.wl-empty h3 {
+  margin: 0 0 8px;
+
+  color: #0b1a20;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.wl-empty p {
+  margin: 0 0 24px;
+
+  color: #516770;
+  font-size: 14.5px;
+  max-width: 420px;
+  line-height: 1.7;
+}
+
+/* =========================
+   Grid of Cards
+========================= */
+
+.wl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* =========================
+   Animations
+========================= */
+
+@keyframes wlFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wlSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 768px) {
+  .wl-page {
+    padding: 28px 18px 60px;
+  }
+
+  .wl-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .wl-create-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .wl-title {
+    font-size: 26px;
+  }
+
+  .wl-grid {
+    grid-template-columns: 1fr;
+  }
+}

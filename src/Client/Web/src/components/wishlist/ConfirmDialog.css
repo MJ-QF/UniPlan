@@ -1,0 +1,170 @@
+/* =========================
+   Confirm Dialog
+========================= */
+
+.cd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(11, 26, 32, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  animation: cdFadeIn 0.2s ease both;
+
+  direction: rtl;
+}
+
+.cd-dialog {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 32px 28px;
+
+  background: #ffffff;
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.25);
+
+  text-align: center;
+
+  animation: cdPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Icon */
+.cd-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+}
+
+.cd-icon-danger {
+  background: rgba(220, 76, 76, 0.12);
+  color: #dc4c4c;
+}
+
+.cd-icon-primary {
+  background: rgba(21, 145, 163, 0.12);
+  color: #1591a3;
+}
+
+/* Content */
+.cd-title {
+  margin: 0 0 10px;
+
+  color: #0b1a20;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.cd-message {
+  margin: 0 0 24px;
+
+  color: #516770;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+
+/* Actions */
+.cd-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cd-btn {
+  flex: 1;
+
+  padding: 12px 16px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    filter 0.2s ease;
+}
+
+.cd-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cd-btn-cancel {
+  background: #f4f7f8;
+  color: #516770;
+  border: 1px solid #e5eaee;
+}
+
+.cd-btn-cancel:hover:not(:disabled) {
+  background: #e9eef1;
+}
+
+.cd-btn-confirm {
+  color: #fff;
+}
+
+.cd-btn-danger {
+  background: linear-gradient(135deg, #dc4c4c 0%, #b42318 100%);
+  box-shadow: 0 8px 20px rgba(220, 76, 76, 0.30);
+}
+
+.cd-btn-danger:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.cd-btn-primary {
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  box-shadow: 0 8px 20px rgba(21, 145, 163, 0.30);
+}
+
+.cd-btn-primary:hover:not(:disabled) {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+/* Animations */
+@keyframes cdFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes cdPop {
+  from { opacity: 0; transform: scale(0.94) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .cd-dialog {
+    padding: 26px 22px;
+  }
+
+  .cd-actions {
+    flex-direction: column;
+  }
+}
