@@ -1,0 +1,106 @@
+/* =========================
+   Term Selector
+========================= */
+
+.ts-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.ts-select {
+  width: 100%;
+  min-height: 52px;
+
+  padding: 14px 18px 14px 44px; /* left: للـ chevron */
+
+  background: #ffffff;
+  color: #0b1a20;
+
+  border: 1.5px solid #d5dde2;
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  box-shadow: 0 1px 3px rgba(11, 26, 32, 0.04);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ts-select:hover:not(:disabled) {
+  border-color: #b9c9ce;
+}
+
+.ts-select:focus {
+  outline: none;
+  border-color: #1591a3;
+  box-shadow: 0 0 0 4px rgba(21, 145, 163, 0.15);
+}
+
+.ts-select:disabled {
+  background: #f4f7f8;
+  color: #a5b0b5;
+  cursor: not-allowed;
+}
+
+/* Chevron */
+.ts-chevron {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  color: #718087;
+  pointer-events: none;
+
+  transition: transform 0.2s ease;
+}
+
+/* Error state */
+.ts-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  min-height: 52px;
+  padding: 8px 16px;
+
+  background: #fff1f2;
+  border: 1.5px solid #fecdd3;
+  border-radius: 12px;
+
+  color: #9f1239;
+  font-size: 13.5px;
+}
+
+.ts-error button {
+  padding: 6px 12px;
+
+  border: 1.5px solid #dc4c4c;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #dc4c4c;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.ts-error button:hover {
+  background: #dc4c4c;
+  color: #fff;
+}

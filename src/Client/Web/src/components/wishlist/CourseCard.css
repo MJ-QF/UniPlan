@@ -1,0 +1,207 @@
+/* =========================
+   Course Card
+========================= */
+
+.cc-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  width: 100%;
+  padding: 18px 20px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 14px;
+
+  text-align: right;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cc-card:hover:not(.cc-card-disabled) {
+  border-color: rgba(21, 145, 163, 0.45);
+  background: #fafcfd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(11, 26, 32, 0.06);
+}
+
+.cc-card-selected {
+  border-color: #1591a3;
+  background: linear-gradient(
+    135deg,
+    rgba(21, 145, 163, 0.06) 0%,
+    rgba(21, 145, 163, 0.02) 100%
+  );
+  box-shadow: 0 0 0 3px rgba(21, 145, 163, 0.10);
+}
+
+.cc-card-disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  background: #f8fafb;
+}
+
+.cc-card-disabled:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #e5eaee;
+}
+
+/* Checkbox */
+.cc-check {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+
+  border: 2px solid #cbd6da;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #ffffff;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cc-card-selected .cc-check {
+  background: #1591a3;
+  border-color: #1591a3;
+  transform: scale(1.05);
+}
+
+.cc-card-disabled .cc-check {
+  border-color: #d5dde2;
+  background: #eef2f4;
+}
+
+/* Info */
+.cc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cc-name {
+  margin: 0 0 6px;
+
+  color: #0b1a20;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.cc-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #718087;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.cc-code {
+  padding: 2px 8px;
+
+  background: rgba(21, 145, 163, 0.08);
+  color: #117f90;
+
+  border-radius: 6px;
+
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.cc-dot {
+  color: #cbd6da;
+}
+
+.cc-prereqs {
+  margin-top: 8px;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 11.5px;
+  color: #718087;
+}
+
+.cc-prereqs-label {
+  font-weight: 700;
+  color: #516770;
+}
+
+.cc-prereqs-values {
+  padding: 2px 8px;
+
+  background: #f4f7f8;
+  border-radius: 5px;
+
+  font-family: monospace;
+  font-size: 11px;
+  color: #2b3f47;
+}
+
+/* Status Badge */
+.cc-status {
+  flex-shrink: 0;
+
+  padding: 5px 12px;
+
+  border-radius: 999px;
+
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+
+  white-space: nowrap;
+}
+
+.cc-status-available {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0d9488;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.cc-status-passed {
+  background: rgba(113, 128, 135, 0.10);
+  color: #516770;
+  border: 1px solid rgba(113, 128, 135, 0.20);
+}
+
+.cc-status-unavailable {
+  background: rgba(217, 119, 6, 0.10);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cc-card {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .cc-name {
+    font-size: 14px;
+  }
+
+  .cc-status {
+    display: none;
+  }
+}
