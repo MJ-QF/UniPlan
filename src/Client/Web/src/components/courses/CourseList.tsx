@@ -1,9 +1,19 @@
-import type { PlanStatusItem } from "../../api/studentApi";
-import CourseCard from "./CourseCard";
+﻿import type { CourseResponse } from "../../types/course";
+import CourseCard, {
+  type CourseStatusVariant,
+} from "./CourseCard";
 import "./CourseList.css";
 
+export interface CourseListItem {
+  course: CourseResponse;
+  statusLabel?: string;
+  statusVariant?: CourseStatusVariant;
+  prereqCodes?: string[];
+  disabled?: boolean;
+}
+
 interface Props {
-  items: PlanStatusItem[];
+  items: CourseListItem[];
   selectedIds: number[];
   onToggle: (courseId: number) => void;
   loading?: boolean;
@@ -39,9 +49,13 @@ export default function CourseList({
       {items.map((item) => (
         <CourseCard
           key={item.course.courseID}
-          item={item}
+          course={item.course}
           isSelected={selectedIds.includes(item.course.courseID)}
           onToggle={() => onToggle(item.course.courseID)}
+          disabled={item.disabled}
+          statusLabel={item.statusLabel}
+          statusVariant={item.statusVariant}
+          prereqCodes={item.prereqCodes}
         />
       ))}
     </div>

@@ -1,0 +1,280 @@
+﻿/* =========================
+   Course Card — Grid Style
+========================= */
+
+.cc-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  width: 100%;
+  min-height: 168px;
+  padding: 16px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 14px;
+
+  text-align: right;
+  cursor: pointer;
+
+  font-family: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cc-card:hover:not(.cc-card-disabled) {
+  border-color: rgba(21, 145, 163, 0.5);
+  background: #fafcfd;
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 10px rgba(11, 26, 32, 0.06),
+    0 12px 28px rgba(11, 26, 32, 0.08);
+}
+
+/* Selected */
+.cc-card-selected {
+  border-color: #1591a3;
+  background: linear-gradient(
+    150deg,
+    rgba(21, 145, 163, 0.08) 0%,
+    rgba(21, 145, 163, 0.03) 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(21, 145, 163, 0.10),
+    0 4px 12px rgba(21, 145, 163, 0.08);
+}
+
+/* Disabled */
+.cc-card-disabled {
+  cursor: not-allowed;
+}
+
+.cc-card-disabled:hover {
+  transform: none;
+}
+
+.cc-card-disabled:not(.cc-card-selected) {
+  opacity: 0.6;
+  background: #f8fafb;
+}
+
+.cc-card-disabled:not(.cc-card-selected):hover {
+  border-color: #e5eaee;
+  background: #f8fafb;
+  box-shadow: none;
+}
+
+/* =========================
+   Top Row — Checkbox + Status
+========================= */
+
+.cc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cc-check {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+
+  border: 2px solid #cbd6da;
+  border-radius: 6px;
+
+  background: #ffffff;
+  color: #ffffff;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cc-card-selected .cc-check {
+  background: #1591a3;
+  border-color: #1591a3;
+  transform: scale(1.05);
+}
+
+.cc-card-disabled:not(.cc-card-selected) .cc-check {
+  border-color: #d5dde2;
+  background: #eef2f4;
+}
+
+/* =========================
+   Status Badge
+========================= */
+
+.cc-status {
+  padding: 3px 9px;
+
+  border-radius: 999px;
+
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+
+  white-space: nowrap;
+}
+
+.cc-status-available {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0d9488;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.cc-status-passed {
+  background: rgba(13, 148, 136, 0.15);
+  color: #0f766e;
+  border: 1px solid rgba(13, 148, 136, 0.35);
+}
+
+.cc-status-unavailable {
+  background: rgba(217, 119, 6, 0.10);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+}
+
+/* =========================
+   Course Name
+========================= */
+
+.cc-name {
+  margin: 0;
+
+  color: #0b1a20;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+
+  /* حد أقصى سطرين */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  flex: 1;
+}
+
+/* =========================
+   Meta
+========================= */
+
+.cc-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  color: #718087;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.cc-code {
+  padding: 2px 7px;
+
+  background: rgba(21, 145, 163, 0.08);
+  color: #117f90;
+
+  border-radius: 5px;
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.cc-hours {
+  color: #718087;
+}
+
+.cc-dot {
+  color: #cbd6da;
+}
+
+/* =========================
+   Needed Hours
+========================= */
+
+.cc-needed {
+  padding: 6px 10px;
+
+  background: rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(217, 119, 6, 0.18);
+  border-radius: 8px;
+
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================
+   Prerequisites
+========================= */
+
+.cc-prereqs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  padding-top: 8px;
+  margin-top: auto;
+
+  border-top: 1px dashed #eef2f4;
+}
+
+.cc-prereqs-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #718087;
+}
+
+.cc-prereqs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cc-prereq-chip {
+  padding: 2px 7px;
+
+  background: #f4f7f8;
+  border: 1px solid #e0e7ea;
+  border-radius: 5px;
+
+  font-family: monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #2b3f47;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 700px) {
+  .cc-card {
+    min-height: auto;
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .cc-name {
+    font-size: 13.5px;
+    -webkit-line-clamp: 3;
+  }
+}

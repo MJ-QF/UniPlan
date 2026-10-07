@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getPlanStatus, type PlanStatusItem } from "../../api/studentApi";
+import { getPlanStatus } from "../../api/studentApi";
 import { createWishList } from "../../api/wishLists";
 import { getStudentId } from "../../utils/session";
 
 import TermSelector from "../../components/wishlist/TermSelector";
-import CourseList from "../../components/wishlist/CourseList";
+import CourseList, {
+  type CourseListItem,
+} from "../../components/courses/CourseList";
 
 import "./WishListCreatePage.css";
 
@@ -15,7 +17,7 @@ export default function WishListCreatePage() {
   const studentId = getStudentId();
 
   const [termId, setTermId] = useState("");
-  const [courses, setCourses] = useState<PlanStatusItem[]>([]);
+  const [items, setItems] = useState<CourseListItem[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<number[]>([]);
 
   const [loading, setLoading] = useState(true);
@@ -24,10 +26,10 @@ export default function WishListCreatePage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   /* =========================
-     Load Courses
+     Load Courses — بدون شارات (نفس المكون)
   ========================= */
   useEffect(() => {
-    async function loadCourses() {
+    async function load() {
       if (studentId === null) {
         navigate("/login", { replace: true });
         return;
@@ -36,8 +38,16 @@ export default function WishListCreatePage() {
       try {
         setLoading(true);
         setErrorMessage("");
-        const data = await getPlanStatus(studentId);
-        setCourses(data);
+
+        const planItems = await getPlanStatus(studentId);
+
+        /* ✅ نفس المكون — بدون statusLabel / disabled */
+        const built: CourseListItem[] = planItems.map((item) => ({
+          course: item.course,
+          prereqCodes: item.coursePrerequisitesCodes ?? [],
+        }));
+
+        setItems(built);
       } catch (err) {
         console.error("Failed to load courses:", err);
         setErrorMessage("تعذر تحميل المواد.");
@@ -46,14 +56,13 @@ export default function WishListCreatePage() {
       }
     }
 
-    loadCourses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    load();
+  }, [studentId, navigate]);
 
   /* =========================
-     Toggle Course
+     Toggle
   ========================= */
-  function handleToggleCourse(courseId: number) {
+  function handleToggle(courseId: number) {
     setSelectedCourses((current) =>
       current.includes(courseId)
         ? current.filter((id) => id !== courseId)
@@ -134,22 +143,20 @@ export default function WishListCreatePage() {
         </div>
       </header>
 
-      {/* Alerts */}
+      {/* Error */}
       {errorMessage && (
         <div className="wlc-alert-error">{errorMessage}</div>
       )}
 
-      {/* Main Content */}
+      {/* Content */}
       <div className="wlc-content">
 
-        {/* Term Section */}
+        {/* Term */}
         <section className="wlc-section">
           <div className="wlc-section-header">
             <span className="wlc-step">1</span>
             <div>
-              <h2 className="wlc-section-title">
-                الفصل الأكاديمي
-              </h2>
+              <h2 className="wlc-section-title">الفصل الأكاديمي</h2>
               <p className="wlc-section-subtitle">
                 اختر الفصل الذي تريد التخطيط له
               </p>
@@ -163,14 +170,12 @@ export default function WishListCreatePage() {
           />
         </section>
 
-        {/* Courses Section */}
+        {/* Courses */}
         <section className="wlc-section">
           <div className="wlc-section-header">
             <span className="wlc-step">2</span>
             <div>
-              <h2 className="wlc-section-title">
-                اختر المواد
-              </h2>
+              <h2 className="wlc-section-title">اختر المواد</h2>
               <p className="wlc-section-subtitle">
                 {selectedCourses.length > 0
                   ? `${selectedCourses.length} مادة مختارة`
@@ -180,16 +185,16 @@ export default function WishListCreatePage() {
           </div>
 
           <CourseList
-            items={courses}
+            items={items}
             selectedIds={selectedCourses}
-            onToggle={handleToggleCourse}
+            onToggle={handleToggle}
             loading={loading}
           />
         </section>
 
       </div>
 
-      {/* Footer / Actions */}
+      {/* Footer */}
       <footer className="wlc-footer">
         <div className="wlc-footer-info">
           <span className="wlc-footer-label">المواد المختارة:</span>

@@ -1,13 +1,13 @@
-/* =========================
-   Course List
+﻿/* =========================
+   Course List — Grid
 ========================= */
 
 .cl-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
 
-  max-height: 480px;
+  max-height: 520px;
   overflow-y: auto;
   padding: 4px 6px 4px 4px;
 
@@ -67,4 +67,21 @@
   background: #f8fafb;
   border: 1.5px dashed #d5dde2;
   border-radius: 14px;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 1100px) {
+  .cl-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .cl-list {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 }

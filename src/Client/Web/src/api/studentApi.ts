@@ -4,21 +4,24 @@ import type {
   CreateStudentRequest,
   StudentResponse,
 } from "../types/student";
-import type { CourseResponse } from "../types/course";
+import type {
+  CourseResponse,
+  StudentCourseResponse,
+} from "../types/course";
 
 /* =========================
-   Types خاصة بـ plan-status
+   Types
 ========================= */
 
 export interface PlanStatusItem {
   course: CourseResponse;
   status: string | null;
-  coursePrerequisitesIDs: number[];
+  coursePrerequisitesCodes: string[];
 }
 
 /* =========================
-   إنشاء حساب طالب جديد
-   POST /api/students → 201 + StudentResponse
+   Create Student
+   POST /api/students
 ========================= */
 export async function createStudent(
   data: CreateStudentRequest
@@ -30,12 +33,9 @@ export async function createStudent(
   return student;
 }
 
-
-
 /* =========================
-   جلب الطالب المرتبط بحساب معين
+   Get Student by Account ID
    GET /api/students/by-account/{accountId}
-   يرجع null إذا ما في طالب مرتبط بالحساب (404)
 ========================= */
 export async function getStudentByAccountId(
   accountId: number
@@ -54,8 +54,8 @@ export async function getStudentByAccountId(
 }
 
 /* =========================
-   جلب حالة الخطة الدراسية للطالب
-   GET /api/students/{studentID}/plan-status
+   Get Plan Status
+   GET /api/students/{id}/plan-status
 ========================= */
 export async function getPlanStatus(
   studentId: number
@@ -66,3 +66,15 @@ export async function getPlanStatus(
   return data;
 }
 
+/* =========================
+   Get Student Courses (Passed & Registered)
+   GET /api/students/{id}/courses
+========================= */
+export async function getStudentCourses(
+  studentId: number
+): Promise<StudentCourseResponse[]> {
+  const { data } = await client.get<StudentCourseResponse[]>(
+    `/students/${studentId}/courses`
+  );
+  return data;
+}
