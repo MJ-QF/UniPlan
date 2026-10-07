@@ -1,5 +1,6 @@
 /* =========================
-   Confirm Dialog
+   Confirm Dialog — Refined
+   يعتمد على نفس متغيرات الموقع (مع قيم احتياطية)
 ========================= */
 
 .cd-overlay {
@@ -10,117 +11,159 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
 
-  background: rgba(11, 26, 32, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(11, 26, 32, 0.58);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
 
-  animation: cdFadeIn 0.2s ease both;
+  /* يمنع تمرير الصفحة خلف النافذة */
+  overscroll-behavior: contain;
 
   direction: rtl;
+  animation: cdFadeIn 0.2s var(--ease-out, ease) both;
 }
 
 .cd-dialog {
+  position: relative;
   width: 100%;
   max-width: 420px;
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  padding: 36px 28px 28px;
 
-  padding: 32px 28px;
-
-  background: #ffffff;
-  border-radius: 20px;
+  background: var(--surface, #fff);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-xl, 22px);
 
   box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.08),
-    0 24px 60px rgba(0, 0, 0, 0.25);
+    0 2px 6px rgba(0, 0, 0, 0.06),
+    0 28px 70px rgba(0, 0, 0, 0.32);
 
   text-align: center;
-
-  animation: cdPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: cdPop 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Icon */
+/* ---------- Icon ---------- */
+
 .cd-icon {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 
   width: 64px;
   height: 64px;
-
-  margin: 0 auto 18px;
+  margin: 0 auto 20px;
 
   border-radius: 50%;
+  animation: cdIconPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+/* هالة خفيفة حول الأيقونة */
+.cd-icon::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.18;
+}
+
+.cd-icon svg {
+  width: 28px;
+  height: 28px;
 }
 
 .cd-icon-danger {
   background: rgba(220, 76, 76, 0.12);
-  color: #dc4c4c;
+  color: var(--danger-500, #dc4c4c);
 }
 
 .cd-icon-primary {
   background: rgba(21, 145, 163, 0.12);
-  color: #1591a3;
+  color: var(--brand-500, #1591a3);
 }
 
-/* Content */
+/* ---------- Content ---------- */
+
 .cd-title {
   margin: 0 0 10px;
 
-  color: #0b1a20;
+  color: var(--ink-800, #0b1a20);
   font-size: 20px;
   font-weight: 800;
+  line-height: 1.35;
   letter-spacing: -0.3px;
 }
 
 .cd-message {
-  margin: 0 0 24px;
+  margin: 0 auto 28px;
+  max-width: 34ch;
 
-  color: #516770;
+  color: var(--ink-500, #516770);
   font-size: 14.5px;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
-/* Actions */
+/* ---------- Actions ---------- */
+
 .cd-actions {
   display: flex;
   gap: 10px;
 }
 
 .cd-btn {
+  position: relative;
   flex: 1;
-
+  min-height: 48px;
   padding: 12px 16px;
 
-  border: none;
-  border-radius: 12px;
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md, 12px);
 
   font-family: inherit;
   font-size: 14.5px;
   font-weight: 700;
+  line-height: 1.2;
 
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   transition:
-    background-color 0.2s ease,
-    transform 0.15s ease,
-    filter 0.2s ease;
+    background-color 0.2s var(--ease-out, ease),
+    border-color 0.2s var(--ease-out, ease),
+    box-shadow 0.2s var(--ease-out, ease),
+    transform 0.15s var(--ease-out, ease),
+    filter 0.2s var(--ease-out, ease);
+}
+
+.cd-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  filter: brightness(0.96);
 }
 
 .cd-btn:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* حلقة التركيز للكيبورد */
+.cd-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--brand-500, #1591a3);
 }
 
 .cd-btn-cancel {
-  background: #f4f7f8;
-  color: #516770;
-  border: 1px solid #e5eaee;
+  background: var(--surface-muted, #f4f7f8);
+  color: var(--ink-600, #2b3f47);
+  border-color: var(--border, #e5eaee);
 }
 
 .cd-btn-cancel:hover:not(:disabled) {
   background: #e9eef1;
+  border-color: var(--border-strong, #d5dde2);
 }
 
 .cd-btn-confirm {
@@ -129,42 +172,137 @@
 
 .cd-btn-danger {
   background: linear-gradient(135deg, #dc4c4c 0%, #b42318 100%);
-  box-shadow: 0 8px 20px rgba(220, 76, 76, 0.30);
+  box-shadow: 0 8px 20px rgba(220, 76, 76, 0.28);
 }
 
 .cd-btn-danger:hover:not(:disabled) {
-  filter: brightness(1.06);
   transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 28px rgba(220, 76, 76, 0.38);
+}
+
+.cd-btn-danger:focus-visible {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5px #dc4c4c;
 }
 
 .cd-btn-primary {
-  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
-  box-shadow: 0 8px 20px rgba(21, 145, 163, 0.30);
+  background: linear-gradient(
+    135deg,
+    var(--brand-500, #1591a3) 0%,
+    var(--brand-600, #117f90) 100%
+  );
+  box-shadow: 0 8px 20px rgba(21, 145, 163, 0.28);
 }
 
 .cd-btn-primary:hover:not(:disabled) {
-  filter: brightness(1.06);
   transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 12px 28px rgba(21, 145, 163, 0.38);
 }
 
-/* Animations */
+/* ---------- Loading (اختياري: أضف class="is-loading" على الزر) ---------- */
+
+.cd-btn.is-loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.cd-btn.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: cdSpin 0.7s linear infinite;
+}
+
+.cd-btn-cancel.is-loading::after {
+  border-color: rgba(81, 103, 112, 0.3);
+  border-top-color: var(--ink-500, #516770);
+}
+
+/* ---------- Animations ---------- */
+
 @keyframes cdFadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
 @keyframes cdPop {
-  from { opacity: 0; transform: scale(0.94) translateY(10px); }
+  from { opacity: 0; transform: scale(0.94) translateY(12px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Responsive */
+@keyframes cdIconPop {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes cdSlideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes cdSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cd-overlay,
+  .cd-dialog,
+  .cd-icon,
+  .cd-btn.is-loading::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .cd-btn { transition: none; }
+}
+
+/* ---------- Mobile: Bottom Sheet ---------- */
+
 @media (max-width: 480px) {
-  .cd-dialog {
-    padding: 26px 22px;
+  .cd-overlay {
+    align-items: flex-end;
+    padding: 0;
   }
 
+  .cd-dialog {
+    max-width: none;
+    max-height: 90dvh;
+    padding: 28px 22px calc(22px + env(safe-area-inset-bottom, 0px));
+
+    border-radius: 24px 24px 0 0;
+    animation: cdSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* مقبض صغير يوحي إنها bottom sheet */
+  .cd-dialog::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 999px;
+    background: #d5dde2;
+  }
+
+  /* زر التأكيد فوق (أسهل للإبهام)، الإلغاء تحته */
   .cd-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
+  }
+
+  .cd-btn {
+    min-height: 52px;
   }
 }
+
+
+

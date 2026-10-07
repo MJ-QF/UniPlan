@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
@@ -13,10 +13,6 @@ import logo from "../assets/UniPlan.png";
 export default function SignUp() {
   const navigate = useNavigate();
 
-  // =========================
-  // Form Data
-  // =========================
-
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -29,35 +25,29 @@ export default function SignUp() {
 
   const [majorId, setMajorId] = useState("");
 
-  // =========================
-  // Majors
-  // =========================
-
   const [majors, setMajors] = useState<MajorResponse[]>([]);
   const [loadingMajors, setLoadingMajors] = useState(true);
   const [majorsError, setMajorsError] = useState("");
 
-  // =========================
-  // Register State
-  // =========================
-
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // =========================
-  // Load Majors
-  // =========================
+  // ✅ Custom Dropdown State
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
+  /* =========================
+     Load Majors
+  ========================= */
   async function loadMajors() {
     try {
       setLoadingMajors(true);
       setMajorsError("");
-
       const data = await getMajors();
       setMajors(data);
     } catch (error) {
       console.error("Failed to load majors:", error);
-      setMajorsError("تعذر تحميل الاختصاصات حالياً.");
+      setMajorsError("تعذر تحميل الاختصاصات");
     } finally {
       setLoadingMajors(false);
     }
@@ -67,10 +57,43 @@ export default function SignUp() {
     loadMajors();
   }, []);
 
-  // =========================
-  // Register
-  // =========================
+  /* =========================
+     Close dropdown on outside click
+  ========================= */
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    }
 
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  /* =========================
+     Select Major
+  ========================= */
+  function handleSelectMajor(id: number) {
+    setMajorId(String(id));
+    setIsDropdownOpen(false);
+  }
+
+  const selectedMajorName = majors.find(
+    (m) => String(m.majorID) === majorId
+  )?.majorName;
+
+  /* =========================
+     Register
+  ========================= */
   const handleRegister = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -90,7 +113,7 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      const payload = {
+      const student = await createStudent({
         accountData: {
           accountName: username,
           password: password,
@@ -102,49 +125,44 @@ export default function SignUp() {
           lastName: lastName,
         },
         majorID: Number(majorId),
-      };
-
-      const student = await createStudent(payload);
+      });
 
       saveStudentId(student.studentID);
-
-      navigate("/academic-record", {
-        replace: true,
-      });
+      navigate("/academic-record", { replace: true });
     } catch (error) {
       console.error("Register failed:", error);
-      setErrorMessage(
-        "تعذر إنشاء الحساب حالياً. حاول مرة أخرى."
-      );
+      setErrorMessage("تعذر إنشاء الحساب. حاول مرة أخرى.");
     } finally {
       setLoading(false);
     }
   };
 
-  // =========================
-  // UI
-  // =========================
-
   return (
     <div className="signup-page">
-      <div className="signup-container">
+      <div className="signup-card">
 
         {/* =========================
             Header — Logo + Title
         ========================= */}
+        <header className="signup-header">
+          <img src={logo} alt="UniPlan" className="signup-logo" />
+          <h1 className="signup-title">إنشاء حساب</h1>
+          <p className="signup-subtitle">
+            املأ البيانات لإنشاء حسابك في UniPlan
+          </p>
+        </header>
 
-        <div className="signup-header">
-          <img
-            src={logo}
-            alt="UniPlan"
-            className="signup-logo"
-          />
-          <h1>إنشاء حساب</h1>
-        </div>
+        {/* Error */}
+        {errorMessage && (
+          <div className="signup-error">{errorMessage}</div>
+        )}
 
-        <form onSubmit={handleRegister}>
+        {/* =========================
+            Form
+        ========================= */}
+        <form className="signup-form" onSubmit={handleRegister}>
 
-          {/* First Name */}
+          {/* Row 1: First + Middle */}
           <div className="form-group">
             <label htmlFor="firstName">الاسم الأول</label>
             <input
@@ -158,7 +176,6 @@ export default function SignUp() {
             />
           </div>
 
-          {/* Middle Name */}
           <div className="form-group">
             <label htmlFor="middleName">الاسم الأوسط</label>
             <input
@@ -172,7 +189,7 @@ export default function SignUp() {
             />
           </div>
 
-          {/* Last Name */}
+          {/* Row 2: Last + Username */}
           <div className="form-group">
             <label htmlFor="lastName">الكنية</label>
             <input
@@ -186,7 +203,6 @@ export default function SignUp() {
             />
           </div>
 
-          {/* Username */}
           <div className="form-group">
             <label htmlFor="username">اسم المستخدم</label>
             <input
@@ -200,7 +216,7 @@ export default function SignUp() {
             />
           </div>
 
-          {/* Email */}
+          {/* Row 3: Email + Major جنب بعض */}
           <div className="form-group">
             <label htmlFor="email">البريد الإلكتروني</label>
             <input
@@ -208,53 +224,106 @@ export default function SignUp() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
+              placeholder="أدخل البريد الإلكتروني"
               required
               disabled={loading}
             />
           </div>
 
-          {/* Major */}
           <div className="form-group">
-            <label htmlFor="major">الاختصاص</label>
+            <label>الاختصاص</label>
 
             {majorsError ? (
               <div className="major-error">
                 <span>{majorsError}</span>
-                <button
-                  type="button"
-                  onClick={loadMajors}
-                  disabled={loadingMajors}
-                >
-                  {loadingMajors ? "جاري..." : "إعادة المحاولة"}
+                <button type="button" onClick={loadMajors}>
+                  إعادة المحاولة
                 </button>
               </div>
             ) : (
-              <select
-                id="major"
-                value={majorId}
-                onChange={(e) => setMajorId(e.target.value)}
-                disabled={loadingMajors || loading}
-                required
+              <div
+                className={`custom-dropdown ${
+                  isDropdownOpen ? "custom-dropdown-open" : ""
+                }`}
+                ref={dropdownRef}
               >
-                <option value="">
-                  {loadingMajors
-                    ? "جاري التحميل..."
-                    : "اختر الاختصاص"}
-                </option>
-                {majors.map((major) => (
-                  <option
-                    key={major.majorID}
-                    value={major.majorID}
+                {/* Trigger */}
+                <button
+                  type="button"
+                  className={`custom-dropdown-trigger ${
+                    selectedMajorName ? "has-value" : ""
+                  }`}
+                  onClick={() =>
+                    setIsDropdownOpen((prev) => !prev)
+                  }
+                  disabled={loadingMajors || loading}
+                >
+                  <span className="custom-dropdown-value">
+                    {loadingMajors
+                      ? "جاري التحميل..."
+                      : selectedMajorName ?? "اختر الاختصاص"}
+                  </span>
+
+                  <svg
+                    className="custom-dropdown-chevron"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   >
-                    {major.majorName}
-                  </option>
-                ))}
-              </select>
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {/* Menu */}
+                {isDropdownOpen && (
+                  <ul className="custom-dropdown-menu">
+                    {majors.map((major) => {
+                      const isSelected =
+                        String(major.majorID) === majorId;
+
+                      return (
+                        <li key={major.majorID}>
+                          <button
+                            type="button"
+                            className={`custom-dropdown-item ${
+                              isSelected ? "is-selected" : ""
+                            }`}
+                            onClick={() =>
+                              handleSelectMajor(major.majorID)
+                            }
+                          >
+                            <span>{major.majorName}</span>
+
+                            {isSelected && (
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
 
-          {/* Password */}
+          {/* Row 4: Password + Confirm */}
           <div className="form-group">
             <label htmlFor="password">كلمة المرور</label>
             <input
@@ -268,51 +337,41 @@ export default function SignUp() {
             />
           </div>
 
-          {/* Confirm Password */}
           <div className="form-group">
-            <label htmlFor="confirmPassword">
-              تأكيد كلمة المرور
-            </label>
+            <label htmlFor="confirmPassword">تأكيد كلمة المرور</label>
             <input
               id="confirmPassword"
               type="password"
               value={confirmPassword}
-              onChange={(e) =>
-                setConfirmPassword(e.target.value)
-              }
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="أعد إدخال كلمة المرور"
               required
               disabled={loading}
             />
           </div>
 
-          {/* Error */}
-          {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
-          )}
-
           {/* Submit */}
           <button
             type="submit"
-            disabled={
-              loading ||
-              loadingMajors ||
-              !!majorsError
-            }
+            className="signup-submit"
+            disabled={loading || loadingMajors || !!majorsError}
           >
-            {loading
-              ? "جاري إنشاء الحساب..."
-              : "إنشاء الحساب"}
+            {loading ? (
+              <>
+                <span className="btn-spinner" />
+                جاري الإنشاء...
+              </>
+            ) : (
+              "إنشاء الحساب"
+            )}
           </button>
 
         </form>
 
         {/* Footer */}
-        <div className="form-footer-link">
+        <div className="signup-footer">
           لديك حساب بالفعل؟{" "}
-          <Link to="/login" className="login-link">
+          <Link to="/login" className="signup-login-link">
             تسجيل الدخول
           </Link>
         </div>

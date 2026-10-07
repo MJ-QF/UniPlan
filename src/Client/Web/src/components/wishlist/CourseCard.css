@@ -1,5 +1,6 @@
 /* =========================
-   Course Card
+   Course Card — Refined
+   يعتمد على نفس متغيرات الموقع (مع قيم احتياطية)
 ========================= */
 
 .cc-card {
@@ -10,52 +11,85 @@
   gap: 14px;
 
   width: 100%;
+  min-height: 72px;
   padding: 18px 20px;
 
-  background: #ffffff;
-  border: 1.5px solid #e5eaee;
-  border-radius: 14px;
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border, #e5eaee);
+  border-radius: var(--radius-md, 14px);
 
+  font-family: inherit;
   text-align: right;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease,
-    transform 0.15s ease;
+    border-color 0.2s var(--ease-out, ease),
+    box-shadow 0.2s var(--ease-out, ease),
+    background-color 0.2s var(--ease-out, ease),
+    transform 0.15s var(--ease-out, ease);
 }
 
 .cc-card:hover:not(.cc-card-disabled) {
   border-color: rgba(21, 145, 163, 0.45);
-  background: #fafcfd;
+  background: var(--surface-muted, #fafcfd);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(11, 26, 32, 0.06);
+  box-shadow: 0 4px 14px rgba(11, 26, 32, 0.07);
 }
 
+.cc-card:active:not(.cc-card-disabled) {
+  transform: translateY(0) scale(0.995);
+}
+
+/* تركيز الكيبورد */
+.cc-card:focus-visible {
+  outline: none;
+  border-color: var(--brand-500, #1591a3);
+  box-shadow: 0 0 0 4px rgba(21, 145, 163, 0.22);
+}
+
+/* ---------- Selected ---------- */
+
 .cc-card-selected {
-  border-color: #1591a3;
+  border-color: var(--brand-500, #1591a3);
   background: linear-gradient(
     135deg,
-    rgba(21, 145, 163, 0.06) 0%,
+    rgba(21, 145, 163, 0.08) 0%,
     rgba(21, 145, 163, 0.02) 100%
   );
-  box-shadow: 0 0 0 3px rgba(21, 145, 163, 0.10);
+  box-shadow: 0 0 0 3px rgba(21, 145, 163, 0.12);
 }
+
+.cc-card-selected:hover:not(.cc-card-disabled) {
+  background: linear-gradient(
+    135deg,
+    rgba(21, 145, 163, 0.10) 0%,
+    rgba(21, 145, 163, 0.03) 100%
+  );
+  border-color: var(--brand-600, #117f90);
+}
+
+/* ---------- Disabled ---------- */
 
 .cc-card-disabled {
   cursor: not-allowed;
-  opacity: 0.62;
   background: #f8fafb;
+}
+
+/* نخفّض فقط المحتوى، مو الـ badge، حتى يظل سبب الحالة مقروء */
+.cc-card-disabled .cc-check,
+.cc-card-disabled .cc-info {
+  opacity: 0.6;
 }
 
 .cc-card-disabled:hover {
   transform: none;
   box-shadow: none;
-  border-color: #e5eaee;
+  border-color: var(--border, #e5eaee);
 }
 
-/* Checkbox */
+/* ---------- Checkbox ---------- */
+
 .cc-check {
   flex-shrink: 0;
 
@@ -69,27 +103,39 @@
   border: 2px solid #cbd6da;
   border-radius: 7px;
 
-  background: #ffffff;
-  color: #ffffff;
+  background: #fff;
+  color: #fff;
 
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+    background-color 0.2s var(--ease-out, ease),
+    border-color 0.2s var(--ease-out, ease),
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cc-card:hover:not(.cc-card-disabled):not(.cc-card-selected) .cc-check {
+  border-color: var(--brand-300, #7cc5d3);
 }
 
 .cc-card-selected .cc-check {
-  background: #1591a3;
-  border-color: #1591a3;
-  transform: scale(1.05);
+  background: var(--brand-500, #1591a3);
+  border-color: var(--brand-500, #1591a3);
+  transform: scale(1.06);
+}
+
+/* علامة الصح تظهر بحركة صغيرة */
+.cc-check svg {
+  width: 14px;
+  height: 14px;
+  animation: ccTick 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 .cc-card-disabled .cc-check {
-  border-color: #d5dde2;
+  border-color: var(--border-strong, #d5dde2);
   background: #eef2f4;
 }
 
-/* Info */
+/* ---------- Info ---------- */
+
 .cc-info {
   flex: 1;
   min-width: 0;
@@ -98,18 +144,20 @@
 .cc-name {
   margin: 0 0 6px;
 
-  color: #0b1a20;
+  color: var(--ink-800, #0b1a20);
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.4;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .cc-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 
-  color: #718087;
+  color: var(--ink-400, #718087);
   font-size: 12.5px;
   font-weight: 500;
 }
@@ -118,12 +166,15 @@
   padding: 2px 8px;
 
   background: rgba(21, 145, 163, 0.08);
-  color: #117f90;
+  color: var(--brand-600, #117f90);
 
   border-radius: 6px;
 
   font-weight: 700;
   letter-spacing: 0.3px;
+  /* الكود (CS101) يبقى LTR حتى داخل صفحة RTL */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .cc-dot {
@@ -131,35 +182,43 @@
 }
 
 .cc-prereqs {
-  margin-top: 8px;
-
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
 
+  margin-top: 8px;
+
   font-size: 11.5px;
-  color: #718087;
+  color: var(--ink-400, #718087);
 }
 
 .cc-prereqs-label {
   font-weight: 700;
-  color: #516770;
+  color: var(--ink-500, #516770);
 }
 
 .cc-prereqs-values {
   padding: 2px 8px;
 
-  background: #f4f7f8;
-  border-radius: 5px;
+  background: var(--surface-muted, #f4f7f8);
+  border: 1px solid var(--border, #e5eaee);
+  border-radius: 6px;
 
-  font-family: monospace;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   font-size: 11px;
-  color: #2b3f47;
+  color: var(--ink-600, #2b3f47);
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
-/* Status Badge */
+/* ---------- Status badge ---------- */
+
 .cc-status {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 
   padding: 5px 12px;
 
@@ -167,9 +226,17 @@
 
   font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.3px;
-
+  letter-spacing: 0.2px;
   white-space: nowrap;
+}
+
+/* نقطة ملوّنة قبل النص: تعطي معنى بدون الاعتماد على اللون فقط */
+.cc-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .cc-status-available {
@@ -180,7 +247,7 @@
 
 .cc-status-passed {
   background: rgba(113, 128, 135, 0.10);
-  color: #516770;
+  color: var(--ink-500, #516770);
   border: 1px solid rgba(113, 128, 135, 0.20);
 }
 
@@ -190,11 +257,39 @@
   border: 1px solid rgba(217, 119, 6, 0.25);
 }
 
-/* Responsive */
+/* ---------- Animation ---------- */
+
+@keyframes ccTick {
+  from { opacity: 0; transform: scale(0.4) rotate(-12deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cc-card,
+  .cc-check {
+    transition: none;
+  }
+  .cc-check svg {
+    animation: none;
+  }
+}
+
+/* ---------- Mobile ---------- */
+/* بدل ما نخفي الحالة (معلومة مهمة)، ننزلها تحت اسم المادة */
+
 @media (max-width: 600px) {
   .cc-card {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 10px;
+    align-items: start;
+
     padding: 14px 16px;
-    gap: 12px;
+  }
+
+  .cc-check {
+    margin-top: 2px;
   }
 
   .cc-name {
@@ -202,6 +297,9 @@
   }
 
   .cc-status {
-    display: none;
+    grid-column: 2;
+    justify-self: start;
+    padding: 3px 10px;
+    font-size: 11px;
   }
 }
