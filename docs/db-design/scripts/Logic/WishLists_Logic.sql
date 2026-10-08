@@ -146,7 +146,7 @@ BEGIN
         SELECT * FROM WishLists_view W
         INNER JOIN StudentTerms ST ON W.RegistrationID = ST.RegistrationID
         WHERE ST.StudentID = @StudentID
-        ORDER BY W.WishListID
+        ORDER BY W.WishListID DESC 
         OFFSET (@PageNumber - 1) * @PageSize ROWS
         FETCH NEXT @PageSize ROWS ONLY;
 

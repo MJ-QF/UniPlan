@@ -69,9 +69,9 @@ namespace Business.Services
             return courseSession != null ? courseSession.ToResponse() : null;
         }
 
-        public async Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishListSessionsByDaysAsync(int listID, List<int> days)
+        public async Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishlistSessionsByTimeSlotAsync(int listID, List<int> days, TimeSpan startTime, TimeSpan endTime)
         {
-            var availableSessionsMap =  await _courseSessionRepository.GetWishListSessionsByDaysAsync(listID, days);
+            var availableSessionsMap =  await _courseSessionRepository.GetWishlistSessionsByTimeSlotAsync(listID, days, startTime, endTime);
 
             if (availableSessionsMap == null || availableSessionsMap.Count == 0)
                 return null;
@@ -89,7 +89,7 @@ namespace Business.Services
 
             if (unavailableLecturesForDays.Count > 0)
             {
-                throw new ValidationException($"هناك محاضرات غير موجودة بالأيام التي تريدها عدد محاضرات: {unavailableLecturesForDays.Count}\n" + string.Join("\n", unavailableLecturesForDays));
+                throw new ValidationException($"هناك محاضرات غير موجودة بالأوقات التي تريدها عدد محاضرات: {unavailableLecturesForDays.Count}\n" + string.Join("\n", unavailableLecturesForDays));
             }
 
             return availableSessionsMap;

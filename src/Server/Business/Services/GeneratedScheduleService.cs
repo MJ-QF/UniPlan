@@ -7,6 +7,7 @@ using Core.Exceptions;
 using Core.Interfaces.ExternalServices;
 using Core.Interfaces.Repositories;
 using Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Business.Services
@@ -30,15 +31,15 @@ namespace Business.Services
 
             GeneratedSchedule schedule = request.ToGeneratedSchedule();
 
-            if (await _GeneratedSchedule(schedule, request.Days) && await _scheduleRepository.AddGeneratedScheduleAsync(schedule))
+            if (await _GeneratedSchedule(schedule, request.Days, request.StartTime, request.EndTime) && await _scheduleRepository.AddGeneratedScheduleAsync(schedule))
                 return await GetGeneratedScheduleByWishListIDAsync(schedule.WishList.WishListID);
 
             return null;
         }
 
-        private async Task<bool> _GeneratedSchedule(GeneratedSchedule schedule, List<int> days)
+        private async Task<bool> _GeneratedSchedule(GeneratedSchedule schedule, List<int> days, TimeSpan startTime, TimeSpan endTime)
         {
-            var availableSessionsMap = await _courseSessionService.GetWishListSessionsByDaysAsync(schedule.WishList.WishListID, days);
+            var availableSessionsMap = await _courseSessionService.GetWishlistSessionsByTimeSlotAsync(schedule.WishList.WishListID, days, startTime, endTime);
 
             if (availableSessionsMap == null || availableSessionsMap.Count == 0)
                 return false;
@@ -102,6 +103,12 @@ namespace Business.Services
 
             GeneratedSchedule? schedule = await _scheduleRepository.GetScheduleDetailByWishListIDAsync(listID, scheduleNum);
             return schedule != null ? schedule.ToScheduleDetailResponse() : null;
+        }
+
+        public async Task<IEnumerable<GeneratedScheduleResponse>?> GetSchedulesByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10)
+        {
+            IEnumerable<GeneratedSchedule>? schedules = await _scheduleRepository.GetSchedulesByStudentIDAsync(studentID, pageNumber, pageSize);
+            return schedules?.Select(m => m?.ToResponse() ?? null).OfType<GeneratedScheduleResponse>();
         }
     }
 }

@@ -92,6 +92,43 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE SP_GeneratedSchedules_GetByStudentID
+    @StudentID int,
+    @PageNumber INT = 1,
+    @PageSize INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON
+    
+    DECLARE @ScheduleID INT;
+
+     IF @PageNumber < 1
+        SET @PageNumber = 1;
+
+    IF @PageSize < 1
+        SET @PageSize = 10;
+
+    BEGIN TRY
+        SELECT @ScheduleID = ScheduleID FROM GeneratedSchedules GS
+        INNER JOIN WishLists W ON W.WishListID = GS.WishListID
+        INNER JOIN StudentTerms ST ON ST.RegistrationID = W.RegistrationID
+        WHERE StudentID = @StudentID;
+
+        SELECT * FROM GeneratedSchedules_view G
+        WHERE ScheduleID = @ScheduleID
+        ORDER BY ScheduleID DESC 
+        OFFSET (@PageNumber - 1) * @PageSize ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
+
+    END TRY
+    BEGIN CATCH
+        -- CHANGED: THROW keeps the original error details.
+        THROW;
+    END CATCH
+
+END;
+GO
+
 CREATE OR ALTER PROCEDURE SP_ScheduleDetails_GetByWishListIDAndScheduleNum
     @WishListID int,
     @ScheduleNum int

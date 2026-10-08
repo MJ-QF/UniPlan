@@ -9,5 +9,7 @@ namespace Core.Interfaces.Repositories
         Task<GeneratedSchedule?> GetGeneratedScheduleByWishListIDAsync(int listID);
 
         Task<GeneratedSchedule?> GetScheduleDetailByWishListIDAsync(int listID, int scheduleNum);
+
+        Task<IEnumerable<GeneratedSchedule>?> GetSchedulesByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10);
     }
 }

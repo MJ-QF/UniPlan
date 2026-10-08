@@ -100,6 +100,39 @@ namespace DataAccess.Repositories
             return schedule;
         }
 
+        public async Task<IEnumerable<GeneratedSchedule>?> GetSchedulesByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10)
+        {
+            List<GeneratedSchedule>? schedules = new();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
+                using (SqlCommand command = new SqlCommand("SP_GeneratedSchedules_GetByStudentID", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@StudentID", studentID);
+                    command.Parameters.AddWithValue("@PageNumber", pageNumber);
+                    command.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader != null && await reader.ReadAsync())
+                        {
+                            schedules.Add(reader.ToGeneratedSchedule());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logService.LogAsync(ex);
+                throw;
+            }
+
+            return schedules;
+        }
+
         public async Task<GeneratedSchedule?> GetScheduleDetailByWishListIDAsync(int listID, int scheduleNum)
         {
             GeneratedSchedule? schedule = null;

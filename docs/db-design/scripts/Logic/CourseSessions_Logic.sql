@@ -14,8 +14,10 @@ CREATE TYPE DaysListType AS TABLE
 )
 GO
 
-CREATE OR ALTER PROCEDURE SP_CourseSessions_GetByWishListID
+CREATE PROCEDURE SP_CourseSessions_GetByWishListID
     @Days DaysListType READONLY,
+    @StartTime TIME,
+    @EndTime TIME,
     @WishListId int
 AS
 BEGIN
@@ -37,7 +39,7 @@ BEGIN
         JOIN Lectures L ON L.CourseID = I.CourseID
         JOIN Courses C ON C.CourseID = I.CourseID
         LEFT JOIN CourseSessions_view S ON S.LectureID = L.LectureID 
-        AND DayNum IN (SELECT * FROM @Days) AND TermID = @TermID
+        AND DayNum IN (SELECT * FROM @Days) AND TermID = @TermID AND StartTime >= @StartTime AND EndTime <= @EndTime
         WHERE I.WishListID = @WishListId;
 
     END TRY

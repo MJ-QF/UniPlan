@@ -22,8 +22,12 @@ namespace API.Controllers
         private readonly IStudentTermService _studentTermService;
         private readonly IStudentCourseService _studentCourseService;
         private readonly IWishListService _listService;
+        private readonly IGeneratedScheduleService _generatedScheduleService;
 
-        public StudentsController(IStudentService studentService, ILogService logService, IExceptionService exceptionService, IStudentTermService studentTermService, IStudentCourseService studentCourseService, IWishListService listService)
+        public StudentsController(IStudentService studentService, ILogService logService, 
+            IExceptionService exceptionService, IStudentTermService studentTermService, 
+            IStudentCourseService studentCourseService, IWishListService listService,
+            IGeneratedScheduleService generatedScheduleService)
         {
             _studentService = studentService;
             _logService = logService;
@@ -31,6 +35,7 @@ namespace API.Controllers
             _studentTermService = studentTermService;
             _studentCourseService = studentCourseService;
             _listService = listService;
+            _generatedScheduleService = generatedScheduleService;
         }
 
         [HttpPost(Name = "AddStudentAsync")]
@@ -392,7 +397,7 @@ namespace API.Controllers
 
             try
             {
-                IEnumerable<WishListResponse>? responses = await _listService.GetWishListsByStudentIDAsync(studentID);
+                IEnumerable<WishListResponse>? responses = await _listService.GetWishListsByStudentIDAsync(studentID, pageNumber, pageSize);
 
                 if (responses == null)
                 {
@@ -400,6 +405,35 @@ namespace API.Controllers
                 }
 
                 await _logService.LogAsync($"تم جلب قوائم الرغبات لمعرف الطالب {studentID} بنجاح", ExternalServicesEnums.LogType.Info);
+                return Ok(responses);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
+
+        [HttpGet("{studentID}/schedules", Name = "GetSchedulesByStudentIDAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WishListResponse>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<ActionResult<IEnumerable<WishListResponse>>> GetSchedulesByStudentIDAsync(int studentID, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        {
+            if (studentID <= 0)
+            {
+                return BadRequest("يجب أن يكون معرف الطالب أكبر من 0");
+            }
+
+            try
+            {
+                IEnumerable<GeneratedScheduleResponse>? responses = await _generatedScheduleService.GetSchedulesByStudentIDAsync(studentID, pageNumber, pageSize);
+
+                if (responses == null)
+                {
+                    responses = Enumerable.Empty<GeneratedScheduleResponse>();
+                }
+
+                await _logService.LogAsync($"تم جلب الجداول لمعرف الطالب {studentID} بنجاح", ExternalServicesEnums.LogType.Info);
                 return Ok(responses);
             }
             catch (Exception ex)

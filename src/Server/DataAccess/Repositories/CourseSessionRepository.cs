@@ -305,7 +305,7 @@ namespace DataAccess.Repositories
             return courseSessions;
         }
 
-        public async Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishListSessionsByDaysAsync(int listID, List<int> days)
+        public async Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishlistSessionsByTimeSlotAsync(int listID, List<int> days, TimeSpan startTime, TimeSpan endTime)
         {
             Dictionary<int, Dictionary<int, List<CourseSession>>> courseSessions = new();
 
@@ -328,6 +328,18 @@ namespace DataAccess.Repositories
                     (
                         "@Days",
                         days.ToDataTable()
+                    );
+
+                    command.Parameters.AddWithValue
+                    (   
+                        "@StartTime", 
+                        startTime
+                    );
+
+                    command.Parameters.AddWithValue
+                    (
+                        "@EndTime",
+                        endTime
                     );
 
                     await connection.OpenAsync();

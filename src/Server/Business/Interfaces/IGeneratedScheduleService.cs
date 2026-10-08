@@ -10,5 +10,7 @@ namespace Business.Interfaces
         Task<GeneratedScheduleResponse?> GetGeneratedScheduleByWishListIDAsync(int listID);
 
         Task<ScheduleDetailResponse?> GetScheduleDetailByWishListIDAsync(int listID, int scheduleNum);
+
+        Task<IEnumerable<GeneratedScheduleResponse>?> GetSchedulesByStudentIDAsync(int studentID, int pageNumber = 1, int pageSize = 10);
     }
 }

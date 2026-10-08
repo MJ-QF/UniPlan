@@ -15,7 +15,7 @@ namespace Business.Interfaces
 
         Task<IEnumerable<CourseSessionResponse>?> GetPagedCourseSessionsAsync(int pageNumber = 1, int pageSize = 10);
 
-        Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishListSessionsByDaysAsync(int listID, List<int> days);
+        Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishlistSessionsByTimeSlotAsync(int listID, List<int> days, TimeSpan startTime, TimeSpan endTime);
 
         Task<CourseSessionResponse?> GetCourseSessionByIDAsync(int courseSessionID);
     }

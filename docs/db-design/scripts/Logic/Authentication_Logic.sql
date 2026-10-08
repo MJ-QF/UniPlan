@@ -6,6 +6,12 @@ DROP USER IF EXISTS usr_uniplan_executor;
 USE master;
 GO
 
+IF EXISTS (SELECT * FROM sys.database_principals WHERE name = 'usr_uniplan_executor')
+BEGIN
+    DROP USER usr_uniplan_executor;
+END
+GO
+
 IF EXISTS (SELECT * FROM sys.server_principals WHERE name = 'log_uniplan_executor')
 BEGIN
     DROP LOGIN log_uniplan_executor;
