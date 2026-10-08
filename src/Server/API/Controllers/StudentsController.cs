@@ -414,10 +414,10 @@ namespace API.Controllers
         }
 
         [HttpGet("{studentID}/schedules", Name = "GetSchedulesByStudentIDAsync")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<WishListResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<GeneratedScheduleResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<WishListResponse>>> GetSchedulesByStudentIDAsync(int studentID, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<GeneratedScheduleResponse>>> GetSchedulesByStudentIDAsync(int studentID, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             if (studentID <= 0)
             {
