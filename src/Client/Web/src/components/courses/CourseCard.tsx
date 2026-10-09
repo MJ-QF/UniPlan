@@ -10,7 +10,7 @@ interface Props {
   disabled?: boolean;
   statusLabel?: string;
   statusVariant?: CourseStatusVariant;
-  prereqCodes?: string[];
+  prereqNames?: string[];
 }
 
 export default function CourseCard({
@@ -20,12 +20,12 @@ export default function CourseCard({
   disabled = false,
   statusLabel,
   statusVariant = "available",
-  prereqCodes,
+  prereqNames,
 }: Props) {
   const showNeededHours =
     course.neededHours !== null && course.neededHours > 0;
 
-  const showPrereqs = prereqCodes && prereqCodes.length > 0;
+  const showPrereqs = prereqNames && prereqNames.length > 0;
 
   return (
     <button
@@ -85,9 +85,9 @@ export default function CourseCard({
         <div className="cc-prereqs">
           <span className="cc-prereqs-label">المتطلبات:</span>
           <div className="cc-prereqs-chips">
-            {prereqCodes.map((code) => (
-              <span key={code} className="cc-prereq-chip">
-                {code}
+            {prereqNames.map((name, idx) => (
+              <span key={idx} className="cc-prereq-chip">
+                {name}
               </span>
             ))}
           </div>

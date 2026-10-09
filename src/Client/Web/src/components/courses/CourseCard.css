@@ -51,6 +51,25 @@
     0 4px 12px rgba(21, 145, 163, 0.08);
 }
 
+/* ✅ المواد المجتازة (selected + not disabled) */
+/* قابلة للنقر — تعطي feedback أوضح */
+.cc-card-selected:not(.cc-card-disabled) {
+  cursor: pointer;
+}
+
+.cc-card-selected:not(.cc-card-disabled):hover {
+  border-color: #1591a3;
+  background: linear-gradient(
+    135deg,
+    rgba(21, 145, 163, 0.12) 0%,
+    rgba(21, 145, 163, 0.05) 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(21, 145, 163, 0.16),
+    0 6px 18px rgba(21, 145, 163, 0.10);
+  transform: translateY(-2px);
+}
+
 /* Disabled */
 .cc-card-disabled {
   cursor: not-allowed;
@@ -277,4 +296,31 @@
     font-size: 13.5px;
     -webkit-line-clamp: 3;
   }
+}
+/* ✅ كل المواد قابلة للاختيار — حتى "غير المتاحة" */
+/* تحسين hover للمواد "غير المتاحة" */
+.cc-card:has(.cc-status-unavailable):not(.cc-card-selected):hover {
+  border-color: rgba(217, 119, 6, 0.45);
+  background: rgba(217, 119, 6, 0.03);
+  box-shadow:
+    0 4px 10px rgba(217, 119, 6, 0.08),
+    0 12px 28px rgba(217, 119, 6, 0.06);
+}
+
+/* ✅ عند اختيار "غير المتاحة" — تبقى بلون برتقالي مميز */
+.cc-card-selected:has(.cc-status-unavailable) {
+  border-color: #d97706;
+  background: linear-gradient(
+    150deg,
+    rgba(217, 119, 6, 0.10) 0%,
+    rgba(217, 119, 6, 0.04) 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(217, 119, 6, 0.14),
+    0 4px 12px rgba(217, 119, 6, 0.10);
+}
+
+.cc-card-selected:has(.cc-status-unavailable) .cc-check {
+  background: #d97706;
+  border-color: #d97706;
 }

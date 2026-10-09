@@ -11,6 +11,7 @@ import { getStudentId } from "../utils/session";
 import CourseList, {
   type CourseListItem,
 } from "../components/courses/CourseList";
+import SuccessToast from "../components/common/SuccessToast";
 
 import "./AcademicRecord.css";
 
@@ -25,7 +26,7 @@ export default function AcademicRecord() {
   const [saving, setSaving] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   /* =========================
      Load Courses + Passed
@@ -41,13 +42,33 @@ export default function AcademicRecord() {
         setLoading(true);
         setErrorMessage("");
 
-        /* ✅ جلب البيانات بالتوازي */
         const [planItems, studentCourses] = await Promise.all([
           getPlanStatus(studentId),
           getStudentCourses(studentId),
         ]);
 
-        /* ✅ استخراج المواد المجتازة */
+        /* ✅ خريطة: code → name */
+        const codeToName = new Map<string, string>();
+
+        planItems.forEach((item) => {
+          if (item.course.courseCode) {
+            codeToName.set(
+              item.course.courseCode,
+              item.course.courseName
+            );
+          }
+        });
+
+        studentCourses.forEach((sc) => {
+          if (sc.course.courseCode) {
+            codeToName.set(
+              sc.course.courseCode,
+              sc.course.courseName
+            );
+          }
+        });
+
+        /* ✅ المواد المجتازة مسبقاً */
         const passedIds = new Set(
           studentCourses
             .filter((sc) => sc.isPassed)
@@ -70,12 +91,17 @@ export default function AcademicRecord() {
             variant = "unavailable";
           }
 
+          const prereqNames = (
+            item.coursePrerequisitesCodes ?? []
+          ).map((code) => codeToName.get(code) ?? code);
+
           return {
             course: item.course,
             statusLabel: label,
             statusVariant: variant,
-            prereqCodes: item.coursePrerequisitesCodes ?? [],
-            disabled: isPassed,
+            prereqNames,
+            // ✅ فقط "غير المتاحة" تبقى disabled
+            // المجتازة قابلة للتعديل
           };
         });
 
@@ -104,9 +130,9 @@ export default function AcademicRecord() {
   }
 
   /* =========================
-     Save
+     Save — بدون انتقال
   ========================= */
-  async function handleContinue() {
+  async function handleSave() {
     if (selectedCourses.length === 0) {
       setErrorMessage("يرجى اختيار مادة واحدة على الأقل.");
       return;
@@ -120,15 +146,10 @@ export default function AcademicRecord() {
     try {
       setSaving(true);
       setErrorMessage("");
-      setSuccessMessage("");
 
       await saveStudentCourses(studentId, selectedCourses);
 
-      setSuccessMessage("تم حفظ المواد بنجاح.");
-
-      setTimeout(() => {
-        navigate("/wishlists", { replace: true });
-      }, 800);
+      setShowToast(true);
     } catch (error) {
       setErrorMessage("تعذر حفظ المواد.");
     } finally {
@@ -157,11 +178,6 @@ export default function AcademicRecord() {
           <div className="academic-alert-error">{errorMessage}</div>
         )}
 
-        {/* Success */}
-        {successMessage && (
-          <div className="academic-alert-success">{successMessage}</div>
-        )}
-
         {/* Courses */}
         <CourseList
           items={items}
@@ -171,19 +187,27 @@ export default function AcademicRecord() {
           emptyMessage="لا توجد مواد متاحة حاليًا."
         />
 
-        {/* Continue */}
+        {/* Save Button */}
         {!loading && items.length > 0 && (
           <button
             type="button"
             className="continue-btn"
-            onClick={handleContinue}
+            onClick={handleSave}
             disabled={saving}
           >
-            {saving ? "جاري الحفظ..." : "متابعة"}
+            {saving ? "جاري الحفظ..." : "حفظ"}
           </button>
         )}
 
       </div>
+
+      {/* Success Toast */}
+      <SuccessToast
+        show={showToast}
+        message="تم حفظ المواد بنجاح"
+        onClose={() => setShowToast(false)}
+      />
+
     </div>
   );
 }

@@ -18,6 +18,8 @@ export default function WishListCard({
     ? `${getTermTypeLabel(term.termType)} — ${term.termYear}`
     : "فصل غير محدد";
 
+  const isEditable = wishList.allowUpdate;
+
   return (
     <article className="wl-card">
 
@@ -41,23 +43,14 @@ export default function WishListCard({
           </svg>
           <span>{termLabel}</span>
         </div>
-
-        {/* Status Badge */}
-        <span
-          className={`wl-badge ${
-            wishList.allowUpdate ? "wl-badge-editable" : "wl-badge-locked"
-          }`}
-        >
-          {wishList.allowUpdate ? "قابلة للتعديل" : "للعرض فقط"}
-        </span>
       </div>
 
       {/* Body */}
       <div className="wl-card-body">
         <p className="wl-card-desc">
-          {wishList.allowUpdate
-            ? "يمكنك تعديل المواد في هذه القائمة"
-            : "تم بناء الجدول، لا يمكن تعديل المواد"}
+          {isEditable
+            ? "قائمة قيد الإعداد — يمكنك تعديل المواد ثم إنشاء الجدول"
+            : "تم بناء الجدول — يمكنك عرضه فقط"}
         </p>
       </div>
 
@@ -68,7 +61,7 @@ export default function WishListCard({
           className="wl-btn wl-btn-primary"
           onClick={onOpen}
         >
-          فتح القائمة
+          {isEditable ? "فتح القائمة وإنشاء جدول" : "عرض الجدول"}
         </button>
 
         <button
@@ -98,7 +91,7 @@ export default function WishListCard({
 }
 
 /* =========================
-   Helper: Term Type Label
+   Helper
 ========================= */
 function getTermTypeLabel(termType: string | null): string {
   if (!termType) return "فصل";

@@ -1,0 +1,377 @@
+/* =========================
+   Wish List Detail Page
+========================= */
+
+.wld-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px 120px;
+
+  direction: rtl;
+
+  animation: wldIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes wldIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   Header
+========================= */
+
+.wld-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 28px;
+}
+
+.wld-back-btn {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  border: 1.5px solid #d5dde2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #2b3f47;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.wld-back-btn:hover {
+  border-color: #1591a3;
+  background: #f0f8fa;
+  color: #1591a3;
+  transform: translateX(-2px);
+}
+
+.wld-header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.wld-title {
+  margin: 0 0 6px;
+
+  color: #0b1a20;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.wld-subtitle {
+  margin: 0;
+
+  color: #718087;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.wld-delete-btn {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  border: 1.5px solid rgba(220, 76, 76, 0.25);
+  border-radius: 12px;
+
+  background: transparent;
+  color: #dc4c4c;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.wld-delete-btn:hover:not(:disabled) {
+  border-color: #dc4c4c;
+  background: rgba(220, 76, 76, 0.08);
+}
+
+.wld-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Alerts
+========================= */
+
+.wld-alert-error {
+  padding: 13px 18px;
+  margin-bottom: 20px;
+
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+  border-radius: 12px;
+
+  background: #fff1f2;
+  color: #9f1239;
+
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* =========================
+   Read-only Notice
+========================= */
+
+.wld-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 18px;
+  margin-bottom: 24px;
+
+  border: 1px solid rgba(21, 145, 163, 0.25);
+  border-radius: 12px;
+
+  background: rgba(21, 145, 163, 0.06);
+  color: #117f90;
+
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.wld-notice svg {
+  flex-shrink: 0;
+  color: #1591a3;
+}
+
+/* =========================
+   Content
+========================= */
+
+.wld-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Section */
+.wld-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wld-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 4px;
+}
+
+.wld-section-title {
+  margin: 0;
+
+  color: #0b1a20;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.wld-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 28px;
+  height: 26px;
+
+  padding: 0 10px;
+
+  border-radius: 999px;
+
+  background: rgba(113, 128, 135, 0.12);
+  color: #516770;
+
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.wld-section-count.wld-count-primary {
+  background: rgba(21, 145, 163, 0.14);
+  color: #117f90;
+}
+
+/* Divider */
+.wld-divider {
+  height: 1px;
+
+  margin: 4px 0;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #e5eaee 15%,
+    #e5eaee 85%,
+    transparent 100%
+  );
+
+  position: relative;
+}
+
+.wld-divider::after {
+  content: "";
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+}
+
+/* Empty / Loading */
+.wld-empty,
+.wld-loading {
+  padding: 60px 20px;
+  text-align: center;
+
+  color: #718087;
+  font-size: 14.5px;
+}
+
+.wld-spinner {
+  width: 36px;
+  height: 36px;
+
+  margin: 0 auto 14px;
+
+  border: 3px solid rgba(21, 145, 163, 0.15);
+  border-top-color: #1591a3;
+  border-radius: 50%;
+
+  animation: wldSpin 0.7s linear infinite;
+}
+
+@keyframes wldSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer */
+.wld-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+
+  max-width: 1100px;
+  margin: 0 auto;
+
+  padding: 16px 32px;
+
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+
+  border-top: 1px solid #e5eaee;
+
+  box-shadow: 0 -8px 24px rgba(11, 26, 32, 0.06);
+}
+
+.wld-save-btn {
+  width: 100%;
+  min-height: 52px;
+
+  border: none;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 24px rgba(21, 145, 163, 0.30);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.wld-save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(21, 145, 163, 0.42);
+  filter: brightness(1.05);
+}
+
+.wld-save-btn:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+.wld-save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wld-page {
+    padding: 28px 18px 140px;
+  }
+
+  .wld-title {
+    font-size: 22px;
+  }
+
+  .wld-subtitle {
+    font-size: 13px;
+  }
+
+  .wld-section-title {
+    font-size: 15.5px;
+  }
+
+  .wld-footer {
+    padding: 14px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wld-page {
+    animation: none;
+  }
+}

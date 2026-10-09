@@ -8,7 +8,7 @@ export interface CourseListItem {
   course: CourseResponse;
   statusLabel?: string;
   statusVariant?: CourseStatusVariant;
-  prereqCodes?: string[];
+  prereqNames?: string[];
   disabled?: boolean;
 }
 
@@ -18,6 +18,7 @@ interface Props {
   onToggle: (courseId: number) => void;
   loading?: boolean;
   emptyMessage?: string;
+  enableScroll?: boolean;
 }
 
 export default function CourseList({
@@ -26,6 +27,7 @@ export default function CourseList({
   onToggle,
   loading = false,
   emptyMessage = "لا توجد مواد متاحة حالياً.",
+  enableScroll = true,
 }: Props) {
   if (loading) {
     return (
@@ -45,7 +47,9 @@ export default function CourseList({
   }
 
   return (
-    <div className="cl-list">
+    <div
+      className={`cl-list ${enableScroll ? "" : "cl-list-static"}`}
+    >
       {items.map((item) => (
         <CourseCard
           key={item.course.courseID}
@@ -55,7 +59,7 @@ export default function CourseList({
           disabled={item.disabled}
           statusLabel={item.statusLabel}
           statusVariant={item.statusVariant}
-          prereqCodes={item.prereqCodes}
+          prereqNames={item.prereqNames}
         />
       ))}
     </div>

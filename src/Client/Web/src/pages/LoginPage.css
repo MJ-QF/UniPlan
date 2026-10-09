@@ -448,6 +448,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  
 
   display: flex;
   align-items: center;
@@ -658,7 +659,7 @@ body {
     min-height: auto;
     padding: 42px 24px;
 
-    /* ✅ على الموبايل: radius على الأعلى */
+    /* على الموبايل: radius على الأعلى */
     border-top-right-radius: 32px;
     border-top-left-radius: 32px;
     border-bottom-right-radius: 0;
