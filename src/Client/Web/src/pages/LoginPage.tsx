@@ -8,8 +8,99 @@ import type { LoginRequest } from "../types/auth";
 import { getStudentByAccountId } from "../api/studentApi";
 import { saveStudentId } from "../utils/session";
 
-import logo from "../assets/UniPlan.png";
+/* =========================
+   Icons
+========================= */
+function CapIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 9l10-5 10 5-10 5L2 9z" />
+      <path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5" />
+      <path d="M22 9v6" />
+    </svg>
+  );
+}
 
+/* =========================
+   Floating tiles
+========================= */
+function BrandIcons() {
+  return (
+    <div className="brand-icons" aria-hidden="true">
+      <span
+        className="float-tile tile-teal tile-lg"
+        style={{ insetInlineStart: "4%", top: "18%" }}
+      >
+        <CapIcon />
+      </span>
+
+      <span
+        className="float-tile tile-paper tile-md"
+        style={{ insetInlineStart: "38%", top: "4%" }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z" />
+          <path d="M4 19a2 2 0 012-2h13" />
+          <path d="M9 7h6" />
+        </svg>
+      </span>
+
+      <span
+        className="float-tile tile-gold tile-sm"
+        style={{ insetInlineStart: "62%", top: "40%" }}
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7L12 3z" />
+        </svg>
+      </span>
+
+      <span
+        className="float-tile tile-soft tile-md"
+        style={{ insetInlineStart: "26%", top: "56%" }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M5 20V12" />
+          <path d="M12 20V6" />
+          <path d="M19 20v-9" />
+        </svg>
+      </span>
+
+      <span
+        className="float-tile tile-outline tile-sm"
+        style={{ insetInlineStart: "78%", top: "8%" }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M3 10h18M8 3v4M16 3v4" />
+        </svg>
+      </span>
+
+      <span
+        className="float-tile tile-teal tile-sm"
+        style={{ insetInlineStart: "84%", top: "62%" }}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 5h16v11H9l-5 4V5z" />
+        </svg>
+      </span>
+
+      <span className="float-dot dot-gold" style={{ insetInlineStart: "20%", top: "6%" }} />
+      <span className="float-dot dot-soft" style={{ insetInlineStart: "56%", top: "78%" }} />
+      <span className="float-dot dot-ring" style={{ insetInlineStart: "70%", top: "26%" }} />
+    </div>
+  );
+}
+
+/* =========================
+   Page
+========================= */
 export default function LoginPage() {
   const navigate = useNavigate();
 
@@ -82,95 +173,65 @@ export default function LoginPage() {
     }
   };
 
+  const features = [
+    "متابعة السجل الأكاديمي لحظة بلحظة",
+    "تسجيل المقررات بخطوات بسيطة",
+    "تواصل مباشر مع المرشد الأكاديمي",
+  ];
+
   return (
-    <div className="login-page-wrapper">
+    <main className="login-page-wrapper">
 
-      {/* =========================
-          Brand Section — داكن (يسار)
-      ========================= */}
-
-      <div className="login-brand-section">
+      <section className="login-brand-section" aria-label="عن المنصة">
         <div className="brand-content">
+          <BrandIcons />
 
           <h1 className="brand-title">
-            خطط مسيرتك
+            رحلتك الجامعية،
             <br />
-            الأكاديمية
-            <br />
-            بذكاء
+            في مكان واحد.
           </h1>
 
           <p className="brand-description">
-            منصة متكاملة لإدارة جداولك الدراسية
-            واختيار موادك الأكاديمية بكل سهولة ويسر
+            منصة صُممت لتمنحك وضوحاً كاملاً في مسيرتك الدراسية،
+            من أول مقرر حتى يوم التخرج.
           </p>
 
           <ul className="brand-features-list">
-            <li className="brand-feature-item">
-              <div className="feature-icon-circle">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
-              <span>إدارة المواد والجداول الدراسية</span>
-            </li>
-
-            <li className="brand-feature-item">
-              <div className="feature-icon-circle">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
-              <span>متابعة التقدم الأكاديمي</span>
-            </li>
-
-            <li className="brand-feature-item">
-              <div className="feature-icon-circle">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              </div>
-              <span>التخطيط للفصول القادمة</span>
-            </li>
+            {features.map((f) => (
+              <li key={f} className="brand-feature-item">
+                <span className="feature-icon-circle" aria-hidden="true" />
+                {f}
+              </li>
+            ))}
           </ul>
-
         </div>
-      </div>
+      </section>
 
-      {/* =========================
-          Form Section — أبيض (يمين)
-      ========================= */}
-
-      <div className="login-form-section">
+      <section className="login-form-section">
         <div className="form-card">
 
-          {/* ✅ اللوغو داخل قسم الفورم — بحجم مضبوط */}
           <div className="form-logo-wrapper">
-            <img
-              src={logo}
-              alt="UniPlan"
-              className="form-logo-img"
-            />
+            <span className="form-emblem" aria-hidden="true">
+              <CapIcon />
+            </span>
           </div>
 
-          <div className="form-header">
+          <header className="form-header">
             <h2 className="form-title">تسجيل الدخول</h2>
             <p className="form-subtitle">
-              مرحباً بعودتك! أدخل بياناتك للمتابعة
+              أهلاً بعودتك، أدخل بياناتك للمتابعة.
             </p>
-          </div>
+          </header>
 
           {errorMessage && (
-            <div className="login-alert-error">
-              {errorMessage}
-            </div>
+            <div className="login-alert-error">{errorMessage}</div>
           )}
 
           <form className="login-form" onSubmit={handleLogin}>
 
-            {/* Username */}
             <div className="form-group">
-              <label className="form-label" htmlFor="accountName">
+              <label htmlFor="accountName" className="form-label">
                 اسم المستخدم
               </label>
 
@@ -185,26 +246,17 @@ export default function LoginPage() {
                   disabled={loading}
                   autoComplete="username"
                 />
-
                 <span className="input-icon input-icon-right" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
                   </svg>
                 </span>
               </div>
             </div>
 
-            {/* Password */}
             <div className="form-group">
-              <label className="form-label" htmlFor="password">
+              <label htmlFor="password" className="form-label">
                 كلمة المرور
               </label>
 
@@ -219,21 +271,12 @@ export default function LoginPage() {
                   disabled={loading}
                   autoComplete="current-password"
                 />
-
                 <span className="input-icon input-icon-right" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <rect x="5" y="11" width="14" height="10" rx="2" />
+                    <path d="M8 11V7a4 4 0 018 0v4" />
                   </svg>
                 </span>
-
                 <button
                   type="button"
                   className="toggle-password-btn"
@@ -242,35 +285,40 @@ export default function LoginPage() {
                   aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
                 >
                   {showPassword ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                       <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                      <circle cx="12" cy="12" r="3" />
                     </svg>
                   )}
                 </button>
               </div>
             </div>
 
-            <button type="submit" className="submit-btn" disabled={loading}>
-              {loading ? "جاري التحقق..." : "تسجيل الدخول"}
+            <button
+              type="submit"
+              className="submit-btn"
+              disabled={loading}
+            >
+              {loading ? "جاري التحقق..." : "دخول"}
             </button>
+
           </form>
 
-          <div className="form-footer-link">
+          <p className="form-footer-link">
             ليس لديك حساب؟{" "}
             <Link to="/register" className="register-link">
-              إنشاء حساب
+              أنشئ حساباً
             </Link>
-          </div>
+          </p>
 
         </div>
-      </div>
+      </section>
 
-    </div>
+    </main>
   );
 }
