@@ -1,0 +1,228 @@
+/* =========================
+   Create Schedule Dialog
+========================= */
+
+.csd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+
+  background: rgba(11, 26, 32, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  animation: csdFade 0.2s ease both;
+  direction: rtl;
+
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+
+  overflow-y: auto;
+}
+
+.csd-dialog {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+
+  overflow-y: auto;
+
+  padding: 28px;
+
+  background: #ffffff;
+  border-radius: 20px;
+
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.25);
+
+  animation: csdPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Header */
+.csd-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eef2f4;
+}
+
+.csd-header-icon {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+}
+
+.csd-header-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.csd-title {
+  margin: 0 0 4px;
+
+  color: #0b1a20;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.csd-subtitle {
+  margin: 0;
+
+  color: #718087;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Body */
+.csd-body {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.csd-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.csd-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  color: #2b3f47;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.csd-label-hint {
+  color: #a5b0b5;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Error */
+.csd-error {
+  padding: 12px 16px;
+
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+  border-radius: 10px;
+
+  background: #fff1f2;
+  color: #9f1239;
+
+  font-size: 13.5px;
+  line-height: 1.55;
+
+  word-break: break-word;
+}
+
+/* Actions */
+.csd-actions {
+  display: flex;
+  gap: 10px;
+
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #eef2f4;
+}
+
+.csd-btn {
+  flex: 1;
+
+  min-height: 48px;
+  padding: 0 20px;
+
+  border: none;
+  border-radius: 12px;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    filter 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.csd-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.csd-btn-ghost {
+  background: #f4f7f8;
+  color: #516770;
+  border: 1px solid #e5eaee;
+}
+
+.csd-btn-ghost:hover:not(:disabled) {
+  background: #e9eef1;
+}
+
+.csd-btn-primary {
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(21, 145, 163, 0.28);
+}
+
+.csd-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  filter: brightness(1.05);
+  box-shadow: 0 12px 28px rgba(21, 145, 163, 0.38);
+}
+
+/* Animations */
+@keyframes csdFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes csdPop {
+  from { opacity: 0; transform: scale(0.94) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .csd-overlay {
+    padding: 16px;
+    align-items: flex-start;
+  }
+
+  .csd-dialog {
+    padding: 22px 18px;
+    max-height: calc(100vh - 32px);
+  }
+
+  .csd-actions {
+    flex-direction: column;
+  }
+}

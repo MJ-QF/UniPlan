@@ -1,0 +1,131 @@
+/* =========================
+   Schedules List Page
+========================= */
+
+.sl-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+
+  direction: rtl;
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+
+  animation: slIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.sl-header {
+  margin-bottom: 32px;
+}
+
+.sl-title {
+  margin: 0 0 8px;
+
+  color: #0b1a20;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.sl-subtitle {
+  margin: 0;
+
+  color: #516770;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Alert */
+.sl-alert-error {
+  padding: 14px 18px;
+  margin-bottom: 20px;
+
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+  border-radius: 12px;
+
+  background: #fff1f2;
+  color: #9f1239;
+
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* Grid */
+.sl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+/* Skeleton */
+.sl-skeleton {
+  min-height: 180px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #f4f7f8 0%,
+    #e9eef1 50%,
+    #f4f7f8 100%
+  );
+  background-size: 200% 100%;
+  animation: slShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes slShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Load More */
+.sl-load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.sl-load-more {
+  min-height: 48px;
+  padding: 0 32px;
+
+  border: 1.5px solid #1591a3;
+  border-radius: 12px;
+
+  background: transparent;
+  color: #117f90;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.sl-load-more:hover:not(:disabled) {
+  background: #1591a3;
+  color: #ffffff;
+  transform: translateY(-1.5px);
+}
+
+.sl-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sl-page { padding: 28px 18px 60px; }
+  .sl-title { font-size: 26px; }
+  .sl-grid { grid-template-columns: 1fr; }
+}

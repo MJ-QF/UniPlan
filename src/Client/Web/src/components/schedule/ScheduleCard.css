@@ -1,0 +1,159 @@
+/* =========================
+   Schedule Card
+========================= */
+
+.sc-card {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 22px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 16px;
+
+  box-shadow:
+    0 1px 3px rgba(11, 26, 32, 0.04),
+    0 8px 24px rgba(11, 26, 32, 0.05);
+
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.sc-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(21, 145, 163, 0.4);
+  box-shadow:
+    0 4px 10px rgba(11, 26, 32, 0.06),
+    0 16px 36px rgba(11, 26, 32, 0.08);
+}
+
+/* Header */
+.sc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sc-number-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 40px;
+  height: 40px;
+
+  padding: 0 12px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+
+  box-shadow: 0 6px 16px rgba(21, 145, 163, 0.28);
+}
+
+.sc-term {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #0b1a20;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.sc-term-icon {
+  width: 18px;
+  height: 18px;
+  color: #1591a3;
+  flex-shrink: 0;
+}
+
+/* Body */
+.sc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sc-label {
+  margin: 0;
+
+  color: #718087;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.sc-value {
+  margin: 0;
+
+  color: #0b1a20;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+/* Action Button */
+.sc-open-btn {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 10px;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(21, 145, 163, 0.25);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.sc-open-btn:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 10px 24px rgba(21, 145, 163, 0.35);
+  filter: brightness(1.05);
+}
+
+.sc-open-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .sc-card { padding: 18px; gap: 14px; }
+  .sc-value { font-size: 16px; }
+}

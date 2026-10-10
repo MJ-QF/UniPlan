@@ -9,6 +9,9 @@ import WishListsListPage from "../pages/wishlist/WishListsListPage";
 import WishListCreatePage from "../pages/wishlist/WishListCreatePage";
 import WishListDetailPage from "../pages/wishlist/WishListDetailPage";
 
+import SchedulesListPage from "../pages/schedule/SchedulesListPage";
+import ScheduleDetailPage from "../pages/schedule/ScheduleDetailPage";
+
 /* ✅ حماية Routes — تتحقق من وجود studentId */
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const studentId = localStorage.getItem("uniplan.studentId");
@@ -70,19 +73,14 @@ export const router = createBrowserRouter([
         element: <WishListDetailPage />,
       },
 
-      /* Schedule — placeholder */
+      /* Schedules */
       {
-        path: "schedule",
-        element: (
-          <div style={{ padding: "80px 20px", textAlign: "center" }}>
-            <h2 style={{ color: "#0b1a20", fontSize: "28px", marginBottom: "12px" }}>
-              الجدول الدراسي
-            </h2>
-            <p style={{ color: "#516770", fontSize: "16px" }}>
-              قريباً...
-            </p>
-          </div>
-        ),
+        path: "schedules",
+        element: <SchedulesListPage />,
+      },
+      {
+        path: "schedules/:listId/:scheduleNum",
+        element: <ScheduleDetailPage />,
       },
     ],
   },

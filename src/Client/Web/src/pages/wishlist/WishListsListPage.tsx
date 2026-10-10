@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getStudentWishLists, deleteWishList } from "../../api/wishLists";import type { WishListResponse } from "../../types/wishList";
+import { getStudentWishLists, deleteWishList } from "../../api/wishLists";
+import { createSchedule } from "../../api/schedulesApi";
+import type { WishListResponse } from "../../types/wishList";
 import { getStudentId } from "../../utils/session";
+import { getScheduleErrorMessage } from "../../utils/errorMessages";
 
 import WishListCard from "../../components/wishlist/WishListCard";
 import ConfirmDialog from "../../components/wishlist/ConfirmDialog";
+import CreateScheduleDialog from "../../components/schedule/CreateScheduleDialog";
+import SuccessToast from "../../components/common/SuccessToast";
 
 import "./WishListsListPage.css";
 
@@ -21,6 +26,13 @@ export default function WishListsListPage() {
 
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const [scheduleForWishListId, setScheduleForWishListId] =
+    useState<number | null>(null);
+  const [creatingSchedule, setCreatingSchedule] = useState(false);
+  const [scheduleError, setScheduleError] = useState("");
+
+  const [showToast, setShowToast] = useState(false);
 
   /* =========================
      Load Wish Lists
@@ -51,7 +63,7 @@ export default function WishListsListPage() {
   }, []);
 
   /* =========================
-     Delete Wish List
+     Delete
   ========================= */
   async function handleConfirmDelete() {
     if (pendingDeleteId === null) return;
@@ -59,11 +71,9 @@ export default function WishListsListPage() {
     try {
       setDeleting(true);
       setErrorMessage("");
-      setSuccessMessage("");
 
       await deleteWishList(pendingDeleteId);
 
-      // إزالة من القائمة محلياً
       setWishLists((current) =>
         current.filter((w) => w.wishListID !== pendingDeleteId)
       );
@@ -80,10 +90,56 @@ export default function WishListsListPage() {
     }
   }
 
+  /* =========================
+     Create Schedule
+  ========================= */
+  async function handleCreateSchedule(data: {
+    days: number[];
+    startTime: string;
+    endTime: string;
+  }) {
+    if (scheduleForWishListId === null) return;
+
+    try {
+      setCreatingSchedule(true);
+      setScheduleError("");
+
+      const result = await createSchedule({
+        wishListID: scheduleForWishListId,
+        days: data.days,
+        startTime: data.startTime,
+        endTime: data.endTime,
+      });
+
+      const listId = result.wishListInfo.wishListID;
+
+      setScheduleForWishListId(null);
+      setScheduleError("");
+
+      await loadWishLists();
+
+      setShowToast(true);
+
+      setTimeout(() => {
+        navigate(`/schedules/${listId}/1`);
+      }, 900);
+
+    } catch (error) {
+      console.error("Failed to create schedule:", error);
+
+      /* ✅ رسالة بسيطة للمستخدم */
+      setScheduleError(getScheduleErrorMessage(error));
+    } finally {
+      setCreatingSchedule(false);
+    }
+  }
+
+  /* =========================
+     UI
+  ========================= */
   return (
     <div className="wl-page">
 
-      {/* Header */}
       <header className="wl-header">
         <div>
           <h1 className="wl-title">قوائم الرغبات</h1>
@@ -113,7 +169,6 @@ export default function WishListsListPage() {
         </button>
       </header>
 
-      {/* Alerts */}
       {errorMessage && (
         <div className="wl-alert-error">{errorMessage}</div>
       )}
@@ -121,7 +176,6 @@ export default function WishListsListPage() {
         <div className="wl-alert-success">{successMessage}</div>
       )}
 
-      {/* Loading */}
       {loading && (
         <div className="wl-loading">
           <div className="wl-spinner" />
@@ -129,7 +183,6 @@ export default function WishListsListPage() {
         </div>
       )}
 
-      {/* Empty */}
       {!loading && wishLists.length === 0 && !errorMessage && (
         <div className="wl-empty">
           <div className="wl-empty-icon">
@@ -159,21 +212,32 @@ export default function WishListsListPage() {
         </div>
       )}
 
-      {/* Lists */}
       {!loading && wishLists.length > 0 && (
         <div className="wl-grid">
           {wishLists.map((wishList) => (
             <WishListCard
               key={wishList.wishListID}
               wishList={wishList}
-              onOpen={() => navigate(`/wishlists/${wishList.wishListID}`)}
+              onOpen={() => {
+  if (wishList.allowUpdate) {
+    navigate(`/wishlists/${wishList.wishListID}`);
+  } else {
+    /* ✅ الجدول منشأ → نروح مباشرة للجدول */
+    navigate(`/schedules/${wishList.wishListID}/1`);
+  }
+}}
               onDelete={() => setPendingDeleteId(wishList.wishListID)}
+              onCreateSchedule={() =>
+                setScheduleForWishListId(wishList.wishListID)
+              }
+              onViewSchedule={() =>
+                navigate(`/schedules/${wishList.wishListID}/1`)
+              }
             />
           ))}
         </div>
       )}
 
-      {/* Confirm Delete Dialog */}
       {pendingDeleteId !== null && (
         <ConfirmDialog
           title="حذف القائمة"
@@ -185,6 +249,24 @@ export default function WishListsListPage() {
           isProcessing={deleting}
         />
       )}
+
+      {scheduleForWishListId !== null && (
+        <CreateScheduleDialog
+          isLoading={creatingSchedule}
+          onSubmit={handleCreateSchedule}
+          onCancel={() => {
+            setScheduleForWishListId(null);
+            setScheduleError("");
+          }}
+          serverError={scheduleError}
+        />
+      )}
+
+      <SuccessToast
+        show={showToast}
+        message="تم إنشاء الجدول بنجاح"
+        onClose={() => setShowToast(false)}
+      />
 
     </div>
   );

@@ -73,8 +73,14 @@
 /* Actions */
 .wl-card-actions {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 10px;
+}
+
+.wl-card-actions-primary {
+  flex: 1;
+  display: flex;
+  gap: 8px;
 }
 
 .wl-btn {
@@ -83,23 +89,27 @@
   justify-content: center;
   gap: 6px;
 
-  padding: 11px 16px;
+  padding: 11px 14px;
 
   border: none;
   border-radius: 10px;
 
   font-family: inherit;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.2px;
 
+  white-space: nowrap;
   cursor: pointer;
 
   transition:
     background-color 0.2s ease,
     transform 0.15s ease,
-    filter 0.2s ease;
+    filter 0.2s ease,
+    border-color 0.2s ease;
 }
 
+/* Primary */
 .wl-btn-primary {
   flex: 1;
 
@@ -118,6 +128,22 @@
   transform: translateY(0);
 }
 
+/* Ghost */
+.wl-btn-ghost {
+  flex: 1;
+
+  background: #ffffff;
+  color: #117f90;
+
+  border: 1.5px solid rgba(21, 145, 163, 0.35);
+}
+
+.wl-btn-ghost:hover {
+  background: #f0f8fa;
+  border-color: #1591a3;
+}
+
+/* Danger */
 .wl-btn-danger {
   padding: 11px 13px;
 
@@ -125,9 +151,17 @@
   color: #dc4c4c;
 
   border: 1.5px solid rgba(220, 76, 76, 0.25);
+  flex-shrink: 0;
 }
 
 .wl-btn-danger:hover {
   background: rgba(220, 76, 76, 0.08);
   border-color: rgba(220, 76, 76, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .wl-card-actions-primary {
+    flex-direction: column;
+  }
 }

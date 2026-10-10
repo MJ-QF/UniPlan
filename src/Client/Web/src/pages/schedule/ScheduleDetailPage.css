@@ -1,0 +1,143 @@
+/* =========================
+   Schedule Detail Page
+========================= */
+
+.sd-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+
+  direction: rtl;
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+
+  animation: sdIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes sdIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.sd-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  margin-bottom: 28px;
+}
+
+.sd-back-btn {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  border: 1.5px solid #d5dde2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #2b3f47;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.sd-back-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.sd-back-btn:hover {
+  border-color: #1591a3;
+  background: #f0f8fa;
+  color: #1591a3;
+  transform: translateX(-2px);
+}
+
+.sd-header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sd-title {
+  margin: 0 0 6px;
+
+  color: #0b1a20;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.sd-subtitle {
+  margin: 0;
+
+  color: #718087;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* Alert */
+.sd-alert-error {
+  padding: 14px 18px;
+  margin-bottom: 20px;
+
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+  border-radius: 12px;
+
+  background: #fff1f2;
+  color: #9f1239;
+
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* Loading */
+.sd-loading {
+  padding: 80px 20px;
+  text-align: center;
+  color: #516770;
+}
+
+.sd-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 16px;
+  border: 3px solid rgba(21, 145, 163, 0.15);
+  border-top-color: #1591a3;
+  border-radius: 50%;
+  animation: sdSpin 0.7s linear infinite;
+}
+
+@keyframes sdSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Empty */
+.sd-empty {
+  padding: 80px 20px;
+  text-align: center;
+
+  color: #718087;
+  font-size: 14.5px;
+
+  background: #f8fafb;
+  border: 1.5px dashed #d5dde2;
+  border-radius: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sd-page { padding: 28px 18px 60px; }
+  .sd-title { font-size: 22px; }
+}

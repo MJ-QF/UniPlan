@@ -45,12 +45,12 @@ export default function Navbar() {
 
           <li>
             <NavLink
-              to="/schedule"
+              to="/schedules"
               className={({ isActive }) =>
                 `navbar-link ${isActive ? "active" : ""}`
               }
             >
-              الجدول الدراسي
+              الجداول الدراسية
             </NavLink>
           </li>
         </ul>

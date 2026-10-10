@@ -7,7 +7,10 @@ import {
   syncWishListCourses,
   deleteWishList,
 } from "../../api/wishLists";
-import { getPlanStatus } from "../../api/studentApi";
+import {
+  getPlanStatus,
+  type PlanStatusItem,
+} from "../../api/studentApi";
 import { getStudentId } from "../../utils/session";
 
 import type { WishListResponse } from "../../types/wishList";
@@ -60,23 +63,13 @@ export default function WishListDetailPage() {
         setLoading(true);
         setErrorMessage("");
 
-        const [listData, listItems, planItems] = await Promise.all([
-          getWishListById(listId),
-          getWishListItems(listId),
-          getPlanStatus(studentId),
-        ]);
+        /* 1️⃣ تفاصيل القائمة */
+        const listData = await getWishListById(listId);
 
         setWishList(listData);
 
-        const codeToName = new Map<string, string>();
-        planItems.forEach((item) => {
-          if (item.course.courseCode) {
-            codeToName.set(
-              item.course.courseCode,
-              item.course.courseName
-            );
-          }
-        });
+        /* 2️⃣ مواد القائمة */
+        const listItems = await getWishListItems(listId);
 
         const currentCourseIds = listItems
           .map((li) => li.course?.courseID)
@@ -84,7 +77,9 @@ export default function WishListDetailPage() {
 
         setSelectedCourses(currentCourseIds);
 
-        /* ✅ allowUpdate = false → عرض فقط */
+        /* =========================
+           3️⃣ allowUpdate = false → عرض فقط
+        ========================= */
         if (!listData.allowUpdate) {
           const onlyItems: CourseListItem[] = listItems
             .filter((li) => li.course !== null)
@@ -98,7 +93,22 @@ export default function WishListDetailPage() {
           return;
         }
 
-        /* ✅ allowUpdate = true → كل مواد الخطة */
+        /* =========================
+           4️⃣ allowUpdate = true → نجيب planStatus
+        ========================= */
+        const planItems: PlanStatusItem[] = await getPlanStatus(studentId);
+
+        /* خريطة code → name */
+        const codeToName = new Map<string, string>();
+        planItems.forEach((item) => {
+          if (item.course.courseCode) {
+            codeToName.set(
+              item.course.courseCode,
+              item.course.courseName
+            );
+          }
+        });
+
         const built: CourseListItem[] = planItems.map((item) => {
           const prereqNames = (
             item.coursePrerequisitesCodes ?? []
@@ -188,7 +198,6 @@ export default function WishListDetailPage() {
 
   const allowUpdate = wishList?.allowUpdate ?? false;
 
-  /* ✅ التقسيم */
   const selectedItems = items.filter((item) =>
     selectedCourses.includes(item.course.courseID)
   );
@@ -209,8 +218,6 @@ export default function WishListDetailPage() {
           aria-label="رجوع"
         >
           <svg
-            width="20"
-            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -227,8 +234,8 @@ export default function WishListDetailPage() {
           <h1 className="wld-title">{termLabel}</h1>
           <p className="wld-subtitle">
             {allowUpdate
-              ? "قائمة قيد الإعداد — يمكنك تعديل المواد ثم إنشاء الجدول"
-              : "تم بناء الجدول — يمكنك عرضه فقط"}
+              ? "قائمة قيد الإعداد — يمكنك تعديل المواد"
+              : "تم بناء الجدول — لا يمكن تعديل المواد"}
           </p>
         </div>
 
@@ -240,8 +247,6 @@ export default function WishListDetailPage() {
           aria-label="حذف القائمة"
         >
           <svg
-            width="18"
-            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -294,7 +299,6 @@ export default function WishListDetailPage() {
       {!loading && (
         <div className="wld-content">
 
-          {/* Selected */}
           {selectedItems.length > 0 && (
             <section className="wld-section">
               <header className="wld-section-header">
@@ -313,18 +317,16 @@ export default function WishListDetailPage() {
             </section>
           )}
 
-          {/* Divider */}
-          {selectedItems.length > 0 && availableItems.length > 0 && (
-            <div className="wld-divider" />
-          )}
+          {allowUpdate &&
+            selectedItems.length > 0 &&
+            availableItems.length > 0 && (
+              <div className="wld-divider" />
+            )}
 
-          {/* Available */}
-          {availableItems.length > 0 && (
+          {allowUpdate && availableItems.length > 0 && (
             <section className="wld-section">
               <header className="wld-section-header">
-                <h2 className="wld-section-title">
-                  {allowUpdate ? "المواد المتاحة" : "باقي المواد"}
-                </h2>
+                <h2 className="wld-section-title">المواد المتاحة</h2>
                 <span className="wld-section-count">
                   {availableItems.length}
                 </span>
@@ -333,13 +335,12 @@ export default function WishListDetailPage() {
               <CourseList
                 items={availableItems}
                 selectedIds={selectedCourses}
-                onToggle={allowUpdate ? handleToggle : () => {}}
+                onToggle={handleToggle}
                 enableScroll={false}
               />
             </section>
           )}
 
-          {/* Empty */}
           {selectedItems.length === 0 && availableItems.length === 0 && (
             <div className="wld-empty">
               <p>لا توجد مواد في هذه القائمة.</p>
@@ -370,7 +371,7 @@ export default function WishListDetailPage() {
         onClose={() => setShowToast(false)}
       />
 
-      {/* Delete */}
+      {/* Delete Dialog */}
       {showDeleteDialog && (
         <ConfirmDialog
           title="حذف القائمة"
@@ -400,6 +401,9 @@ function formatTermType(termType: string | null): string {
     Fall: "الفصل الأول",
     Spring: "الفصل الثاني",
     Summer: "الفصل الصيفي",
+    الثاني: "الفصل الثاني",
+    الأول: "الفصل الأول",
+    الصيفي: "الفصل الصيفي",
   };
 
   return map[termType] ?? termType;

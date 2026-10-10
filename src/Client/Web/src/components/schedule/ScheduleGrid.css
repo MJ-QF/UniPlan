@@ -1,0 +1,214 @@
+/* =========================
+   Schedule Grid
+========================= */
+
+.sg-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.sg-grid {
+  display: grid;
+  grid-template-columns: 60px repeat(7, minmax(90px, 1fr));
+  grid-template-rows: 44px repeat(24, 40px);
+  gap: 1px;
+
+  background: #e5eaee;
+  border: 1.5px solid #e5eaee;
+  border-radius: 14px;
+  overflow: hidden;
+
+  min-width: 760px;
+  direction: rtl;
+}
+
+.sg-corner {
+  grid-column: 1;
+  grid-row: 1;
+  background: #f5f8fa;
+  position: sticky;
+  left: 0;
+  z-index: 3;
+}
+
+.sg-day-header {
+  grid-row: 1;
+  background: #f5f8fa;
+  color: #0b1a20;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.sg-time-label {
+  background: #f8fafb;
+  color: #a5b0b5;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding-top: 4px;
+
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+
+  border-inline-end: 1px solid #e5eaee;
+
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.sg-time-label.is-major {
+  color: #516770;
+  font-weight: 700;
+}
+
+.sg-cell {
+  background: #ffffff;
+}
+
+.sg-cell.is-major {
+  background: #fcfdfe;
+}
+
+.sg-session {
+  position: relative;
+  z-index: 4;
+
+  margin: 2px;
+  padding: 6px 8px;
+
+  background: var(--session-color, #1591a3);
+  color: #ffffff;
+
+  border-radius: 8px;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  box-shadow: 0 2px 6px rgba(11, 26, 32, 0.15);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.sg-session:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 18px rgba(11, 26, 32, 0.22);
+  z-index: 10;
+}
+
+.sg-session-name {
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1.2;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sg-session-code {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.9;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  letter-spacing: 0.04em;
+}
+
+.sg-session-time {
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  text-align: right;
+}
+
+.sg-session-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  font-size: 9.5px;
+  font-weight: 500;
+  opacity: 0.85;
+
+  white-space: nowrap;
+}
+
+.sg-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+
+  padding: 16px 20px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 12px;
+
+  box-shadow: 0 1px 3px rgba(11, 26, 32, 0.04);
+}
+
+.sg-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #2b3f47;
+}
+
+.sg-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.sg-legend-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+@media (max-width: 900px) {
+  .sg-grid {
+    grid-template-columns: 50px repeat(7, minmax(80px, 1fr));
+    grid-template-rows: 40px repeat(24, 36px);
+    min-width: 700px;
+  }
+
+  .sg-session-name { font-size: 10.5px; }
+  .sg-session-code,
+  .sg-session-time { font-size: 9px; }
+  .sg-session-meta { display: none; }
+
+  .sg-day-header { font-size: 11.5px; }
+}
