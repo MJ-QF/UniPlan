@@ -1,0 +1,132 @@
+/* =========================
+   Schedule Navigation
+========================= */
+
+.sn-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  margin-top: 24px;
+  padding: 14px 20px;
+
+  background: #ffffff;
+  border: 1.5px solid #e5eaee;
+  border-radius: 16px;
+
+  box-shadow:
+    0 1px 3px rgba(11, 26, 32, 0.04),
+    0 8px 24px rgba(11, 26, 32, 0.05);
+
+  direction: rtl;
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+}
+
+/* Buttons */
+.sn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 0 18px;
+
+  border: 1.5px solid #d5dde2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #2b3f47;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+
+.sn-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sn-btn:hover:not(:disabled) {
+  border-color: #1591a3;
+  background: #f0f8fa;
+  color: #117f90;
+  transform: translateY(-1px);
+}
+
+.sn-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sn-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #fafbfc;
+}
+
+/* Indicator */
+.sn-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 16px;
+  min-height: 44px;
+
+  border-radius: 12px;
+
+  background: rgba(21, 145, 163, 0.08);
+  color: #117f90;
+}
+
+.sn-indicator-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  opacity: 0.75;
+}
+
+.sn-indicator-current {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .sn-wrapper {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .sn-btn {
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .sn-btn span {
+    display: none;
+  }
+
+  .sn-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sn-indicator {
+    padding: 0 12px;
+  }
+}

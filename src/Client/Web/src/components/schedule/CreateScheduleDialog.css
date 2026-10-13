@@ -125,7 +125,7 @@
 
 /* Error */
 .csd-error {
-  padding: 12px 16px;
+  padding: 14px 16px;
 
   border: 1px solid #fecdd3;
   border-inline-start: 4px solid #dc4c4c;
@@ -135,9 +135,15 @@
   color: #9f1239;
 
   font-size: 13.5px;
-  line-height: 1.55;
+  line-height: 1.7;
 
+  /* ✅ نحافظ على أسطر الرسالة كما هي */
+  white-space: pre-line;
   word-break: break-word;
+
+  /* ✅ scroll داخلي لو الرسالة طويلة */
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 /* Actions */

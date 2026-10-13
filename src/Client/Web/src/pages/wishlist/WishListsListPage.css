@@ -246,3 +246,92 @@
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   Load More Button
+========================= */
+
+.wl-load-more-wrapper {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 32px;
+}
+
+.wl-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  min-height: 48px;
+  padding: 0 32px;
+
+  border: 1.5px solid #1591a3;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #117f90;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+.wl-load-more-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.wl-load-more-btn:hover:not(:disabled) {
+  background: #1591a3;
+  color: #ffffff;
+  transform: translateY(-1.5px);
+}
+
+.wl-load-more-btn:hover:not(:disabled) svg {
+  transform: translateY(2px);
+}
+
+.wl-load-more-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.wl-load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f4f7f8;
+  border-color: #d5dde2;
+  color: #718087;
+}
+
+/* Spinner داخل الزر */
+.wl-btn-spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(21, 145, 163, 0.2);
+  border-top-color: #1591a3;
+  border-radius: 50%;
+
+  animation: wlSpin 0.7s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wl-load-more-btn {
+    width: 100%;
+    max-width: 320px;
+    padding: 0 24px;
+    font-size: 14px;
+  }
+}

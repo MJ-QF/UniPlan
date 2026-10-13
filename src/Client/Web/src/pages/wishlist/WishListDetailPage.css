@@ -105,6 +105,8 @@
     background-color 0.2s ease;
 }
 
+
+
 .wld-delete-btn:hover:not(:disabled) {
   border-color: #dc4c4c;
   background: rgba(220, 76, 76, 0.08);
@@ -115,6 +117,110 @@
   cursor: not-allowed;
 }
 
+
+/* =========================
+   Edit Button
+========================= */
+
+.wld-edit-btn {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  min-height: 44px;
+  padding: 0 20px;
+
+  border: 1.5px solid #1591a3;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #117f90;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.12s ease;
+}
+
+.wld-edit-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.wld-edit-btn:hover:not(:disabled) {
+  background: #1591a3;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.wld-edit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Cancel Button
+========================= */
+
+.wld-cancel-btn {
+  flex-shrink: 0;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  padding: 0 20px;
+
+  border: 1.5px solid #d5dde2;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #516770;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.wld-cancel-btn:hover:not(:disabled) {
+  background: #f4f7f8;
+  border-color: #b9c9ce;
+}
+
+.wld-cancel-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive — على الشاشات الصغيرة */
+@media (max-width: 768px) {
+  .wld-edit-btn span,
+  .wld-cancel-btn span {
+    display: none;
+  }
+
+  .wld-edit-btn,
+  .wld-cancel-btn {
+    padding: 0 14px;
+  }
+}
 /* =========================
    Alerts
 ========================= */
