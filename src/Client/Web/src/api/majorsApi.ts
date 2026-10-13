@@ -1,13 +1,9 @@
-import client from "./client";
+﻿import client from "./client";
 import type { MajorResponse } from "../types/student";
 
-export async function getMajors(): Promise<MajorResponse[]> {
-  const response = await client.get<MajorResponse[]>("/majors", {
-    params: {
-      pageNumber: 1,
-      pageSize: 100,
-    },
+export async function getMajors(pageSize = 100): Promise<MajorResponse[]> {
+  const { data } = await client.get<MajorResponse[]>("/majors", {
+    params: { pageNumber: 1, pageSize },
   });
-
-  return response.data;
+  return data;
 }

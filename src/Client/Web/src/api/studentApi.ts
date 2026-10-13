@@ -1,8 +1,9 @@
-import axios from "axios";
+﻿import axios from "axios";
 import client from "./client";
 import type {
   CreateStudentRequest,
   StudentResponse,
+  UpdateStudentRequest,
 } from "../types/student";
 import type {
   CourseResponse,
@@ -31,6 +32,30 @@ export async function createStudent(
     data
   );
   return student;
+}
+
+/* =========================
+   Get Student by ID
+   GET /api/students/{id}
+========================= */
+export async function getStudentById(
+  studentId: number
+): Promise<StudentResponse> {
+  const { data } = await client.get<StudentResponse>(
+    `/students/${studentId}`
+  );
+  return data;
+}
+
+/* =========================
+   Update Student
+   PUT /api/students/{id}  → 204 بدون body
+========================= */
+export async function updateStudent(
+  studentId: number,
+  payload: UpdateStudentRequest
+): Promise<void> {
+  await client.put(`/students/${studentId}`, payload);
 }
 
 /* =========================

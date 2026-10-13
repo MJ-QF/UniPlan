@@ -1,9 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 
 import { getMajors } from "../api/majorsApi";
 import { createStudent } from "../api/studentApi";
+
+import PersonalInfoFields, {
+  emptyPersonalInfo,
+  type PersonalInfoValues,
+} from "../components/forms/PersonalInfoFields";
+import { toCreateStudentPayload } from "../utils/personalInfo";
 
 import type { MajorResponse } from "../types/student";
 import { saveStudentId } from "../utils/session";
@@ -113,17 +119,9 @@ function SignUpOrbit() {
 export default function SignUp() {
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-
+  const [values, setValues] = useState<PersonalInfoValues>(emptyPersonalInfo);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  const [majorId, setMajorId] = useState("");
 
   const [majors, setMajors] = useState<MajorResponse[]>([]);
   const [loadingMajors, setLoadingMajors] = useState(true);
@@ -132,8 +130,9 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  function setField(field: keyof PersonalInfoValues, value: string) {
+    setValues((prev) => ({ ...prev, [field]: value }));
+  }
 
   /* Load Majors */
   async function loadMajors() {
@@ -154,35 +153,6 @@ export default function SignUp() {
     loadMajors();
   }, []);
 
-  /* Close dropdown on outside click */
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    }
-
-    if (isDropdownOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isDropdownOpen]);
-
-  function handleSelectMajor(id: number) {
-    setMajorId(String(id));
-    setIsDropdownOpen(false);
-  }
-
-  const selectedMajorName = majors.find(
-    (m) => String(m.majorID) === majorId
-  )?.majorName;
-
   /* Register */
   const handleRegister = async (
     event: React.FormEvent<HTMLFormElement>
@@ -195,7 +165,7 @@ export default function SignUp() {
       return;
     }
 
-    if (!majorId) {
+    if (!values.majorID) {
       setErrorMessage("يرجى اختيار الاختصاص.");
       return;
     }
@@ -203,19 +173,9 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      const student = await createStudent({
-        accountData: {
-          accountName: username,
-          password: password,
-          email: email,
-        },
-        personData: {
-          firstName: firstName,
-          middleName: middleName,
-          lastName: lastName,
-        },
-        majorID: Number(majorId),
-      });
+      const student = await createStudent(
+        toCreateStudentPayload(values, password)
+      );
 
       saveStudentId(student.studentID);
       navigate("/academic-record", { replace: true });
@@ -281,146 +241,16 @@ export default function SignUp() {
 
           <form className="signup-form" onSubmit={handleRegister}>
 
-            <div className="form-group">
-              <label htmlFor="firstName">الاسم الأول</label>
-              <input
-                id="firstName"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="أدخل الاسم الأول"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="middleName">الاسم الأوسط</label>
-              <input
-                id="middleName"
-                type="text"
-                value={middleName}
-                onChange={(e) => setMiddleName(e.target.value)}
-                placeholder="أدخل الاسم الأوسط"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="lastName">الكنية</label>
-              <input
-                id="lastName"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="أدخل الكنية"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="username">اسم المستخدم</label>
-              <input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="أدخل اسم المستخدم"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="email">البريد الإلكتروني</label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@university.edu"
-                required
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>الاختصاص</label>
-
-              {majorsError ? (
-                <div className="major-error">
-                  <span>{majorsError}</span>
-                  <button type="button" onClick={loadMajors}>
-                    إعادة المحاولة
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className={`custom-dropdown ${
-                    isDropdownOpen ? "custom-dropdown-open" : ""
-                  }`}
-                  ref={dropdownRef}
-                >
-                  <button
-                    type="button"
-                    className={`custom-dropdown-trigger ${
-                      selectedMajorName ? "has-value" : ""
-                    }`}
-                    onClick={() => setIsDropdownOpen((prev) => !prev)}
-                    disabled={loadingMajors || loading}
-                  >
-                    <span className="custom-dropdown-value">
-                      {loadingMajors
-                        ? "جاري التحميل..."
-                        : selectedMajorName ?? "اختر الاختصاص"}
-                    </span>
-
-                    <svg
-                      className="custom-dropdown-chevron"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      aria-hidden="true"
-                    >
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </button>
-
-                  {isDropdownOpen && (
-                    <ul className="custom-dropdown-menu">
-                      {majors.map((major) => {
-                        const isSelected =
-                          String(major.majorID) === majorId;
-
-                        return (
-                          <li key={major.majorID}>
-                            <button
-                              type="button"
-                              className={`custom-dropdown-item ${
-                                isSelected ? "is-selected" : ""
-                              }`}
-                              onClick={() =>
-                                handleSelectMajor(major.majorID)
-                              }
-                            >
-                              <span>{major.majorName}</span>
-                              {isSelected && (
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                                  <path d="M5 12l5 5L20 7" />
-                                </svg>
-                              )}
-                            </button>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                </div>
-              )}
-            </div>
+            <PersonalInfoFields
+              flat
+              values={values}
+              onChange={setField}
+              majors={majors}
+              majorsLoading={loadingMajors}
+              majorsError={majorsError}
+              onRetryMajors={loadMajors}
+              disabled={loading}
+            />
 
             <div className="form-group">
               <label htmlFor="password">كلمة المرور</label>

@@ -53,6 +53,17 @@ export default function Navbar() {
               الجداول الدراسية
             </NavLink>
           </li>
+
+          <li>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "active" : ""}`
+              }
+            >
+              الملف الشخصي
+            </NavLink>
+          </li>
         </ul>
 
         {/* Logout */}

@@ -1,0 +1,140 @@
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  direction: rtl;
+  font-family: "Tajawal", sans-serif;
+}
+
+.custom-dropdown-trigger {
+  width: 100%;
+  height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #e3e8ec;
+  border-radius: 14px;
+  background: #fff;
+  color: #9aa7ad;
+  font-family: inherit;
+  font-size: 15px;
+  text-align: right;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-dropdown-trigger.has-value {
+  color: #1a2b32;
+}
+
+.custom-dropdown-trigger:hover:not(:disabled),
+.custom-dropdown-open .custom-dropdown-trigger {
+  border-color: #1592a6;
+}
+
+.custom-dropdown-open .custom-dropdown-trigger {
+  box-shadow: 0 0 0 3px rgba(21, 146, 166, 0.15);
+}
+
+.custom-dropdown-trigger:disabled {
+  background: #f4f6f8;
+  cursor: not-allowed;
+}
+
+.custom-dropdown-value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-dropdown-chevron {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #7b8a92;
+  transition: transform 0.2s;
+}
+
+.custom-dropdown-open .custom-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 50;
+  max-height: 260px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #e3e8ec;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(26, 43, 50, 0.16);
+}
+
+.custom-dropdown-item {
+  width: 100%;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #1a2b32;
+  font-family: inherit;
+  font-size: 15px;
+  text-align: right;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.custom-dropdown-item:hover {
+  background: #f1f8fa;
+}
+
+.custom-dropdown-item.is-selected {
+  background: #e3f3f6;
+  color: #1592a6;
+  font-weight: 700;
+}
+
+.custom-dropdown-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* خطأ تحميل الاختصاصات */
+.major-error {
+  min-height: 56px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #f3c4c1;
+  border-radius: 14px;
+  background: #fdecec;
+  color: #b3261e;
+  font-family: "Tajawal", sans-serif;
+  font-size: 14px;
+}
+
+.major-error button {
+  border: none;
+  background: transparent;
+  color: #b3261e;
+  font-family: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}

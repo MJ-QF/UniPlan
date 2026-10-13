@@ -4,6 +4,7 @@ import MainLayout from "./MainLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/SignUp";
 import AcademicRecord from "../pages/AcademicRecord";
+import ProfilePage from "../pages/ProfilePage";
 
 import WishListsListPage from "../pages/wishlist/WishListsListPage";
 import WishListCreatePage from "../pages/wishlist/WishListCreatePage";
@@ -81,6 +82,12 @@ export const router = createBrowserRouter([
       {
         path: "schedules/:listId/:scheduleNum",
         element: <ScheduleDetailPage />,
+      },
+
+      /* Profile */
+      {
+        path: "profile",
+        element: <ProfilePage />,
       },
     ],
   },
