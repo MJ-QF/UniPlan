@@ -123,6 +123,21 @@
   to { transform: rotate(360deg); }
 }
 
+
+
+/* Empty */
+.sd-empty {
+  padding: 80px 20px;
+  text-align: center;
+
+  color: #718087;
+  font-size: 14.5px;
+
+  background: #f8fafb;
+  border: 1.5px dashed #d5dde2;
+  border-radius: 16px;
+}
+
 /* Empty */
 .sd-empty {
   padding: 80px 20px;

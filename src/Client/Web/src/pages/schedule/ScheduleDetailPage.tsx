@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 import { getScheduleDetail } from "../../api/schedulesApi";
 import type { ScheduleDetailResponse } from "../../types/schedule";
 import { getStudentId } from "../../utils/session";
 
 import ScheduleGrid from "../../components/schedule/ScheduleGrid";
+import ScheduleNavigation from "../../components/schedule/ScheduleNavigation";
 
 import "./ScheduleDetailPage.css";
 
@@ -23,6 +25,9 @@ export default function ScheduleDetailPage() {
   const [schedule, setSchedule] = useState<ScheduleDetailResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [hasPrev, setHasPrev] = useState(parsedScheduleNum > 1);
+  const [hasNext, setHasNext] = useState(false);
 
   /* =========================
      Load Detail
@@ -55,6 +60,7 @@ export default function ScheduleDetailPage() {
         );
 
         setSchedule(data);
+        setHasPrev(parsedScheduleNum > 1);
       } catch (error) {
         console.error("Load detail failed:", error);
         setErrorMessage("تعذر تحميل تفاصيل الجدول.");
@@ -65,6 +71,42 @@ export default function ScheduleDetailPage() {
 
     load();
   }, [parsedListId, parsedScheduleNum, studentId, navigate]);
+
+  /* =========================
+     Probe Next — نتحقق إذا في جدول N+1
+  ========================= */
+  useEffect(() => {
+    async function probeNext() {
+      if (!parsedListId || !parsedScheduleNum) return;
+
+      try {
+        await getScheduleDetail(parsedListId, parsedScheduleNum + 1);
+        setHasNext(true);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          setHasNext(false);
+        } else {
+          /* أي خطأ آخر — نفترض ما في next */
+          setHasNext(false);
+        }
+      }
+    }
+
+    probeNext();
+  }, [parsedListId, parsedScheduleNum]);
+
+  /* =========================
+     Navigation
+  ========================= */
+  function goPrev() {
+    if (!hasPrev) return;
+    navigate(`/schedules/${parsedListId}/${parsedScheduleNum - 1}`);
+  }
+
+  function goNext() {
+    if (!hasNext) return;
+    navigate(`/schedules/${parsedListId}/${parsedScheduleNum + 1}`);
+  }
 
   /* =========================
      UI
@@ -118,16 +160,22 @@ export default function ScheduleDetailPage() {
       )}
 
       {/* Empty */}
-      {!loading && schedule && schedule.sessions.length === 0 && (
-        <div className="sd-empty">
-          <p>لا توجد جلسات في هذا الجدول.</p>
-        </div>
-      )}
+      {!loading && schedule && (
+        <>
+          <ScheduleGrid sessions={schedule.sessions ?? []} />
 
-      {/* Grid */}
-    {!loading && schedule && (
-  <ScheduleGrid sessions={schedule.sessions ?? []} />
-)}
+          {/* ✅ Navigation — يظهر فقط إذا في أكثر من جدول */}
+          {(hasPrev || hasNext) && (
+            <ScheduleNavigation
+              current={parsedScheduleNum}
+              hasPrev={hasPrev}
+              hasNext={hasNext}
+              onPrev={goPrev}
+              onNext={goNext}
+            />
+          )}
+        </>
+      )}
 
     </div>
   );

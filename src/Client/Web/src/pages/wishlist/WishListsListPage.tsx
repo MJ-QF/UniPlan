@@ -5,7 +5,6 @@ import { getStudentWishLists, deleteWishList } from "../../api/wishLists";
 import { createSchedule } from "../../api/schedulesApi";
 import type { WishListResponse } from "../../types/wishList";
 import { getStudentId } from "../../utils/session";
-import { getScheduleErrorMessage } from "../../utils/errorMessages";
 
 import WishListCard from "../../components/wishlist/WishListCard";
 import ConfirmDialog from "../../components/wishlist/ConfirmDialog";
@@ -14,6 +13,9 @@ import SuccessToast from "../../components/common/SuccessToast";
 
 import "./WishListsListPage.css";
 
+/* ✅ حجم الصفحة — الباك يقبل 10 كحد أقصى */
+const PAGE_SIZE = 10;
+
 export default function WishListsListPage() {
   const navigate = useNavigate();
   const studentId = getStudentId();
@@ -21,12 +23,19 @@ export default function WishListsListPage() {
   const [wishLists, setWishLists] = useState<WishListResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
+  /* ✅ Pagination state */
+  const [pageNumber, setPageNumber] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  /* Delete */
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  /* Create Schedule */
   const [scheduleForWishListId, setScheduleForWishListId] =
     useState<number | null>(null);
   const [creatingSchedule, setCreatingSchedule] = useState(false);
@@ -35,7 +44,7 @@ export default function WishListsListPage() {
   const [showToast, setShowToast] = useState(false);
 
   /* =========================
-     Load Wish Lists
+     Load First Page
   ========================= */
   async function loadWishLists() {
     if (studentId === null) {
@@ -47,8 +56,11 @@ export default function WishListsListPage() {
       setLoading(true);
       setErrorMessage("");
 
-      const data = await getStudentWishLists(studentId);
+      const data = await getStudentWishLists(studentId, 1, PAGE_SIZE);
+
       setWishLists(data);
+      setPageNumber(1);
+      setHasMore(data.length === PAGE_SIZE);
     } catch (error) {
       console.error("Failed to load wish lists:", error);
       setErrorMessage("تعذر تحميل قوائم الرغبات.");
@@ -61,6 +73,34 @@ export default function WishListsListPage() {
     loadWishLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /* =========================
+     Load More
+  ========================= */
+  async function handleLoadMore() {
+    if (studentId === null) return;
+
+    try {
+      setLoadingMore(true);
+      setErrorMessage("");
+
+      const nextPage = pageNumber + 1;
+      const data = await getStudentWishLists(
+        studentId,
+        nextPage,
+        PAGE_SIZE
+      );
+
+      setWishLists((current) => [...current, ...data]);
+      setPageNumber(nextPage);
+      setHasMore(data.length === PAGE_SIZE);
+    } catch (error) {
+      console.error("Load more failed:", error);
+      setErrorMessage("تعذر تحميل المزيد.");
+    } finally {
+      setLoadingMore(false);
+    }
+  }
 
   /* =========================
      Delete
@@ -116,6 +156,7 @@ export default function WishListsListPage() {
       setScheduleForWishListId(null);
       setScheduleError("");
 
+      /* ✅ refetch القوائم (يرجع للصفحة 1) */
       await loadWishLists();
 
       setShowToast(true);
@@ -124,11 +165,22 @@ export default function WishListsListPage() {
         navigate(`/schedules/${listId}/1`);
       }, 900);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create schedule:", error);
 
-      /* ✅ رسالة بسيطة للمستخدم */
-      setScheduleError(getScheduleErrorMessage(error));
+      const data = error?.response?.data;
+
+      let message = "تعذر إنشاء الجدول. حاول مرة أخرى.";
+
+      if (typeof data === "string" && data.trim()) {
+        message = data.trim();
+      } else if (data?.message) {
+        message = data.message;
+      } else if (error?.message) {
+        message = error.message;
+      }
+
+      setScheduleError(message);
     } finally {
       setCreatingSchedule(false);
     }
@@ -140,6 +192,7 @@ export default function WishListsListPage() {
   return (
     <div className="wl-page">
 
+      {/* Header */}
       <header className="wl-header">
         <div>
           <h1 className="wl-title">قوائم الرغبات</h1>
@@ -169,6 +222,7 @@ export default function WishListsListPage() {
         </button>
       </header>
 
+      {/* Alerts */}
       {errorMessage && (
         <div className="wl-alert-error">{errorMessage}</div>
       )}
@@ -176,6 +230,7 @@ export default function WishListsListPage() {
         <div className="wl-alert-success">{successMessage}</div>
       )}
 
+      {/* Loading */}
       {loading && (
         <div className="wl-loading">
           <div className="wl-spinner" />
@@ -183,6 +238,7 @@ export default function WishListsListPage() {
         </div>
       )}
 
+      {/* Empty */}
       {!loading && wishLists.length === 0 && !errorMessage && (
         <div className="wl-empty">
           <div className="wl-empty-icon">
@@ -212,32 +268,70 @@ export default function WishListsListPage() {
         </div>
       )}
 
+      {/* Grid */}
       {!loading && wishLists.length > 0 && (
-        <div className="wl-grid">
-          {wishLists.map((wishList) => (
-            <WishListCard
-              key={wishList.wishListID}
-              wishList={wishList}
-              onOpen={() => {
-  if (wishList.allowUpdate) {
-    navigate(`/wishlists/${wishList.wishListID}`);
-  } else {
-    /* ✅ الجدول منشأ → نروح مباشرة للجدول */
-    navigate(`/schedules/${wishList.wishListID}/1`);
-  }
-}}
-              onDelete={() => setPendingDeleteId(wishList.wishListID)}
-              onCreateSchedule={() =>
-                setScheduleForWishListId(wishList.wishListID)
-              }
-              onViewSchedule={() =>
-                navigate(`/schedules/${wishList.wishListID}/1`)
-              }
-            />
-          ))}
-        </div>
+        <>
+          <div className="wl-grid">
+            {wishLists.map((wishList) => (
+              <WishListCard
+                key={wishList.wishListID}
+                wishList={wishList}
+                onOpen={() => {
+                  if (wishList.allowUpdate) {
+                    navigate(`/wishlists/${wishList.wishListID}`);
+                  } else {
+                    navigate(`/schedules/${wishList.wishListID}/1`);
+                  }
+                }}
+                onDelete={() => setPendingDeleteId(wishList.wishListID)}
+                onCreateSchedule={() =>
+                  setScheduleForWishListId(wishList.wishListID)
+                }
+                onViewSchedule={() =>
+                  navigate(`/schedules/${wishList.wishListID}/1`)
+                }
+              />
+            ))}
+          </div>
+
+          {/* ✅ Load More */}
+          {hasMore && (
+            <div className="wl-load-more-wrapper">
+              <button
+                type="button"
+                className="wl-load-more-btn"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+              >
+                {loadingMore ? (
+                  <>
+                    <span className="wl-btn-spinner" />
+                    جاري التحميل...
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                    عرض المزيد
+                  </>
+                )}
+              </button>
+            </div>
+          )}
+        </>
       )}
 
+      {/* Confirm Delete Dialog */}
       {pendingDeleteId !== null && (
         <ConfirmDialog
           title="حذف القائمة"
@@ -250,6 +344,7 @@ export default function WishListsListPage() {
         />
       )}
 
+      {/* Create Schedule Dialog */}
       {scheduleForWishListId !== null && (
         <CreateScheduleDialog
           isLoading={creatingSchedule}
@@ -262,6 +357,7 @@ export default function WishListsListPage() {
         />
       )}
 
+      {/* Success Toast */}
       <SuccessToast
         show={showToast}
         message="تم إنشاء الجدول بنجاح"
