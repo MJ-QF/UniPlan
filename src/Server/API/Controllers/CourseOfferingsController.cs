@@ -25,25 +25,25 @@ namespace API.Controllers
             _exceptionService = exceptionService;
         }
 
-        [HttpPost(Name = "AddCourseOfferingAsync")]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(CourseOfferingResponse))]
+        [HttpPost(Name = "AddCourseOfferingsAsync")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public async Task<ActionResult<CourseOfferingResponse?>> AddCourseOfferingAsync(CreateCourseOfferingRequest request)
+        public async Task<ActionResult> AddCourseOfferingsAsync(CreateCourseOfferingRequest request)
         {
             try
             {
-                CourseOfferingResponse? response = await _offeringService.AddCourseOfferingAsync(request);
+                bool res = await _offeringService.AddCourseOfferingsAsync(request);
 
-                if (response != null)
+                if (res)
                 {
-                    await _logService.LogAsync("تم إضافة عرض المقرر بنجاح", ExternalServicesEnums.LogType.Info);
-                    return CreatedAtRoute("GetCourseOfferingByIDAsync", new { offeringID = response.OfferingID }, response);
+                    await _logService.LogAsync("تم إضافة الشعب بنجاح", ExternalServicesEnums.LogType.Info);
+                    return StatusCode(StatusCodes.Status201Created, "تم إضافة الشعب بنجاح");
                 }
 
-                await _logService.LogAsync("فشل إضافة عرض المقرر بسبب خطأ في الخادم", ExternalServicesEnums.LogType.Warning);
-                return StatusCode(StatusCodes.Status500InternalServerError, "فشل إضافة عرض المقرر");
+                await _logService.LogAsync("فشل إضافة الشعب بسبب خطأ في الخادم", ExternalServicesEnums.LogType.Warning);
+                return StatusCode(StatusCodes.Status500InternalServerError, "فشل إضافة الشعب");
             }
             catch (SqlException sqlException) when (sqlException.Number > 50000)
             {
@@ -151,11 +151,15 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet(Name = "GetPagedCourseOfferingsAsync")]
+        [HttpGet(Name = "SearchCourseOfferingsAsync")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourseOfferingResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<CourseOfferingResponse>>> GetPagedCourseOfferingsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<CourseOfferingResponse>>> SearchCourseOfferingsAsync(
+            [FromQuery] int? termID = null,
+            [FromQuery] string? courseName = null,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
             if (pageNumber <= 0 || pageSize <= 0)
             {
@@ -164,15 +168,10 @@ namespace API.Controllers
 
             try
             {
-                IEnumerable<CourseOfferingResponse>? responses = await _offeringService.GetPagedCourseOfferingsAsync(pageNumber, pageSize);
-
-                if (responses == null)
-                {
-                    responses = Enumerable.Empty<CourseOfferingResponse>();
-                }
+                IEnumerable<CourseOfferingResponse>? responses = await _offeringService.SearchCourseOfferingsAsync(termID, courseName, pageNumber, pageSize);
 
                 await _logService.LogAsync($"تم جلب عروض المقررات للصفحة {pageNumber} بحجم {pageSize} بنجاح", ExternalServicesEnums.LogType.Info);
-                return Ok(responses);
+                return Ok(responses ?? Enumerable.Empty<CourseOfferingResponse>());
             }
             catch (Exception ex)
             {

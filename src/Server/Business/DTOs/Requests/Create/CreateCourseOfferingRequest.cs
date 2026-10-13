@@ -1,43 +1,44 @@
-using Infrastructure.ExternalServices.Validation.Attributes;
+ï»¿using Infrastructure.ExternalServices.Validation.Attributes;
 
 namespace Business.DTOs.Requests.Create
 {
     public class CreateCourseOfferingRequest
     {
-        [Required<int>("ÑŞã ÇáŞÓã ãØáæÈ")]
-        [Range<int>("íÌÈ Ãä íßæä ÑŞã ÇáŞÓã ÃßÈÑ ãä 0", 1, int.MaxValue)]
-        public int SectionNumber { get; set; }
+        [Required<int>("Ø¹Ø¯Ø¯ Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ù…Ø·Ù„ÙˆØ¨")]
+        [Range<int>("ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø¹Ø¯Ø¯ Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ø£ÙƒØ¨Ø± Ù…Ù† 0", 1, int.MaxValue)]
+        public int NumberOfSections { get; set; }
 
-        [Required<int>("ãÚÑİ ÇáİÕá ÇáÃßÇÏíãí ãØáæÈ")]
-        [Range<int>("íÌÈ Ãä íßæä ÇáãÚÑİ ÃßÈÑ ãä 0", 1, int.MaxValue)]
+        [Required<int>("Ù…Ø¹Ø±Ù Ø§Ù„ÙØµÙ„ Ø§Ù„Ø£ÙƒØ§Ø¯ÙŠÙ…ÙŠ Ù…Ø·Ù„ÙˆØ¨")]
+        [Range<int>("ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ù…Ø¹Ø±Ù Ø£ÙƒØ¨Ø± Ù…Ù† 0", 1, int.MaxValue)]
         public int TermID { get; set; }
 
-        [Required<int>("ãÚÑİ ÇáãÍÇÖÑÉ ãØáæÈ")]
-        [Range<int>("íÌÈ Ãä íßæä ÇáãÚÑİ ÃßÈÑ ãä 0", 1, int.MaxValue)]
-        public int LectureID { get; set; }
+        [Required<int>("Ù†ÙˆØ¹ Ø§Ù„Ù…Ø­Ø§Ø¶Ø±Ø© Ù…Ø·Ù„ÙˆØ¨Ø©")]
+        [AllowedValues("ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ù‚ÙŠÙ…Ø© Ù†ÙˆØ¹ Ø§Ù„Ù…Ø­Ø§Ø¶Ø±Ø© 1 (Ø§Ù„Ù†Ø¸Ø±ÙŠ) Ø£Ùˆ 2 (Ø§Ù„Ø¹Ù…Ù„ÙŠ) Ø£Ùˆ 3 (TD) ÙÙ‚Ø·", new object[] { 1, 2, 3 })]
+        public int LectureType { get; set; }
 
-        [Required<int>("ãÚÑİ ÇáÃÏãä ÇáãäÔÆ ãØáæÈ")]
-        [Range<int>("íÌÈ Ãä íßæä ÇáãÚÑİ ÃßÈÑ ãä 0", 1, int.MaxValue)]
+        [Required<int>("Ù…Ø¹Ø±Ù Ø§Ù„Ø£Ø¯Ù…Ù† Ø§Ù„Ù…Ù†Ø´Ø¦ Ù…Ø·Ù„ÙˆØ¨")]
+        [Range<int>("ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ù…Ø¹Ø±Ù Ø£ÙƒØ¨Ø± Ù…Ù† 0", 1, int.MaxValue)]
         public int CreatedByAdminID { get; set; }
 
-        [Required<int>("ãÚÑİ ÇáßæÑÓ ãØáæÈ")]
-        [Range<int>("íÌÈ Ãä íßæä ÇáãÚÑİ ÃßÈÑ ãä 0", 1, int.MaxValue)]
+        [Required<int>("Ù…Ø¹Ø±Ù Ø§Ù„ÙƒÙˆØ±Ø³ Ù…Ø·Ù„ÙˆØ¨")]
+        [Range<int>("ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ø§Ù„Ù…Ø¹Ø±Ù Ø£ÙƒØ¨Ø± Ù…Ù† 0", 1, int.MaxValue)]
         public int CourseID { get; set; }
 
         public CreateCourseOfferingRequest()
         {
             CreatedByAdminID = default;
-            SectionNumber = default;
+            NumberOfSections = default;
             TermID = default;
-            LectureID = default;
+            LectureType = default;
             CourseID = default;
         }
 
-        public CreateCourseOfferingRequest(int sectionNumber, int termID, int lectureID, int createdByAdminID, int courseID)
+        public CreateCourseOfferingRequest(int numberOfSections
+            , int termID, int lectureID, int createdByAdminID, int courseID)
         {
-            SectionNumber = sectionNumber;
+            NumberOfSections = numberOfSections;
             TermID = termID;
-            LectureID = lectureID;
+            LectureType = lectureID;
             CreatedByAdminID = createdByAdminID;
             CourseID = courseID;
         }

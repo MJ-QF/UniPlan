@@ -6,11 +6,11 @@ namespace Core.Interfaces.Repositories
     {
         Task<bool> DeleteCourseOfferingAsync(int courseOfferingID);
 
-        Task<int> AddCourseOfferingAsync(CourseOffering courseOffering);
+        Task<bool> AddCourseOfferingsAsync(CourseOffering courseOffering, int numberOfSections);
 
         Task<bool> UpdateCourseOfferingAsync(CourseOffering courseOffering);
 
-        Task<IEnumerable<CourseOffering>?> GetPagedCourseOfferingsAsync(int pageNumber = 1, int pageSize = 10);
+        Task<IEnumerable<CourseOffering>?> SearchCourseOfferingsAsync(int? termID = null, string? courseName = null, int pageNumber = 1, int pageSize = 10);
 
         Task<CourseOffering?> GetCourseOfferingByIDAsync(int courseOfferingID);
     }

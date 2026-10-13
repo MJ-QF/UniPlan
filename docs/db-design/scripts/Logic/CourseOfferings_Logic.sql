@@ -12,9 +12,6 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF @SectionNumber IS NULL OR @SectionNumber <= 0
-        RETURN 51201;
-
     IF NOT EXISTS (SELECT 1 FROM [dbo].[AcademicTerms] WHERE TermID = @TermID)
         RETURN 51103;
 
@@ -46,33 +43,64 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE SP_CourseOfferings_Insert
-    @SectionNumber int,
+    @NumberOfSections int,
     @TermID int,
-    @LectureID int,
+    @LectureType int,
     @CreatedByAdminID int = NULL,
     @CourseID int,
-    @OfferingID int OUTPUT
+    @Result bit output
 AS
 BEGIN
     SET NOCOUNT ON;
+    SET XACT_ABORT ON;
 
     DECLARE @ErrCode int;
 
+    DECLARE @LectureID INT = ( 
+                    SELECT LectureID FROM Lectures 
+                    WHERE LectureType = @LectureType 
+                    AND CourseID = @CourseID
+                );
+
     EXEC @ErrCode = SP_CourseOfferings_Validate
-        @SectionNumber, @TermID, @LectureID, @CreatedByAdminID, @CourseID, NULL;
+        NULL, @TermID, @LectureID, @CreatedByAdminID, @CourseID, NULL;
 
     IF @ErrCode != 0
         THROW @ErrCode, '', 1;
 
     BEGIN TRY
-        INSERT INTO [dbo].[CourseOfferings]
-           ([SectionNumber], [TermID], [LectureID], [CreatedByAdminID], [CourseID])
-        VALUES
-           (@SectionNumber, @TermID, @LectureID, @CreatedByAdminID, @CourseID);
+        BEGIN TRANSACTION;
 
-        SET @OfferingID = SCOPE_IDENTITY();
+        DECLARE @NextSectionNumber int = (
+            SELECT ISNULL(MAX(SectionNumber), 0)
+            FROM CourseOfferings
+            WHERE TermID = @TermID
+              AND LectureID = @LectureID
+        );
+
+        DECLARE @RemainingSections int = @NumberOfSections;
+
+        WHILE @RemainingSections > 0
+        BEGIN
+            SET @NextSectionNumber += 1;
+
+            INSERT INTO [dbo].[CourseOfferings]
+                ([SectionNumber], [TermID], [LectureID], [CreatedByAdminID], [CourseID])
+            VALUES
+                (@NextSectionNumber, @TermID, @LectureID, @CreatedByAdminID, @CourseID);
+
+            SET @RemainingSections -= 1;
+        END;
+
+        COMMIT TRANSACTION;
+
+        SET @Result = 1;
     END TRY
     BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+
+        SET @Result = 0;
         THROW;
     END CATCH
 END;
@@ -174,7 +202,9 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE SP_CourseOfferings_GetAll
+CREATE OR ALTER PROCEDURE SP_CourseOfferings_Search
+    @TermID int = NULL,
+    @CourseName nvarchar(200) = NULL,
     @PageNumber int = 1,
     @PageSize int = 10
 AS
@@ -188,10 +218,16 @@ BEGIN
         IF @PageSize IS NULL OR @PageSize < 1
             SET @PageSize = 10;
 
-        SELECT * FROM CourseOfferings_view
-        ORDER BY [OfferingID]
+        SET @CourseName = NULLIF(LTRIM(RTRIM(@CourseName)), '');
+
+        SELECT *
+        FROM CourseOfferings_view
+        WHERE (@TermID IS NULL OR TermID = @TermID)
+          AND (@CourseName IS NULL OR CourseName LIKE N'%' + @CourseName + N'%')
+        ORDER BY OfferingID
         OFFSET (@PageNumber - 1) * @PageSize ROWS
-        FETCH NEXT @PageSize ROWS ONLY;
+        FETCH NEXT @PageSize ROWS ONLY
+        OPTION (RECOMPILE);
     END TRY
     BEGIN CATCH
         THROW;

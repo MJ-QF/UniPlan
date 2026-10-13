@@ -26,18 +26,15 @@ namespace Business.Services
         }
 
 
-        public async Task<CourseOfferingResponse?> AddCourseOfferingAsync(CreateCourseOfferingRequest request)
+        public async Task<bool> AddCourseOfferingsAsync(CreateCourseOfferingRequest request)
         {
             _validationService.Validate(request);
 
             CourseOffering offering = request.ToCourseOffering();
 
-            offering.OfferingID = await _offeringRepository.AddCourseOfferingAsync(offering);
+            bool res = await _offeringRepository.AddCourseOfferingsAsync(offering, request.NumberOfSections);
 
-            if (offering.OfferingID != -1)
-                return await GetCourseOfferingByIDAsync(offering.OfferingID);
-
-            return null;
+            return res;
         }
 
         public async Task<bool> UpdateCourseOfferingAsync(UpdateCourseOfferingRequest request, int offeringID)
@@ -54,9 +51,10 @@ namespace Business.Services
             return false;
         }
 
-        public async Task<IEnumerable<CourseOfferingResponse>?> GetPagedCourseOfferingsAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<IEnumerable<CourseOfferingResponse>?> SearchCourseOfferingsAsync( int? termID = null, string? courseName = null, int pageNumber = 1, int pageSize = 10)
         {
-            IEnumerable<CourseOffering>? offerings = await _offeringRepository.GetPagedCourseOfferingsAsync(pageNumber, pageSize);
+            IEnumerable<CourseOffering>? offerings = await _offeringRepository.SearchCourseOfferingsAsync(termID, courseName, pageNumber, pageSize);
+
             return offerings?.Select(m => m.ToResponse()).OfType<CourseOfferingResponse>();
         }
 

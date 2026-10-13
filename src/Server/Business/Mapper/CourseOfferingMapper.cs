@@ -2,6 +2,7 @@
 using Business.DTOs.Requests.Update;
 using Business.DTOs.Responses;
 using Core.Entities;
+using Core.Enums;
 
 namespace Business.Mapper
 {
@@ -10,9 +11,10 @@ namespace Business.Mapper
         public static CourseOffering ToCourseOffering(this CreateCourseOfferingRequest request)
         {
             AcademicTerm term = new AcademicTerm(request.TermID);
-            Lecture lecture = new Lecture(request.LectureID, request.CourseID);
+            Course course = new Course { CourseID = request.CourseID };
+            Lecture lecture = new Lecture { Course = course, LectureType = (LectureType)request.LectureType  };
 
-            return new CourseOffering(-1, request.SectionNumber, request.CreatedByAdminID, term, lecture);
+            return new CourseOffering(-1, 0, request.CreatedByAdminID, term, lecture);
         }
 
         public static void UpdateOffering(this CourseOffering offering, UpdateCourseOfferingRequest? request)
