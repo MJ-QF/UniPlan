@@ -1,4 +1,4 @@
-import type {
+﻿import type {
     AccountResponse,
     CreateAccountRequest,
     UpdateAccountRequest,
@@ -25,11 +25,6 @@ export interface StudentResponse {
     completedHours: number;
 }
 
-export interface PersonRequest {
-    firstName: string;
-    middleName: string;
-    lastName: string;
-}
 
 export interface CreateStudentRequest {
     accountData: CreateAccountRequest;
@@ -37,8 +32,28 @@ export interface CreateStudentRequest {
     majorID: number;
 }
 
+
+export interface AccountResponse {
+  accountID: number;
+  accountName: string | null;
+  email: string | null;
+  role: string | null;
+}
+
+
+
+
 export interface UpdateStudentRequest {
-    accountData: UpdateAccountRequest;
-    personData: PersonRequest;
-    majorID: number;
+  accountData: { accountName: string | null; email: string | null };
+  personData: {
+    firstName: string | null;
+    middleName: string | null;
+    lastName: string | null;
+  };
+  majorID: number;
+}
+
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
 }

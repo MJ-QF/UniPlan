@@ -1,4 +1,4 @@
-import client from "./client";
+﻿import client from "./client";
 import type { LoginRequest } from "../types/auth";
 
 export interface AccountResponse {
@@ -40,3 +40,7 @@ export async function login(
     throw new Error("LOGIN_ERROR_NETWORK");
   }
 }
+
+export const changePassword = async (accountId: number, payload: ChangePasswordRequest) => {
+  await client.put(`/auth/${accountId}/updatePassword`, payload);
+};
