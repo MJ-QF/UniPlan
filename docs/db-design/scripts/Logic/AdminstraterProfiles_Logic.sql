@@ -393,6 +393,16 @@ BEGIN
 END;
 GO
 
+CREATE OR ALTER PROCEDURE SP_AdminProfile_GetByAccountId
+    @AccountID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT * FROM AdminProfiles_view
+    WHERE AccountID = @AccountID;
+END;
+GO
 
 
 Create or Alter Trigger TR_NonActive_Admin
@@ -401,13 +411,13 @@ instead of Delete
 As
 Begin 
 
-Declare @AdminID int;
+    Declare @AdminID int;
 
-select @AdminID = deleted.AdminID from deleted;
+    select @AdminID = deleted.AdminID from deleted;
 
-Update Administrators
-set IsActive = 0
-where AdminID = @AdminID;
+    Update Administrators
+    set IsActive = 0
+    where AdminID = @AdminID;
 
 End
 

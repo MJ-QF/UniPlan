@@ -3,7 +3,6 @@ using Business.DTOs.Requests.Update;
 using Business.DTOs.Responses;
 using Business.Interfaces;
 using Business.Mapper;
-using Core.Entities;
 using Core.Interfaces.ExternalServices;
 using Core.Interfaces.Repositories;
 
@@ -13,13 +12,11 @@ namespace Business.Services
     {
 
         private IAdminRepository _AdminRepository;
-        private Administrator? _admin;
         private IValidationService _ValidationService;
 
         public AdministratorService(IAdminRepository adminRepostery, IValidationService iValidationService)
         {
             _AdminRepository = adminRepostery;
-            _admin = null;
             _ValidationService = iValidationService;
         }
 
@@ -29,7 +26,7 @@ namespace Business.Services
         {
             _ValidationService.Validate(request);
 
-            _admin = request.ToAdministrator();
+            var _admin = request.ToAdministrator();
 
             var result = await _AdminRepository.AddAdminAsync(_admin);
 
@@ -53,7 +50,7 @@ namespace Business.Services
 
         public async Task<AdministratorResponse?> GetAdministratorByIdAsync(int adminID)
         {
-            _admin = await _AdminRepository.GetAdminByIDAsync(adminID);
+            var _admin = await _AdminRepository.GetAdminByIDAsync(adminID);
             return _admin?.ToResponse() ?? null;
         }
 
@@ -61,7 +58,7 @@ namespace Business.Services
         {
             _ValidationService.Validate(request);
 
-            _admin = request.ToAdministrator(adminID);
+            var _admin = request.ToAdministrator(adminID);
 
             if (_admin != null)
             {
@@ -78,6 +75,12 @@ namespace Business.Services
             var responses = admins?.Select(admin => admin.ToResponse()).Where(adm => adm != null);
 
             return responses?.Select(response => response!).ToList() ?? new List<AdministratorResponse>();
+        }
+
+        public async Task<AdministratorResponse?> GetAdminByAccountIDAsync(int accountID)
+        {
+            var _admin = await _AdminRepository.GetAdminByAccountIDAsync(accountID);
+            return _admin?.ToResponse() ?? null;
         }
     }
 }

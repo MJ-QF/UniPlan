@@ -163,6 +163,31 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("by-account/{accountID}", Name = "GetAdminByAccountIDAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AdministratorResponse))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
+        public async Task<ActionResult<AdministratorResponse>> GetAdminByAccountIDAsync(int accountID)
+        {
+            try
+            {
+                AdministratorResponse? response = await _adminSevice.GetAdminByAccountIDAsync(accountID);
+
+                if (response != null)
+                {
+                    await _logService.LogAsync($"تم جلب الأدمن بالمعرف {accountID} بنجاح", ExternalServicesEnums.LogType.Info);
+                    return Ok(response);
+                }
+
+                await _logService.LogAsync($"لم يتم العثور على الأدمن بالمعرف {accountID}", ExternalServicesEnums.LogType.Warning);
+                return NotFound($"لم يتم العثور على الأدمن بالمعرف {accountID}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, _exceptionService.GetExceptionMessage(ex));
+            }
+        }
+
 
         [HttpGet(Name = "GetPagedAdminsAsync")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<AdministratorResponse>))]

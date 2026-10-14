@@ -10,20 +10,20 @@ namespace DataAccess.Repositories
     public class AdminRepository : IAdminRepository
     {
 
-        private readonly DBHelpers dBHelpers;
-        private readonly ILogService _LogService;
+        private readonly DBHelpers _dBHelpers;
+        private readonly ILogService _logService;
 
         public AdminRepository(DBHelpers dBHelpers, ILogService logService, IExceptionService exceptionService)
         {
-            this.dBHelpers = dBHelpers;
-            _LogService = logService;
+            this._dBHelpers = dBHelpers;
+            _logService = logService;
         }
 
         public async Task<bool> AddAdminAsync(Administrator admin)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(dBHelpers.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
                 using (SqlCommand command = new SqlCommand("SP_AdminProfile_Insert", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -80,7 +80,7 @@ namespace DataAccess.Repositories
             }
             catch (Exception ex)
             {
-                await _LogService.LogAsync(ex);
+                await _logService.LogAsync(ex);
                 throw;
             }
 
@@ -88,11 +88,45 @@ namespace DataAccess.Repositories
         }
 
 
+        public async Task<Administrator?> GetAdminByAccountIDAsync(int accountID)
+        {
+            Administrator? admin = null;
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
+                using (SqlCommand command = new SqlCommand("SP_AdminProfile_GetByAccountId", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@AccountID", accountID);
+
+                    await connection.OpenAsync();
+                    using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader != null && await reader.ReadAsync())
+                        {
+                            admin = reader.ToAdmin();
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logService.LogAsync(ex);
+                throw;
+            }
+
+            return admin;
+        }
+
+
         public async Task<bool> UpdateAdminAsync(Administrator admin)
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(dBHelpers.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
                 using (SqlCommand command = new SqlCommand("SP_AdminProfile_Update", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -125,7 +159,7 @@ namespace DataAccess.Repositories
             }
             catch (Exception ex)
             {
-                await _LogService.LogAsync(ex);
+                await _logService.LogAsync(ex);
                 throw;
             }
 
@@ -136,7 +170,7 @@ namespace DataAccess.Repositories
         {
             try
             {
-                using (SqlConnection connection = new SqlConnection(dBHelpers.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
                 using (SqlCommand command = new SqlCommand("SP_AdminProfile_Delete", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -160,7 +194,7 @@ namespace DataAccess.Repositories
             }
             catch (Exception ex)
             {
-                await _LogService.LogAsync(ex);
+                await _logService.LogAsync(ex);
                 throw;
             }
             return false;
@@ -172,7 +206,7 @@ namespace DataAccess.Repositories
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(dBHelpers.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
                 using (SqlCommand command = new SqlCommand("SP_AdminProfile_GetById", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -193,7 +227,7 @@ namespace DataAccess.Repositories
             }
             catch (Exception ex)
             {
-                await _LogService.LogAsync(ex);
+                await _logService.LogAsync(ex);
                 throw;
             }
 
@@ -206,7 +240,7 @@ namespace DataAccess.Repositories
 
             try
             {
-                using (SqlConnection connection = new SqlConnection(dBHelpers.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
                 using (SqlCommand command = new SqlCommand("SP_AdminProfile_GetAll", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
@@ -231,7 +265,7 @@ namespace DataAccess.Repositories
             }
             catch (Exception ex)
             {
-                await _LogService.LogAsync(ex);
+                await _logService.LogAsync(ex);
                 throw;
             }
 
