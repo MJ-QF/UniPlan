@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "./MainLayout";
-
+import ProfilePage from "../pages/ProfilePage";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/SignUp";
 import AcademicRecord from "../pages/AcademicRecord";
@@ -85,15 +85,10 @@ export const router = createBrowserRouter([
       },
 
       /* Shared Routes */
-      {
-        path: "profile",
-        element: (
-          <div style={{ padding: "80px 20px", textAlign: "center" }}>
-            <h2 style={{ color: "#0b1a20" }}>الملف الشخصي</h2>
-            <p style={{ color: "#516770" }}>قريباً...</p>
-          </div>
-        ),
-      },
+     {
+  path: "profile",
+  element: <ProfilePage />,
+},
     ],
   },
 
