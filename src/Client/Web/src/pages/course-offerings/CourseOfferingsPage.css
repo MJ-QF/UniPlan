@@ -1,0 +1,204 @@
+/* =========================
+   Course Offerings Page
+========================= */
+
+.cop-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+
+  direction: rtl;
+  font-family: "Tajawal", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+
+  animation: copIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes copIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.cop-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  margin-bottom: 24px;
+}
+
+.cop-title {
+  margin: 0 0 8px;
+
+  color: #0b1a20;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.cop-subtitle {
+  margin: 0;
+
+  color: #516770;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Create Button */
+.cop-create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 22px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: linear-gradient(135deg, #1591a3 0%, #117f90 100%);
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 24px rgba(21, 145, 163, 0.30);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+
+  white-space: nowrap;
+}
+
+.cop-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(21, 145, 163, 0.42);
+  filter: brightness(1.05);
+}
+
+.cop-create-btn:active {
+  transform: translateY(0);
+}
+
+/* Alerts */
+.cop-alert-error,
+.cop-alert-success {
+  padding: 14px 18px;
+  margin-bottom: 20px;
+
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cop-alert-error {
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  border-inline-start: 4px solid #dc4c4c;
+}
+
+.cop-alert-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-inline-start: 4px solid #10b981;
+}
+
+/* Grid */
+.cop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+
+  margin-top: 24px;
+}
+
+/* Skeleton */
+.cop-skeleton {
+  min-height: 200px;
+  border-radius: 16px;
+  background: linear-gradient(
+    90deg,
+    #f4f7f8 0%,
+    #e9eef1 50%,
+    #f4f7f8 100%
+  );
+  background-size: 200% 100%;
+  animation: copShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes copShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Load More */
+.cop-load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.cop-load-more {
+  min-height: 48px;
+  padding: 0 32px;
+
+  border: 1.5px solid #1591a3;
+  border-radius: 12px;
+
+  background: transparent;
+  color: #117f90;
+
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.cop-load-more:hover:not(:disabled) {
+  background: #1591a3;
+  color: #ffffff;
+  transform: translateY(-1.5px);
+}
+
+.cop-load-more:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cop-page { padding: 28px 18px 60px; }
+
+  .cop-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .cop-create-btn {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .cop-title { font-size: 26px; }
+
+  .cop-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -6,7 +6,14 @@ import { login } from "../api/authApi";
 import type { LoginRequest } from "../types/auth";
 
 import { getStudentByAccountId } from "../api/studentApi";
-import { saveStudentId } from "../utils/session";
+import { getAdminByAccountId  } from "../api/adminApi";
+
+import {
+  saveStudentId,
+  saveAdminId,
+  saveRole,
+  clearSession,
+} from "../utils/session";
 
 /* =========================
    Icons
@@ -34,58 +41,35 @@ function CapIcon() {
 function BrandIcons() {
   return (
     <div className="brand-icons" aria-hidden="true">
-      <span
-        className="float-tile tile-teal tile-lg"
-        style={{ insetInlineStart: "4%", top: "18%" }}
-      >
+      <span className="float-tile tile-teal tile-lg" style={{ insetInlineStart: "4%", top: "18%" }}>
         <CapIcon />
       </span>
-
-      <span
-        className="float-tile tile-paper tile-md"
-        style={{ insetInlineStart: "38%", top: "4%" }}
-      >
+      <span className="float-tile tile-paper tile-md" style={{ insetInlineStart: "38%", top: "4%" }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2V5z" />
           <path d="M4 19a2 2 0 012-2h13" />
           <path d="M9 7h6" />
         </svg>
       </span>
-
-      <span
-        className="float-tile tile-gold tile-sm"
-        style={{ insetInlineStart: "62%", top: "40%" }}
-      >
+      <span className="float-tile tile-gold tile-sm" style={{ insetInlineStart: "62%", top: "40%" }}>
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7L12 3z" />
         </svg>
       </span>
-
-      <span
-        className="float-tile tile-soft tile-md"
-        style={{ insetInlineStart: "26%", top: "56%" }}
-      >
+      <span className="float-tile tile-soft tile-md" style={{ insetInlineStart: "26%", top: "56%" }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
           <path d="M5 20V12" />
           <path d="M12 20V6" />
           <path d="M19 20v-9" />
         </svg>
       </span>
-
-      <span
-        className="float-tile tile-outline tile-sm"
-        style={{ insetInlineStart: "78%", top: "8%" }}
-      >
+      <span className="float-tile tile-outline tile-sm" style={{ insetInlineStart: "78%", top: "8%" }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="5" width="18" height="16" rx="2" />
           <path d="M3 10h18M8 3v4M16 3v4" />
         </svg>
       </span>
-
-      <span
-        className="float-tile tile-teal tile-sm"
-        style={{ insetInlineStart: "84%", top: "62%" }}
-      >
+      <span className="float-tile tile-teal tile-sm" style={{ insetInlineStart: "84%", top: "62%" }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 5h16v11H9l-5 4V5z" />
         </svg>
@@ -110,6 +94,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  /* =========================
+     Login
+  ========================= */
   const handleLogin = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -129,18 +116,40 @@ export default function LoginPage() {
     };
 
     try {
+      clearSession();
+
       const account = await login(loginData);
-      const student = await getStudentByAccountId(account.accountID);
+      console.log("Login successful:", account);
 
-      if (!student) {
-        setErrorMessage(
-          "تم تسجيل الدخول، لكن لم يتم العثور على بيانات الطالب."
-        );
-        return;
+      if (account.role === "Admin") {
+        const admin = await getAdminByAccountId(account.accountID);
+
+        if (!admin) {
+          setErrorMessage(
+            "تم تسجيل الدخول، لكن لم يتم العثور على ملف الإداري."
+          );
+          return;
+        }
+
+        saveAdminId(admin.adminID);
+        saveRole("Admin");
+
+        navigate("/course-offerings", { replace: true });
+      } else {
+        const student = await getStudentByAccountId(account.accountID);
+
+        if (!student) {
+          setErrorMessage(
+            "تم تسجيل الدخول، لكن لم يتم العثور على بيانات الطالب."
+          );
+          return;
+        }
+
+        saveStudentId(student.studentID);
+        saveRole("Student");
+
+        navigate("/academic-record", { replace: true });
       }
-
-      saveStudentId(student.studentID);
-      navigate("/academic-record", { replace: true });
 
     } catch (error) {
       console.error("Login failed:", error);

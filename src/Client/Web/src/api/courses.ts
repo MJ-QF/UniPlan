@@ -8,6 +8,8 @@ export interface Course {
   neededHours: number;
 }
 
+
+
 export const getCourses = async (pageNumber = 1, pageSize = 20): Promise<Course[]> => {
   const response = await client.get<Course[]>('/courses', {
     params: { pageNumber, pageSize },

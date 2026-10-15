@@ -88,14 +88,11 @@ export default function SchedulesListPage() {
   }
 
   /* =========================
-     Open Schedule
+     Open Schedule — دائماً الجدول الأول
   ========================= */
-  function handleOpenSchedule(
-    schedule: GeneratedScheduleResponse,
-    scheduleNumber: number
-  ) {
+  function handleOpenSchedule(schedule: GeneratedScheduleResponse) {
     const listId = schedule.wishListInfo.wishListID;
-    navigate(`/schedules/${listId}/${scheduleNumber}`);
+    navigate(`/schedules/${listId}/1`);
   }
 
   /* =========================
@@ -142,14 +139,12 @@ export default function SchedulesListPage() {
       {!loading && schedules.length > 0 && (
         <>
           <div className="sl-grid">
-            {schedules.map((schedule, index) => (
+            {schedules.map((schedule) => (
               <ScheduleCard
                 key={schedule.scheduleID}
                 schedule={schedule}
-                scheduleNumber={index + 1}
-                onOpen={() =>
-                  handleOpenSchedule(schedule, index + 1)
-                }
+                scheduleNumber={1}
+                onOpen={() => handleOpenSchedule(schedule)}
               />
             ))}
           </div>

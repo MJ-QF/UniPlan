@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { clearStudentId } from "../../utils/session";
+import { clearSession, isAdmin } from "../../utils/session";
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const adminMode = isAdmin();
 
   function handleLogout() {
-    clearStudentId();
+    clearSession();
     navigate("/login", { replace: true });
   }
 
@@ -21,39 +22,60 @@ export default function Navbar() {
 
         {/* Links */}
         <ul className="navbar-links">
-          <li>
-            <NavLink
-              to="/academic-record"
-              className={({ isActive }) =>
-                `navbar-link ${isActive ? "active" : ""}`
-              }
-            >
-              السجل الأكاديمي
-            </NavLink>
-          </li>
 
-          <li>
-            <NavLink
-              to="/wishlists"
-              className={({ isActive }) =>
-                `navbar-link ${isActive ? "active" : ""}`
-              }
-            >
-              قوائم الرغبات
-            </NavLink>
-          </li>
+          {/* Admin Links */}
+          {adminMode && (
+            <li>
+              <NavLink
+                to="/course-offerings"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "active" : ""}`
+                }
+              >
+                الشعب الدراسية
+              </NavLink>
+            </li>
+          )}
 
-          <li>
-            <NavLink
-              to="/schedules"
-              className={({ isActive }) =>
-                `navbar-link ${isActive ? "active" : ""}`
-              }
-            >
-              الجداول الدراسية
-            </NavLink>
-          </li>
+          {/* Student Links */}
+          {!adminMode && (
+            <>
+              <li>
+                <NavLink
+                  to="/academic-record"
+                  className={({ isActive }) =>
+                    `navbar-link ${isActive ? "active" : ""}`
+                  }
+                >
+                  السجل الأكاديمي
+                </NavLink>
+              </li>
 
+              <li>
+                <NavLink
+                  to="/wishlists"
+                  className={({ isActive }) =>
+                    `navbar-link ${isActive ? "active" : ""}`
+                  }
+                >
+                  قوائم الرغبات
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/schedules"
+                  className={({ isActive }) =>
+                    `navbar-link ${isActive ? "active" : ""}`
+                  }
+                >
+                  الجداول الدراسية
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {/* Shared */}
           <li>
             <NavLink
               to="/profile"
@@ -64,6 +86,7 @@ export default function Navbar() {
               الملف الشخصي
             </NavLink>
           </li>
+
         </ul>
 
         {/* Logout */}

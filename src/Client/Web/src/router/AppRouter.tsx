@@ -4,7 +4,6 @@ import MainLayout from "./MainLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/SignUp";
 import AcademicRecord from "../pages/AcademicRecord";
-import ProfilePage from "../pages/ProfilePage";
 
 import WishListsListPage from "../pages/wishlist/WishListsListPage";
 import WishListCreatePage from "../pages/wishlist/WishListCreatePage";
@@ -13,11 +12,14 @@ import WishListDetailPage from "../pages/wishlist/WishListDetailPage";
 import SchedulesListPage from "../pages/schedule/SchedulesListPage";
 import ScheduleDetailPage from "../pages/schedule/ScheduleDetailPage";
 
-/* ✅ حماية Routes — تتحقق من وجود studentId */
+import CourseOfferingsPage from "../pages/course-offerings/CourseOfferingsPage";
+
+/* ✅ حماية Routes */
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const studentId = localStorage.getItem("uniplan.studentId");
+  const adminId = localStorage.getItem("uniplan.adminId");
 
-  if (!studentId) {
+  if (!studentId && !adminId) {
     return <Navigate to="/login" replace />;
   }
 
@@ -25,9 +27,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 }
 
 export const router = createBrowserRouter([
-  /* =========================
-     Public Routes (بدون Navbar)
-  ========================= */
+  /* Public */
   {
     path: "/login",
     element: <LoginPage />,
@@ -37,9 +37,7 @@ export const router = createBrowserRouter([
     element: <RegisterPage />,
   },
 
-  /* =========================
-     Protected Routes (مع Navbar)
-  ========================= */
+  /* Protected */
   {
     path: "/",
     element: (
@@ -48,19 +46,17 @@ export const router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
-      /* الصفحة الرئيسية → إعادة توجيه */
+      /* Redirect based on role */
       {
         index: true,
         element: <Navigate to="/academic-record" replace />,
       },
 
-      /* Academic Record */
+      /* Student Routes */
       {
         path: "academic-record",
         element: <AcademicRecord />,
       },
-
-      /* Wish Lists */
       {
         path: "wishlists",
         element: <WishListsListPage />,
@@ -73,8 +69,6 @@ export const router = createBrowserRouter([
         path: "wishlists/:wishListId",
         element: <WishListDetailPage />,
       },
-
-      /* Schedules */
       {
         path: "schedules",
         element: <SchedulesListPage />,
@@ -84,10 +78,21 @@ export const router = createBrowserRouter([
         element: <ScheduleDetailPage />,
       },
 
-      /* Profile */
+      /* Admin Routes */
+      {
+        path: "course-offerings",
+        element: <CourseOfferingsPage />,
+      },
+
+      /* Shared Routes */
       {
         path: "profile",
-        element: <ProfilePage />,
+        element: (
+          <div style={{ padding: "80px 20px", textAlign: "center" }}>
+            <h2 style={{ color: "#0b1a20" }}>الملف الشخصي</h2>
+            <p style={{ color: "#516770" }}>قريباً...</p>
+          </div>
+        ),
       },
     ],
   },
