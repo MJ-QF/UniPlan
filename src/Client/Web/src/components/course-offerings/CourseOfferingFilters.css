@@ -113,8 +113,10 @@
 .cof-input {
   width: 100%;
   min-height: 46px;
+
+  /* ✅ يمين: مساحة صغيرة للنص، يسار: مساحة للأيقونة */
+  padding: 0 14px 0 44px;
   box-sizing: border-box;
-  padding: 0 44px 0 14px;
 
   background: #ffffff;
   color: #0b1a20;
@@ -129,7 +131,8 @@
 
   transition:
     border-color 0.18s ease,
-    box-shadow 0.18s ease;
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
 }
 
 .cof-input::placeholder {
@@ -151,6 +154,12 @@
   cursor: not-allowed;
 }
 
+/* ✅ عند البحث — خلفية خفيفة */
+.cof-input-wrapper.is-searching .cof-input {
+  background: #fafbfc;
+}
+
+/* Search Icon */
 .cof-search-icon {
   position: absolute;
   left: 14px;
@@ -162,7 +171,31 @@
 
   color: #718087;
   pointer-events: none;
-  z-index: 2;   /* ← أضفنا */
+  z-index: 2;
+}
+
+/* ✅ Spinner أثناء البحث */
+.cof-spinner {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(21, 145, 163, 0.2);
+  border-top-color: #1591a3;
+  border-radius: 50%;
+
+  animation: cofSpin 0.7s linear infinite;
+
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes cofSpin {
+  to { transform: translateY(-50%) rotate(360deg); }
 }
 
 /* Reset */

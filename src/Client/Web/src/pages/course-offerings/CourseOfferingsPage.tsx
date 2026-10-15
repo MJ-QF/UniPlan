@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import {
   getCourseOfferings,
   createCourseOffering,
   updateCourseOffering,
   deleteCourseOffering,
-  type CourseOfferingFilters as FiltersType,
 } from "../../api/courseOfferingsApi";
 import type { CourseOfferingResponse } from "../../types/courseOffering";
 
@@ -27,7 +25,6 @@ import "./CourseOfferingsPage.css";
 const PAGE_SIZE = 10;
 
 export default function CourseOfferingsPage() {
-  const navigate = useNavigate();
   const adminMode = isAdmin();
   const adminId = getAdminId();
 
@@ -41,7 +38,9 @@ export default function CourseOfferingsPage() {
   const [hasMore, setHasMore] = useState(true);
 
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -63,16 +62,19 @@ export default function CourseOfferingsPage() {
   const [toastMessage, setToastMessage] = useState("");
 
   /* =========================
-     Load — initial + filters
+     Load — أولي أو بحث
   ========================= */
   useEffect(() => {
-    if (!adminMode && adminId === null) {
-      /* للطالب: ما نحتاج adminId */
-    }
-
     async function load() {
       try {
-        setLoading(true);
+        /* ✅ أول تحميل → skeleton */
+        if (isFirstLoad) {
+          setLoading(true);
+        } else {
+          /* ✅ بحث → مؤشر خفيف بدون skeleton */
+          setSearching(true);
+        }
+
         setErrorMessage("");
 
         const data = await getCourseOfferings({
@@ -92,11 +94,14 @@ export default function CourseOfferingsPage() {
         );
       } finally {
         setLoading(false);
+        setSearching(false);
+        setIsFirstLoad(false);
       }
     }
 
     load();
-  }, [filters, adminMode, adminId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
 
   /* =========================
      Load More
@@ -119,16 +124,14 @@ export default function CourseOfferingsPage() {
       setHasMore(data.length === PAGE_SIZE);
     } catch (error: any) {
       console.error("Load more failed:", error);
-      setErrorMessage(
-        error?.response?.data ?? "تعذر تحميل المزيد."
-      );
+      setErrorMessage(error?.response?.data ?? "تعذر تحميل المزيد.");
     } finally {
       setLoadingMore(false);
     }
   }
 
   /* =========================
-     Refresh (after action)
+     Refresh
   ========================= */
   async function refreshOfferings() {
     try {
@@ -210,9 +213,7 @@ export default function CourseOfferingsPage() {
       setShowToast(true);
     } catch (error: any) {
       console.error("Update failed:", error);
-      setUpdateError(
-        error?.response?.data ?? "تعذر حفظ التعديلات."
-      );
+      setUpdateError(error?.response?.data ?? "تعذر حفظ التعديلات.");
     } finally {
       setUpdating(false);
     }
@@ -239,9 +240,7 @@ export default function CourseOfferingsPage() {
       setTimeout(() => setSuccessMessage(""), 2500);
     } catch (error: any) {
       console.error("Delete failed:", error);
-      setErrorMessage(
-        error?.response?.data ?? "تعذر حذف الشعبة."
-      );
+      setErrorMessage(error?.response?.data ?? "تعذر حذف الشعبة.");
       setPendingDeleteId(null);
     } finally {
       setDeleting(false);
@@ -290,9 +289,10 @@ export default function CourseOfferingsPage() {
 
       {/* Filters */}
       <CourseOfferingFilters
-        value={filters as FiltersType}
+        value={filters}
         onChange={(v) => setFilters(v)}
         disabled={loading}
+        isSearching={searching}
       />
 
       {/* Alerts */}
@@ -303,8 +303,8 @@ export default function CourseOfferingsPage() {
         <div className="cop-alert-success">{successMessage}</div>
       )}
 
-      {/* Loading */}
-      {loading && (
+      {/* Loading (أول تحميل فقط) */}
+      {loading && isFirstLoad && (
         <div className="cop-grid">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="cop-skeleton" />
@@ -326,10 +326,10 @@ export default function CourseOfferingsPage() {
         />
       )}
 
-      {/* Grid */}
+      {/* Grid — مع تأثير ناعم عند البحث */}
       {!loading && offerings.length > 0 && (
         <>
-          <div className="cop-grid">
+          <div className={`cop-grid ${searching ? "is-searching" : ""}`}>
             {offerings.map((offering) => (
               <CourseOfferingCard
                 key={offering.offeringID}
@@ -348,14 +348,13 @@ export default function CourseOfferingsPage() {
             ))}
           </div>
 
-          {/* Load More */}
           {hasMore && (
             <div className="cop-load-more-wrapper">
               <button
                 type="button"
                 className="cop-load-more"
                 onClick={handleLoadMore}
-                disabled={loadingMore}
+                disabled={loadingMore || searching}
               >
                 {loadingMore ? "جاري التحميل..." : "عرض المزيد"}
               </button>
