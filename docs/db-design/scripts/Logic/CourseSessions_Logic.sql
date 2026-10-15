@@ -287,25 +287,21 @@ GO
 /*=========================================================
 GET ALL
 =========================================================*/
-CREATE OR ALTER PROCEDURE SP_CourseSessions_GetAll
-    @PageNumber INT = 1,
-    @PageSize INT = 10
+CREATE OR ALTER PROCEDURE SP_CourseSessions_Search
+    @TermID int,
+    @CourseName nvarchar(200) = NULL,
+    @DayNum int
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    IF @PageNumber < 1
-        SET @PageNumber = 1;
-
-    IF @PageSize < 1
-        SET @PageSize = 10;
-
     BEGIN TRY
 
         SELECT * FROM CourseSessions_view
-        ORDER BY SessionID
-        OFFSET (@PageNumber - 1) * @PageSize ROWS
-        FETCH NEXT @PageSize ROWS ONLY;
+        WHERE (TermID = @TermID)
+          AND (@CourseName IS NULL OR CourseName LIKE N'%' + @CourseName + N'%')
+          AND (@DayNum = DayNum);
+
     END TRY
     BEGIN CATCH
         THROW;

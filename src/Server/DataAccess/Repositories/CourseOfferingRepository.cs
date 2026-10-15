@@ -164,7 +164,7 @@ namespace DataAccess.Repositories
             return offering;
         }
 
-        public async Task<IEnumerable<CourseOffering>> SearchCourseOfferingsAsync(int? termID = null, string? courseName = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<IEnumerable<CourseOffering>?> SearchCourseOfferingsAsync(int? termID = null, string? courseName = null, int pageNumber = 1, int pageSize = 10)
         {
             List<CourseOffering> offerings = new List<CourseOffering>();
 

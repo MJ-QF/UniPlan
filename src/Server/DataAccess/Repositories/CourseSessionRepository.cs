@@ -258,31 +258,23 @@ namespace DataAccess.Repositories
             return courseSession;
         }
 
-
-        public async Task<IEnumerable<CourseSession?>?>GetCourseSessionsPagedAsync(int pageNumber, int pageSize)
+        
+        public async Task<IEnumerable<CourseSession?>?> SearchCourseSessionsAsync(int termID, int dayNum,string? courseName = null)
         {
             List<CourseSession> courseSessions = new();
 
             try
             {
                 using (SqlConnection connection = new SqlConnection(_dBHelpers.ConnectionString))
-                using (SqlCommand command = new SqlCommand("SP_CourseSessions_GetAll", connection))
+                using (SqlCommand command = new SqlCommand("SP_CourseSessions_Search", connection))
                 {
 
 
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue
-                    (
-                        "@PageNumber",
-                        pageNumber
-                    );
-
-                    command.Parameters.AddWithValue
-                    (
-                        "@PageSize",
-                        pageSize
-                    );
+                    command.Parameters.AddWithValue("@TermID", termID);
+                    command.Parameters.AddWithValue("@CourseName", (object?)courseName ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@DayNum", dayNum);
 
                     await connection.OpenAsync();
 

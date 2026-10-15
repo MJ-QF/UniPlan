@@ -57,9 +57,9 @@ namespace Business.Services
             return false;
         }
 
-        public async Task<IEnumerable<CourseSessionResponse>?> GetPagedCourseSessionsAsync(int pageNumber = 1, int pageSize = 10)
+        public async Task<IEnumerable<CourseSessionResponse>?> SearchCourseSessionsAsync(int termID, int dayNum, string? courseName = null)
         {
-            IEnumerable<CourseSession?>? courseSessions = await _courseSessionRepository.GetCourseSessionsPagedAsync(pageNumber, pageSize);
+            IEnumerable<CourseSession?>? courseSessions = await _courseSessionRepository.SearchCourseSessionsAsync(termID, dayNum, courseName);
             return courseSessions?.Select(m => m?.ToResponse() ?? null).OfType<CourseSessionResponse>();
         }
 

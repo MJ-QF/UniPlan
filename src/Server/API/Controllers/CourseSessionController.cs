@@ -157,27 +157,27 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet(Name = "GetPageCourseSessionsAsync")]
+        [HttpGet(Name = "SearchCourseSessionsAsync")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourseSessionResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<CourseSessionResponse>>> GetPageCourseSessionsAsync([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<CourseSessionResponse>>> SearchCourseSessionsAsync([FromQuery] int termID, [FromQuery] int dayNum, [FromQuery] string? courseName = null)
         {
             try
             {
-                if (pageNumber > 0 && pageSize > 0)
+                if (dayNum >= 0 && dayNum <= 6)
                 {
-                    IEnumerable<CourseSessionResponse>? responses = await _courseSessionService.GetPagedCourseSessionsAsync(pageNumber, pageSize);
+                    IEnumerable<CourseSessionResponse>? responses = await _courseSessionService.SearchCourseSessionsAsync(termID, dayNum, courseName);
 
                     if (responses != null && responses.Any())
                     {
-                        await _logService.LogAsync($"Course Sessions fetched successfully for page {pageNumber} with size {pageSize}.", ExternalServicesEnums.LogType.Info);
+                        await _logService.LogAsync($"Course Sessions fetched successfully for day {dayNum}.", ExternalServicesEnums.LogType.Info);
                         return Ok(responses);
                     }
                 }
-                else return BadRequest("يجب أن يكون رقم الصفحة وحجم الصفحة أكبر من 0");
+                else return BadRequest();
 
-                await _logService.LogAsync($"No course Sessions found on page {pageNumber}.", ExternalServicesEnums.LogType.Warning);
+                await _logService.LogAsync($"No course Sessions found on day {dayNum}.", ExternalServicesEnums.LogType.Warning);
                 return Ok(new List<CourseSessionResponse>());
             }
             catch (Exception ex)
