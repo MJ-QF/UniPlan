@@ -12,12 +12,14 @@ interface Props {
   value: OfferingFilterValues;
   onChange: (filters: OfferingFilterValues) => void;
   disabled?: boolean;
+  isSearching?: boolean;
 }
 
 export default function CourseOfferingFilters({
   value,
   onChange,
   disabled = false,
+  isSearching = false,
 }: Props) {
   const [terms, setTerms] = useState<AcademicTermResponse[]>([]);
   const [loadingTerms, setLoadingTerms] = useState(true);
@@ -40,13 +42,13 @@ export default function CourseOfferingFilters({
     load();
   }, []);
 
-  /* Debounce search */
+  /* ✅ Debounce search — 600ms */
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchInput !== (value.courseName ?? "")) {
         onChange({ ...value, courseName: searchInput.trim() || undefined });
       }
-    }, 400);
+    }, 600);
 
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,7 +110,11 @@ export default function CourseOfferingFilters({
         <label className="cof-label" htmlFor="filter-search">
           اسم المقرر
         </label>
-        <div className="cof-input-wrapper">
+        <div
+          className={`cof-input-wrapper ${
+            isSearching ? "is-searching" : ""
+          }`}
+        >
           <input
             id="filter-search"
             type="text"
@@ -118,19 +124,25 @@ export default function CourseOfferingFilters({
             onChange={(e) => setSearchInput(e.target.value)}
             disabled={disabled}
           />
-          <svg
-            className="cof-search-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
+
+          {isSearching ? (
+            /* ✅ Spinner أثناء البحث */
+            <span className="cof-spinner" aria-hidden="true" />
+          ) : (
+            <svg
+              className="cof-search-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          )}
         </div>
       </div>
 

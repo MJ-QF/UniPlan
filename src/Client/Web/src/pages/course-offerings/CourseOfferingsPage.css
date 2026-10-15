@@ -120,6 +120,14 @@
   gap: 16px;
 
   margin-top: 24px;
+
+  transition: opacity 0.2s ease;
+}
+
+/* ✅ تأثير ناعم أثناء البحث */
+.cop-grid.is-searching {
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 /* Skeleton */
