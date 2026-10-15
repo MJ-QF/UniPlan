@@ -259,7 +259,7 @@ namespace DataAccess.Repositories
         }
 
         
-        public async Task<IEnumerable<CourseSession?>?> SearchCourseSessionsAsync(int termID, int dayNum,string? courseName = null)
+        public async Task<IEnumerable<CourseSession?>?> SearchCourseSessionsAsync(int termID, int dayNum,string? courseName = null, string? majorName = null)
         {
             List<CourseSession> courseSessions = new();
 
@@ -274,6 +274,7 @@ namespace DataAccess.Repositories
 
                     command.Parameters.AddWithValue("@TermID", termID);
                     command.Parameters.AddWithValue("@CourseName", (object?)courseName ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@MajorName", (object?)majorName ?? DBNull.Value);
                     command.Parameters.AddWithValue("@DayNum", dayNum);
 
                     await connection.OpenAsync();

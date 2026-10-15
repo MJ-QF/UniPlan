@@ -290,6 +290,7 @@ GET ALL
 CREATE OR ALTER PROCEDURE SP_CourseSessions_Search
     @TermID int,
     @CourseName nvarchar(200) = NULL,
+    @MajorName nvarchar(200) = NULL,
     @DayNum int
 AS
 BEGIN
@@ -297,10 +298,13 @@ BEGIN
 
     BEGIN TRY
 
-        SELECT * FROM CourseSessions_view
+        SELECT CS.* FROM CourseSessions_view CS
+        INNER JOIN MajorCourses MC ON MC.CourseID = CS.CourseID
+        INNER JOIN Majors M ON M.MajorID = MC.MajorID
         WHERE (TermID = @TermID)
           AND (@CourseName IS NULL OR CourseName LIKE N'%' + @CourseName + N'%')
-          AND (@DayNum = DayNum);
+          AND (@DayNum = DayNum)
+          AND (@MajorName IS NULL OR  M.MajorName LIKE N'%' + @MajorName + N'%')
 
     END TRY
     BEGIN CATCH

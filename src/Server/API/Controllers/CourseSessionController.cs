@@ -161,13 +161,13 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CourseSessionResponse>))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<CourseSessionResponse>>> SearchCourseSessionsAsync([FromQuery] int termID, [FromQuery] int dayNum, [FromQuery] string? courseName = null)
+        public async Task<ActionResult<IEnumerable<CourseSessionResponse>>> SearchCourseSessionsAsync([FromQuery] int termID, [FromQuery] int dayNum, [FromQuery] string? courseName = null, [FromQuery] string? majorName = null)
         {
             try
             {
                 if (dayNum >= 0 && dayNum <= 6)
                 {
-                    IEnumerable<CourseSessionResponse>? responses = await _courseSessionService.SearchCourseSessionsAsync(termID, dayNum, courseName);
+                    IEnumerable<CourseSessionResponse>? responses = await _courseSessionService.SearchCourseSessionsAsync(termID, dayNum, courseName, majorName);
 
                     if (responses != null && responses.Any())
                     {

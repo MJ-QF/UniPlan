@@ -14,7 +14,7 @@ namespace Core.Interfaces.Repositories
 
         Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishlistSessionsByTimeSlotAsync(int listID, List<int> days, TimeSpan startTime, TimeSpan endTime);
 
-        Task<IEnumerable<CourseSession?>?> SearchCourseSessionsAsync(int termID, int dayNum, string? courseName = null);
+        Task<IEnumerable<CourseSession?>?> SearchCourseSessionsAsync(int termID, int dayNum, string? courseName = null, string? majorName = null);
 
     }
 }

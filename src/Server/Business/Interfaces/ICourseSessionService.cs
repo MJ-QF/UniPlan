@@ -13,7 +13,7 @@ namespace Business.Interfaces
 
         Task<bool> UpdateCourseSessionAsync(UpdateCourseSessionRequest request, int courseSessionID);
 
-        Task<IEnumerable<CourseSessionResponse>?> SearchCourseSessionsAsync(int termID, int dayNum, string? courseName = null);
+        Task<IEnumerable<CourseSessionResponse>?> SearchCourseSessionsAsync(int termID, int dayNum, string? courseName = null, string? majorName = null);
 
         Task<Dictionary<int, Dictionary<int, List<CourseSession>>>?> GetWishlistSessionsByTimeSlotAsync(int listID, List<int> days, TimeSpan startTime, TimeSpan endTime);
 
